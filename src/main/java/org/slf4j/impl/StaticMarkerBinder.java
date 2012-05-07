@@ -43,7 +43,7 @@ public class StaticMarkerBinder implements MarkerFactoryBinder {
    */
   public static final org.slf4j.impl.StaticMarkerBinder SINGLETON = new org.slf4j.impl.StaticMarkerBinder();
 
-  final IMarkerFactory markerFactory = new BasicMarkerFactory();
+  private final IMarkerFactory markerFactory = new BasicMarkerFactory();
 
   private StaticMarkerBinder() {
   }

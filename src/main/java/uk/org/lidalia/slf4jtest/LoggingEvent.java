@@ -1,6 +1,8 @@
 package uk.org.lidalia.slf4jtest;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +12,7 @@ import com.google.common.base.Optional;
 
 import uk.org.lidalia.slf4jutils.Level;
 
-import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
@@ -24,44 +26,52 @@ public class LoggingEvent {
     private final List<Object> arguments;
 
     public LoggingEvent(Level level, String message, Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), null, null, message, arguments);
+        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), Optional.<Throwable>absent(), message, arguments);
     }
 
     public LoggingEvent(Level level, Throwable throwable, String message, Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), null, throwable, message, arguments);
+        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), of(throwable), message, arguments);
     }
 
     public LoggingEvent(Level level, Marker marker, String message, Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), marker, null, message, arguments);
+        this(level, Collections.<String, String>emptyMap(), of(marker), Optional.<Throwable>absent(), message, arguments);
     }
 
     public LoggingEvent(Level level, Marker marker, Throwable throwable, String message, Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), marker, throwable, message, arguments);
+        this(level, Collections.<String, String>emptyMap(), of(marker), of(throwable), message, arguments);
     }
 
     public LoggingEvent(Level level, Map<String, String> mdcCopy, String message, Object... arguments) {
-        this(level, mdcCopy, null, null, message, arguments);
+        this(level, mdcCopy, Optional.<Marker>absent(), Optional.<Throwable>absent(), message, arguments);
     }
 
     public LoggingEvent(Level level, Map<String, String> mdc, Throwable throwable, String message, Object... arguments) {
-        this(level, mdc, null, throwable, message, arguments);
+        this(level, mdc, Optional.<Marker>absent(), of(throwable), message, arguments);
     }
 
     public LoggingEvent(Level level, Map<String, String> mdc, Marker marker, String message, Object... arguments) {
-        this(level, mdc, marker, null, message, arguments);
+        this(level, mdc, of(marker), Optional.<Throwable>absent(), message, arguments);
     }
 
     public LoggingEvent(Level level, Map<String, String> mdc, Marker marker, Throwable throwable, String message, Object... arguments) {
+        this(level, mdc, of(marker), of(throwable), message, arguments);
+    }
+
+    private LoggingEvent(Level level, Map<String, String> mdc, Optional<Marker> marker, Optional<Throwable> throwable, String message, Object... arguments) {
         this.level = checkNotNull(level);
-        this.mdc = fromNullable(mdc).or(Collections.<String, String>emptyMap());
-        this.marker = fromNullable(marker);
-        this.throwable = fromNullable(throwable);
+        this.mdc = Collections.unmodifiableMap(new HashMap<String, String>(mdc));
+        this.marker = checkNotNull(marker);
+        this.throwable = checkNotNull(throwable);
         this.message = checkNotNull(message);
-        this.arguments = Collections.unmodifiableList(asList(arguments));
+        this.arguments = Collections.unmodifiableList(new ArrayList<Object>(asList(arguments)));
     }
 
     public Level getLevel() {
         return level;
+    }
+
+    public Map<String, String> getMdc() {
+        return mdc;
     }
 
     public Optional<Marker> getMarker() {
