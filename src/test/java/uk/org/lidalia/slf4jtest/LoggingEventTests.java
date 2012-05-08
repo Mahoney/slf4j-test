@@ -77,9 +77,6 @@ public class LoggingEventTests {
         assertEquals(args, event.getArguments());
     }
 
-
-
-
     @Test
     public void constructorMdcMessageArgs() {
         LoggingEvent event = new LoggingEvent(level, mdc, message, arg1, arg2);
