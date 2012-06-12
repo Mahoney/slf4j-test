@@ -1,7 +1,6 @@
 package org.slf4j.impl;
 
 import org.junit.Test;
-import org.slf4j.helpers.BasicMarkerFactory;
 
 import uk.org.lidalia.slf4jtest.TestMDCAdapter;
 

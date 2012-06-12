@@ -2,6 +2,7 @@ package org.slf4j.impl;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
+
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 public class StaticLoggerBinder implements LoggerFactoryBinder {

@@ -35,6 +35,7 @@ public class TestMDCAdapter implements MDCAdapter {
         return Collections.unmodifiableMap(new HashMap<String, String>(value.get()));
     }
 
+    @SuppressWarnings("unchecked")
     public void setContextMap(Map contextMap) {
         value.get().clear();
         value.get().putAll(contextMap);

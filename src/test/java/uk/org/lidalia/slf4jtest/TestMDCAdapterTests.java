@@ -33,6 +33,7 @@ public class TestMDCAdapterTests {
         assertEquals(expected, testMDCAdapter.getCopyOfContextMap());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void getCopyOfContextMapIsCopy() {
         testMDCAdapter.put(key, value);

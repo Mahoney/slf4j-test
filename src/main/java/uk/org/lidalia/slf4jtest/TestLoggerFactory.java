@@ -1,12 +1,9 @@
 package uk.org.lidalia.slf4jtest;
 
-import org.slf4j.ILoggerFactory;
-
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.ILoggerFactory;
 
 import static com.google.common.base.Optional.fromNullable;
 

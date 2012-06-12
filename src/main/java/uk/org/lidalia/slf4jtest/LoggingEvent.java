@@ -10,20 +10,175 @@ import org.slf4j.Marker;
 
 import com.google.common.base.Optional;
 
+import uk.org.lidalia.lang.Identity;
+import uk.org.lidalia.lang.RichObject;
 import uk.org.lidalia.slf4jutils.Level;
 
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
-public class LoggingEvent {
+public class LoggingEvent extends RichObject {
 
-    private final Level level;
-    private final Map<String, String> mdc;
-    private final Optional<Marker> marker;
-    private final Optional<Throwable> throwable;
-    private final String message;
-    private final List<Object> arguments;
+    public static LoggingEvent trace(String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, message, arguments);
+    }
+
+    public static LoggingEvent trace(Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, throwable, message, arguments);
+    }
+
+    public static LoggingEvent trace(Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, marker, message, arguments);
+    }
+
+    public static LoggingEvent trace(Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent trace(Map<String, String> mdcCopy, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, mdcCopy, message, arguments);
+    }
+
+    public static LoggingEvent trace(Map<String, String> mdc, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, mdc, throwable, message, arguments);
+    }
+
+    public static LoggingEvent trace(Map<String, String> mdc, Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, mdc, marker, message, arguments);
+    }
+
+    public static LoggingEvent trace(Map<String, String> mdc, Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.TRACE, mdc, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent debug(String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, message, arguments);
+    }
+
+    public static LoggingEvent debug(Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, throwable, message, arguments);
+    }
+
+    public static LoggingEvent debug(Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, marker, message, arguments);
+    }
+
+    public static LoggingEvent debug(Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent debug(Map<String, String> mdcCopy, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, mdcCopy, message, arguments);
+    }
+
+    public static LoggingEvent debug(Map<String, String> mdc, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, mdc, throwable, message, arguments);
+    }
+
+    public static LoggingEvent debug(Map<String, String> mdc, Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, mdc, marker, message, arguments);
+    }
+
+    public static LoggingEvent debug(Map<String, String> mdc, Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.DEBUG, mdc, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent info(String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, message, arguments);
+    }
+
+    public static LoggingEvent info(Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, throwable, message, arguments);
+    }
+
+    public static LoggingEvent info(Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, marker, message, arguments);
+    }
+
+    public static LoggingEvent info(Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent info(Map<String, String> mdcCopy, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, mdcCopy, message, arguments);
+    }
+
+    public static LoggingEvent info(Map<String, String> mdc, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, mdc, throwable, message, arguments);
+    }
+
+    public static LoggingEvent info(Map<String, String> mdc, Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, mdc, marker, message, arguments);
+    }
+
+    public static LoggingEvent info(Map<String, String> mdc, Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.INFO, mdc, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent warn(String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, message, arguments);
+    }
+
+    public static LoggingEvent warn(Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, throwable, message, arguments);
+    }
+
+    public static LoggingEvent warn(Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, marker, message, arguments);
+    }
+
+    public static LoggingEvent warn(Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent warn(Map<String, String> mdcCopy, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, mdcCopy, message, arguments);
+    }
+
+    public static LoggingEvent warn(Map<String, String> mdc, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, mdc, throwable, message, arguments);
+    }
+
+    public static LoggingEvent warn(Map<String, String> mdc, Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, mdc, marker, message, arguments);
+    }
+
+    public static LoggingEvent warn(Map<String, String> mdc, Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.WARN, mdc, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent error(String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, message, arguments);
+    }
+
+    public static LoggingEvent error(Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, throwable, message, arguments);
+    }
+
+    public static LoggingEvent error(Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, marker, message, arguments);
+    }
+
+    public static LoggingEvent error(Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, marker, throwable, message, arguments);
+    }
+
+    public static LoggingEvent error(Map<String, String> mdcCopy, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, mdcCopy, message, arguments);
+    }
+
+    public static LoggingEvent error(Map<String, String> mdc, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, mdc, throwable, message, arguments);
+    }
+
+    public static LoggingEvent error(Map<String, String> mdc, Marker marker, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, mdc, marker, message, arguments);
+    }
+
+    public static LoggingEvent error(Map<String, String> mdc, Marker marker, Throwable throwable, String message, Object... arguments) {
+        return new LoggingEvent(Level.ERROR, mdc, marker, throwable, message, arguments);
+    }
 
     public LoggingEvent(Level level, String message, Object... arguments) {
         this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), Optional.<Throwable>absent(), message, arguments);
@@ -66,6 +221,13 @@ public class LoggingEvent {
         this.arguments = Collections.unmodifiableList(new ArrayList<Object>(asList(arguments)));
     }
 
+    @Identity private final Level level;
+    @Identity private final Map<String, String> mdc;
+    @Identity private final Optional<Marker> marker;
+    @Identity private final Optional<Throwable> throwable;
+    @Identity private final String message;
+    @Identity private final List<Object> arguments;
+
     public Level getLevel() {
         return level;
     }
@@ -87,45 +249,5 @@ public class LoggingEvent {
     }
     public Optional<Throwable> getThrowable() {
         return throwable;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        LoggingEvent that = (LoggingEvent) o;
-
-        if (level != that.level) return false;
-        if (!mdc.equals(that.mdc)) return false;
-        if (!marker.equals(that.marker)) return false;
-        if (!throwable.equals(that.throwable)) return false;
-        if (!message.equals(that.message)) return false;
-        if (!arguments.equals(that.arguments)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = level.hashCode();
-        result = 31 * result + mdc.hashCode();
-        result = 31 * result + marker.hashCode();
-        result = 31 * result + throwable.hashCode();
-        result = 31 * result + message.hashCode();
-        result = 31 * result + arguments.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "LoggingEvent{" +
-                "level=" + level +
-                ", mdc=" + mdc +
-                ", marker=" + marker +
-                ", throwable=" + throwable +
-                ", message='" + message + '\'' +
-                ", arguments=" + arguments +
-                '}';
     }
 }

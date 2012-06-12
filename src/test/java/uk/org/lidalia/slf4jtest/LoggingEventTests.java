@@ -15,9 +15,17 @@ import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
+import static uk.org.lidalia.slf4jutils.Level.DEBUG;
+import static uk.org.lidalia.slf4jutils.Level.ERROR;
+import static uk.org.lidalia.slf4jutils.Level.INFO;
+import static uk.org.lidalia.slf4jutils.Level.TRACE;
+import static uk.org.lidalia.slf4jutils.Level.WARN;
 
 public class LoggingEventTests {
 
@@ -122,6 +130,286 @@ public class LoggingEventTests {
     }
 
     @Test
+    public void traceMessageArgs() {
+        LoggingEvent event = trace(message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceThrowableMessageArgs() {
+        LoggingEvent event = trace(throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceMarkerMessageArgs() {
+        LoggingEvent event = trace(marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceMarkerThrowableMessageArgs() {
+        LoggingEvent event = trace(marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceMdcMessageArgs() {
+        LoggingEvent event = trace(mdc, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, mdc, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceMdcThrowableMessageArgs() {
+        LoggingEvent event = trace(mdc, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, mdc, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceMdcMarkerMessageArgs() {
+        LoggingEvent event = trace(mdc, marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, mdc, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void traceMdcMarkerThrowableMessageArgs() {
+        LoggingEvent event = trace(mdc, marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(TRACE, mdc, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMessageArgs() {
+        LoggingEvent event = debug(message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugThrowableMessageArgs() {
+        LoggingEvent event = debug(throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMarkerMessageArgs() {
+        LoggingEvent event = debug(marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMarkerThrowableMessageArgs() {
+        LoggingEvent event = debug(marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMdcMessageArgs() {
+        LoggingEvent event = debug(mdc, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, mdc, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMdcThrowableMessageArgs() {
+        LoggingEvent event = debug(mdc, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, mdc, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMdcMarkerMessageArgs() {
+        LoggingEvent event = debug(mdc, marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, mdc, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void debugMdcMarkerThrowableMessageArgs() {
+        LoggingEvent event = debug(mdc, marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(DEBUG, mdc, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMessageArgs() {
+        LoggingEvent event = info(message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoThrowableMessageArgs() {
+        LoggingEvent event = info(throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMarkerMessageArgs() {
+        LoggingEvent event = info(marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMarkerThrowableMessageArgs() {
+        LoggingEvent event = info(marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMdcMessageArgs() {
+        LoggingEvent event = info(mdc, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, mdc, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMdcThrowableMessageArgs() {
+        LoggingEvent event = info(mdc, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, mdc, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMdcMarkerMessageArgs() {
+        LoggingEvent event = info(mdc, marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, mdc, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void infoMdcMarkerThrowableMessageArgs() {
+        LoggingEvent event = info(mdc, marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(INFO, mdc, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMessageArgs() {
+        LoggingEvent event = warn(message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnThrowableMessageArgs() {
+        LoggingEvent event = warn(throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMarkerMessageArgs() {
+        LoggingEvent event = warn(marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMarkerThrowableMessageArgs() {
+        LoggingEvent event = warn(marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMdcMessageArgs() {
+        LoggingEvent event = warn(mdc, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, mdc, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMdcThrowableMessageArgs() {
+        LoggingEvent event = warn(mdc, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, mdc, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMdcMarkerMessageArgs() {
+        LoggingEvent event = warn(mdc, marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, mdc, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void warnMdcMarkerThrowableMessageArgs() {
+        LoggingEvent event = warn(mdc, marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(WARN, mdc, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMessageArgs() {
+        LoggingEvent event = error(message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorThrowableMessageArgs() {
+        LoggingEvent event = error(throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMarkerMessageArgs() {
+        LoggingEvent event = error(marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMarkerThrowableMessageArgs() {
+        LoggingEvent event = error(marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMdcMessageArgs() {
+        LoggingEvent event = error(mdc, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, mdc, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMdcThrowableMessageArgs() {
+        LoggingEvent event = error(mdc, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, mdc, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMdcMarkerMessageArgs() {
+        LoggingEvent event = error(mdc, marker, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, mdc, marker, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
+    public void errorMdcMarkerThrowableMessageArgs() {
+        LoggingEvent event = error(mdc, marker, throwable, message, arg1, arg2);
+        LoggingEvent expected = new LoggingEvent(ERROR, mdc, marker, throwable, message, arg1, arg2);
+        assertEquals(expected, event);
+    }
+
+    @Test
     public void mdcIsSnapshotInTime() {
         Map<String, String> mdc = new HashMap<String, String>();
         mdc.put("key", "value1");
@@ -152,75 +440,5 @@ public class LoggingEventTests {
     public void argsNotModifiable() throws Throwable {
         final LoggingEvent event = new LoggingEvent(level, message, arg1);
         event.getArguments().add(arg2);
-    }
-
-    @Test
-    public void equalsContract() {
-        LoggingEvent event = new LoggingEvent(level, mdc, marker, throwable, message, arg1, arg2);
-        assertTrue(event.equals(event));
-        assertFalse(event.equals(null));
-        assertFalse(event.equals("adifferenttype"));
-
-        LoggingEvent equalEvent = new LoggingEvent(level, mdc, marker, throwable, message, arg1, arg2);
-        assertTrue(event.equals(equalEvent));
-        assertTrue(equalEvent.equals(event));
-
-        LoggingEvent differentLevel = new LoggingEvent(Level.DEBUG, mdc, marker, throwable, message, arg1, arg2);
-        assertFalse(event.equals(differentLevel));
-        assertFalse(differentLevel.equals(event));
-
-        LoggingEvent differentMdc = new LoggingEvent(level, new HashMap<String, String>(), marker, throwable, message, arg1, arg2);
-        assertFalse(event.equals(differentMdc));
-        assertFalse(differentMdc.equals(event));
-
-        LoggingEvent differentMarker = new LoggingEvent(level, mdc, mock(Marker.class), throwable, message, arg1, arg2);
-        assertFalse(event.equals(differentMarker));
-        assertFalse(differentMarker.equals(event));
-
-        LoggingEvent differentThrowable = new LoggingEvent(level, mdc, marker, new Throwable(), message, arg1, arg2);
-        assertFalse(event.equals(differentThrowable));
-        assertFalse(differentThrowable.equals(event));
-
-        LoggingEvent differentMessage = new LoggingEvent(level, mdc, marker, throwable, "somethingelse", arg1, arg2);
-        assertFalse(event.equals(differentMessage));
-        assertFalse(differentMessage.equals(event));
-
-        LoggingEvent differentArgs = new LoggingEvent(level, mdc, marker, throwable, message, arg1);
-        assertFalse(event.equals(differentArgs));
-        assertFalse(differentArgs.equals(event));
-    }
-
-    @Test
-    public void hashCodeContract() {
-        LoggingEvent event = new LoggingEvent(level, mdc, marker, throwable, message, arg1, arg2);
-        LoggingEvent equalEvent = new LoggingEvent(level, mdc, marker, throwable, message, arg1, arg2);
-        assertEquals(event.hashCode(), equalEvent.hashCode());
-
-        LoggingEvent differentLevel = new LoggingEvent(Level.DEBUG, mdc, marker, throwable, message, arg1, arg2);
-        assertFalse(event.hashCode() == differentLevel.hashCode());
-
-        LoggingEvent differentMdc = new LoggingEvent(level, new HashMap<String, String>(), marker, throwable, message, arg1, arg2);
-        assertFalse(event.hashCode() == differentMdc.hashCode());
-
-        LoggingEvent differentMarker = new LoggingEvent(level, mdc, mock(Marker.class), throwable, message, arg1, arg2);
-        assertFalse(event.hashCode() == differentMarker.hashCode());
-
-        LoggingEvent differentThrowable = new LoggingEvent(level, mdc, marker, new Throwable(), message, arg1, arg2);
-        assertFalse(event.hashCode() == differentThrowable.hashCode());
-
-        LoggingEvent differentMessage = new LoggingEvent(level, mdc, marker, throwable, "somethingelse", arg1, arg2);
-        assertFalse(event.hashCode() == differentMessage.hashCode());
-
-        LoggingEvent differentArgs = new LoggingEvent(level, mdc, marker, throwable, message, arg1);
-        assertFalse(event.hashCode() == differentArgs.hashCode());
-    }
-
-    @Test
-    public void toStringFormat() {
-        LoggingEvent event = new LoggingEvent(level, mdc, marker, throwable, message, arg1, arg2);
-        assertEquals("LoggingEvent{level=" + level +
-                ", mdc={key=value}, marker=Optional.of(" + marker +
-                "), " +
-                "throwable=Optional.of(java.lang.Throwable), message='message', arguments=[arg1, arg2]}", event.toString());
     }
 }

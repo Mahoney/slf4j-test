@@ -8,6 +8,7 @@
     <groupId>uk.org.lidalia</groupId>
     <artifactId>jvm-library</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../jvm-library</relativePath>
   </parent>
 
   <groupId>uk.org.lidalia</groupId>
@@ -18,6 +19,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.lidalia</groupId>
+      <artifactId>lidalia-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
