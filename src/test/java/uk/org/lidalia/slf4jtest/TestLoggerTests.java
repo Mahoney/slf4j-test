@@ -30,7 +30,7 @@ import static uk.org.lidalia.slf4jutils.Level.WARN;
 public class TestLoggerTests {
 
     private static final String LOGGER_NAME = "uk.org";
-    private final TestLogger testLogger = new TestLogger(LOGGER_NAME);
+    private final TestLogger testLogger = new TestLogger(LOGGER_NAME, TestLoggerFactory.INSTANCE);
     private final Marker marker = mock(Marker.class);
     private final String message = "message";
     private final Object arg1 = "arg1";
@@ -56,7 +56,7 @@ public class TestLoggerTests {
     @Test
     public void name() {
         String name = RandomStringUtils.random(10);
-        TestLogger logger = new TestLogger(name);
+        TestLogger logger = new TestLogger(name, TestLoggerFactory.INSTANCE);
         assertEquals(name, logger.getName());
     }
 

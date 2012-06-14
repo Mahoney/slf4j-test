@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.slf4j.Marker;
 
 import com.google.common.base.Optional;
@@ -228,6 +229,8 @@ public class LoggingEvent extends RichObject {
     @Identity private final String message;
     @Identity private final List<Object> arguments;
 
+    private final DateTime timestamp = new DateTime();
+
     public Level getLevel() {
         return level;
     }
@@ -249,5 +252,9 @@ public class LoggingEvent extends RichObject {
     }
     public Optional<Throwable> getThrowable() {
         return throwable;
+    }
+
+    public DateTime getTimestamp() {
+        return timestamp;
     }
 }

@@ -17,11 +17,13 @@ import static com.google.common.base.Optional.fromNullable;
 public class TestLogger implements Logger {
 
     private final String name;
+    private final TestLoggerFactory testLoggerFactory;
     private final List<LoggingEvent> loggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private Level level = Level.TRACE;
 
-    TestLogger(String name) {
+    TestLogger(String name, TestLoggerFactory testLoggerFactory) {
         this.name = name;
+        this.testLoggerFactory = testLoggerFactory;
     }
 
     public String getName() {
@@ -41,23 +43,23 @@ public class TestLogger implements Logger {
     }
 
     public void trace(String message) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), message));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), message));
     }
 
     public void trace(String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), format, arg));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), format, arg));
     }
 
     public void trace(String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), format, arg1, arg2));
     }
 
     public void trace(String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), format, args));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), format, args));
     }
 
     public void trace(String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), throwable, msg));
     }
 
     public boolean isTraceEnabled(Marker marker) {
@@ -65,23 +67,23 @@ public class TestLogger implements Logger {
     }
 
     public void trace(Marker marker, String msg) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), marker, msg));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), marker, msg));
     }
 
     public void trace(Marker marker, String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), marker, format, arg));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), marker, format, arg));
     }
 
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), marker, format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), marker, format, arg1, arg2));
     }
 
     public void trace(Marker marker, String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), marker, format, args));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), marker, format, args));
     }
 
     public void trace(Marker marker, String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.TRACE, mdc(), marker, throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.TRACE, mdc(), marker, throwable, msg));
     }
 
     public boolean isDebugEnabled() {
@@ -89,23 +91,23 @@ public class TestLogger implements Logger {
     }
 
     public void debug(String message) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), message));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), message));
     }
 
     public void debug(String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), format, arg));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), format, arg));
     }
 
     public void debug(String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), format, arg1, arg2));
     }
 
     public void debug(String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), format, args));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), format, args));
     }
 
     public void debug(String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), throwable, msg));
     }
 
     public boolean isDebugEnabled(Marker marker) {
@@ -113,23 +115,23 @@ public class TestLogger implements Logger {
     }
 
     public void debug(Marker marker, String msg) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), marker, msg));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), marker, msg));
     }
 
     public void debug(Marker marker, String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), marker, format, arg));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), marker, format, arg));
     }
 
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), marker, format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), marker, format, arg1, arg2));
     }
 
     public void debug(Marker marker, String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), marker, format, args));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), marker, format, args));
     }
 
     public void debug(Marker marker, String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.DEBUG, mdc(), marker, throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.DEBUG, mdc(), marker, throwable, msg));
     }
 
     public boolean isInfoEnabled() {
@@ -137,23 +139,23 @@ public class TestLogger implements Logger {
     }
 
     public void info(String message) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), message));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), message));
     }
 
     public void info(String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), format, arg));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), format, arg));
     }
 
     public void info(String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), format, arg1, arg2));
     }
 
     public void info(String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), format, args));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), format, args));
     }
 
     public void info(String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), throwable, msg));
     }
 
     public boolean isInfoEnabled(Marker marker) {
@@ -161,23 +163,23 @@ public class TestLogger implements Logger {
     }
 
     public void info(Marker marker, String msg) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), marker, msg));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), marker, msg));
     }
 
     public void info(Marker marker, String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), marker, format, arg));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), marker, format, arg));
     }
 
     public void info(Marker marker, String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), marker, format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), marker, format, arg1, arg2));
     }
 
     public void info(Marker marker, String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), marker, format, args));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), marker, format, args));
     }
 
     public void info(Marker marker, String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.INFO, mdc(), marker, throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.INFO, mdc(), marker, throwable, msg));
     }
 
     public boolean isWarnEnabled() {
@@ -185,23 +187,23 @@ public class TestLogger implements Logger {
     }
 
     public void warn(String message) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), message));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), message));
     }
 
     public void warn(String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), format, arg));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), format, arg));
     }
 
     public void warn(String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), format, arg1, arg2));
     }
 
     public void warn(String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), format, args));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), format, args));
     }
 
     public void warn(String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), throwable, msg));
     }
 
     public boolean isWarnEnabled(Marker marker) {
@@ -209,23 +211,23 @@ public class TestLogger implements Logger {
     }
 
     public void warn(Marker marker, String msg) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), marker, msg));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), marker, msg));
     }
 
     public void warn(Marker marker, String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), marker, format, arg));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), marker, format, arg));
     }
 
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), marker, format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), marker, format, arg1, arg2));
     }
 
     public void warn(Marker marker, String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), marker, format, args));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), marker, format, args));
     }
 
     public void warn(Marker marker, String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.WARN, mdc(), marker, throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.WARN, mdc(), marker, throwable, msg));
     }
 
     public boolean isErrorEnabled() {
@@ -233,23 +235,23 @@ public class TestLogger implements Logger {
     }
 
     public void error(String message) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), message));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), message));
     }
 
     public void error(String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), format, arg));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), format, arg));
     }
 
     public void error(String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), format, arg1, arg2));
     }
 
     public void error(String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), format, args));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), format, args));
     }
 
     public void error(String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), throwable, msg));
     }
 
     public boolean isErrorEnabled(Marker marker) {
@@ -257,23 +259,28 @@ public class TestLogger implements Logger {
     }
 
     public void error(Marker marker, String msg) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), marker, msg));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), marker, msg));
     }
 
     public void error(Marker marker, String format, Object arg) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), marker, format, arg));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), marker, format, arg));
     }
 
     public void error(Marker marker, String format, Object arg1, Object arg2) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), marker, format, arg1, arg2));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), marker, format, arg1, arg2));
     }
 
     public void error(Marker marker, String format, Object[] args) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), marker, format, args));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), marker, format, args));
     }
 
     public void error(Marker marker, String msg, Throwable throwable) {
-        loggingEvents.add(new LoggingEvent(Level.ERROR, mdc(), marker, throwable, msg));
+        addLoggingEvent(new LoggingEvent(Level.ERROR, mdc(), marker, throwable, msg));
+    }
+
+    private void addLoggingEvent(LoggingEvent event) {
+        loggingEvents.add(event);
+        testLoggerFactory.addLoggingEvent(event);
     }
 
     public Level getLevel() {

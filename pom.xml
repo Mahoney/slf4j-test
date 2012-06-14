@@ -41,5 +41,9 @@
       <groupId>uk.org.lidalia</groupId>
       <artifactId>lidalia-test</artifactId>
     </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
   </dependencies>
 </project>
