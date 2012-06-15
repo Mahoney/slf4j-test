@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
+import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Marker;
 
@@ -440,5 +443,19 @@ public class LoggingEventTests {
     public void argsNotModifiable() throws Throwable {
         final LoggingEvent event = new LoggingEvent(level, message, arg1);
         event.getArguments().add(arg2);
+    }
+
+    @Test
+    public void timestamp() {
+        DateTime now = new DateTime();
+        DateTimeUtils.setCurrentMillisFixed(now.getMillis());
+
+        LoggingEvent event = info("Message");
+        assertEquals(now, event.getTimestamp());
+    }
+
+    @After
+    public void turnTimeBackToNow() {
+        DateTimeUtils.setCurrentMillisSystem();
     }
 }
