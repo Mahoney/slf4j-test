@@ -25,13 +25,6 @@ import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
 
 public class TestLogger implements Logger {
 
-    public static final ImmutableSet<Level> OFF_LEVELS = ImmutableSet.of();
-    public static final ImmutableSet<Level> ERROR_LEVELS = immutableEnumSet(ERROR);
-    public static final ImmutableSet<Level> WARN_LEVELS = immutableEnumSet(ERROR, WARN);
-    public static final ImmutableSet<Level> INFO_LEVELS = immutableEnumSet(ERROR, WARN, INFO);
-    public static final ImmutableSet<Level> DEBUG_LEVELS = immutableEnumSet(ERROR, WARN, INFO, DEBUG);
-    public static final ImmutableSet<Level> TRACE_LEVELS = immutableEnumSet(ERROR, WARN, INFO, DEBUG, TRACE);
-
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
     private final List<LoggingEvent> loggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
