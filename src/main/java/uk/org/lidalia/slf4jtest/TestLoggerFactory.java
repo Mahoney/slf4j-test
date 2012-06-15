@@ -1,5 +1,8 @@
 package uk.org.lidalia.slf4jtest;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -17,6 +20,14 @@ public class TestLoggerFactory implements ILoggerFactory {
 
     public static TestLogger getTestLogger(String name) {
         return INSTANCE.getLogger(name);
+    }
+
+    public static Map<String, TestLogger> getAllTestLoggers() {
+        return INSTANCE.getAllLoggers();
+    }
+
+    public Map<String, TestLogger> getAllLoggers() {
+        return Collections.unmodifiableMap(new HashMap<String, TestLogger>(loggerMap));
     }
 
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
