@@ -1,6 +1,9 @@
 package uk.org.lidalia.slf4jtest;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import org.joda.time.DateTime;
 import org.slf4j.Marker;
 import uk.org.lidalia.lang.Identity;
@@ -213,19 +216,19 @@ public class LoggingEvent extends RichObject {
 
     private LoggingEvent(Level level, Map<String, String> mdc, Optional<Marker> marker, Optional<Throwable> throwable, String message, Object... arguments) {
         this.level = checkNotNull(level);
-        this.mdc = Collections.unmodifiableMap(new HashMap<String, String>(mdc));
+        this.mdc = ImmutableMap.copyOf(mdc);
         this.marker = checkNotNull(marker);
         this.throwable = checkNotNull(throwable);
         this.message = checkNotNull(message);
-        this.arguments = Collections.unmodifiableList(new ArrayList<Object>(asList(arguments)));
+        this.arguments = ImmutableList.copyOf(arguments);
     }
 
     @Identity private final Level level;
-    @Identity private final Map<String, String> mdc;
+    @Identity private final ImmutableMap<String, String> mdc;
     @Identity private final Optional<Marker> marker;
     @Identity private final Optional<Throwable> throwable;
     @Identity private final String message;
-    @Identity private final List<Object> arguments;
+    @Identity private final ImmutableList<Object> arguments;
 
     private final DateTime timestamp = new DateTime();
 
@@ -233,7 +236,7 @@ public class LoggingEvent extends RichObject {
         return level;
     }
 
-    public Map<String, String> getMdc() {
+    public ImmutableMap<String, String> getMdc() {
         return mdc;
     }
 
@@ -245,9 +248,10 @@ public class LoggingEvent extends RichObject {
         return message;
     }
 
-    public List<Object> getArguments() {
+    public ImmutableList<Object> getArguments() {
         return arguments;
     }
+
     public Optional<Throwable> getThrowable() {
         return throwable;
     }
