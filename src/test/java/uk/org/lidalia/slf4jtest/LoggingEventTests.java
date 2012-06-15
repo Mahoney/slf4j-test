@@ -1,18 +1,17 @@
 package uk.org.lidalia.slf4jtest;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Marker;
-
 import uk.org.lidalia.slf4jutils.Level;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;

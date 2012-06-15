@@ -2,7 +2,6 @@ package uk.org.lidalia.slf4jtest;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -32,9 +32,9 @@ import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
 import static uk.org.lidalia.slf4jutils.Level.DEBUG;
 import static uk.org.lidalia.slf4jutils.Level.ERROR;
 import static uk.org.lidalia.slf4jutils.Level.INFO;
-import static uk.org.lidalia.slf4jutils.Level.OFF;
 import static uk.org.lidalia.slf4jutils.Level.TRACE;
 import static uk.org.lidalia.slf4jutils.Level.WARN;
+import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
 
 public class TestLoggerTests {
 
@@ -126,7 +126,7 @@ public class TestLoggerTests {
 
     @Test
     public void traceEnabledMarker() {
-        assertEnabledReturnsCorrectly(TRACE);
+        assertEnabledReturnsCorrectly(TRACE, marker);
     }
 
     @Test
@@ -206,7 +206,7 @@ public class TestLoggerTests {
 
     @Test
     public void debugEnabledMarker() {
-        assertEnabledReturnsCorrectly(DEBUG);
+        assertEnabledReturnsCorrectly(DEBUG, marker);
     }
 
     @Test
@@ -286,7 +286,7 @@ public class TestLoggerTests {
 
     @Test
     public void infoEnabledMarker() {
-        assertEnabledReturnsCorrectly(INFO);
+        assertEnabledReturnsCorrectly(INFO, marker);
     }
 
     @Test
@@ -366,7 +366,7 @@ public class TestLoggerTests {
 
     @Test
     public void warnEnabledMarker() {
-        assertEnabledReturnsCorrectly(WARN);
+        assertEnabledReturnsCorrectly(WARN, marker);
     }
 
     @Test
@@ -446,7 +446,7 @@ public class TestLoggerTests {
 
     @Test
     public void errorEnabledMarker() {
-        assertEnabledReturnsCorrectly(ERROR);
+        assertEnabledReturnsCorrectly(ERROR, marker);
     }
 
     @Test
@@ -553,8 +553,7 @@ public class TestLoggerTests {
         assertTrue("Logger level set to " + levelToTest + " means " + levelToTest + " should be enabled",
                 new RichLogger(testLogger).isEnabled(levelToTest));
 
-        Set<Level> levels = Level.enablableValueSet();
-        Set<Level> disabledLevels = Sets.difference(levels, newHashSet(levelToTest));
+        Set<Level> disabledLevels = difference(enablableValueSet(), newHashSet(levelToTest));
         for (Level disabledLevel: disabledLevels) {
             assertFalse("Logger level set to " + levelToTest + " means " + levelToTest + " should be disabled",
                     new RichLogger(testLogger).isEnabled(disabledLevel));
@@ -566,8 +565,7 @@ public class TestLoggerTests {
         assertTrue("Logger level set to " + levelToTest + " means " + levelToTest + " should be enabled",
                 new RichLogger(testLogger).isEnabled(levelToTest, marker));
 
-        Set<Level> levels = Level.enablableValueSet();
-        Set<Level> disabledLevels = Sets.difference(levels, newHashSet(levelToTest));
+        Set<Level> disabledLevels = difference(enablableValueSet(), newHashSet(levelToTest));
         for (Level disabledLevel: disabledLevels) {
             assertFalse("Logger level set to " + levelToTest + " means " + levelToTest + " should be disabled",
                     new RichLogger(testLogger).isEnabled(disabledLevel, marker));

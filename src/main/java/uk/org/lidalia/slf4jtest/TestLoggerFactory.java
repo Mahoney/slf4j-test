@@ -1,18 +1,16 @@
 package uk.org.lidalia.slf4jtest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.ILoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.slf4j.ILoggerFactory;
-
 import static com.google.common.base.Optional.fromNullable;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 
 public class TestLoggerFactory implements ILoggerFactory {
 
@@ -52,8 +50,8 @@ public class TestLoggerFactory implements ILoggerFactory {
     private TestLoggerFactory() {
     }
 
-    public Map<String, TestLogger> getAllLoggers() {
-        return unmodifiableMap(new HashMap<String, TestLogger>(loggerMap));
+    public ImmutableMap<String, TestLogger> getAllLoggers() {
+        return ImmutableMap.copyOf(loggerMap);
     }
 
     public TestLogger getLogger(Class<?> aClass) {
@@ -77,8 +75,8 @@ public class TestLoggerFactory implements ILoggerFactory {
         loggingEvents.clear();
     }
 
-    public List<LoggingEvent> getLoggingEventsFromLoggers() {
-        return unmodifiableList(new ArrayList<LoggingEvent>(loggingEvents));
+    public ImmutableList<LoggingEvent> getLoggingEventsFromLoggers() {
+        return ImmutableList.copyOf(loggingEvents);
     }
 
     void addLoggingEvent(LoggingEvent event) {

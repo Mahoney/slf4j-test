@@ -1,19 +1,17 @@
 package uk.org.lidalia.slf4jtest;
 
+import com.google.common.base.Optional;
+import org.joda.time.DateTime;
+import org.slf4j.Marker;
+import uk.org.lidalia.lang.Identity;
+import uk.org.lidalia.lang.RichObject;
+import uk.org.lidalia.slf4jutils.Level;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.slf4j.Marker;
-
-import com.google.common.base.Optional;
-
-import uk.org.lidalia.lang.Identity;
-import uk.org.lidalia.lang.RichObject;
-import uk.org.lidalia.slf4jutils.Level;
 
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -1,7 +1,6 @@
 package org.slf4j.impl;
 
 import org.junit.Test;
-
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 import static org.junit.Assert.assertEquals;

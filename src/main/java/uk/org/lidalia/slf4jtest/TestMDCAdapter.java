@@ -1,10 +1,11 @@
 package uk.org.lidalia.slf4jtest;
 
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.spi.MDCAdapter;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.spi.MDCAdapter;
 
 public class TestMDCAdapter implements MDCAdapter {
 
@@ -31,13 +32,12 @@ public class TestMDCAdapter implements MDCAdapter {
         value.get().clear();
     }
 
-    public Map getCopyOfContextMap() {
-        return Collections.unmodifiableMap(new HashMap<String, String>(value.get()));
+    public ImmutableMap<String, String> getCopyOfContextMap() {
+        return ImmutableMap.copyOf(value.get());
     }
 
     @SuppressWarnings("unchecked")
     public void setContextMap(Map contextMap) {
-        value.get().clear();
-        value.get().putAll(contextMap);
+        value.set(new HashMap<String, String>(contextMap));
     }
 }

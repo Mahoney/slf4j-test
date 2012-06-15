@@ -1,45 +1,40 @@
 package uk.org.lidalia.slf4jtest;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
-
 import uk.org.lidalia.slf4jutils.Level;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.unmodifiableSet;
+import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.Sets.immutableEnumSet;
+import static java.util.Arrays.asList;
 import static uk.org.lidalia.slf4jutils.Level.DEBUG;
 import static uk.org.lidalia.slf4jutils.Level.ERROR;
 import static uk.org.lidalia.slf4jutils.Level.INFO;
 import static uk.org.lidalia.slf4jutils.Level.TRACE;
 import static uk.org.lidalia.slf4jutils.Level.WARN;
+import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
 
 public class TestLogger implements Logger {
+
+    public static final ImmutableSet<Level> ERROR_EVELS = immutableEnumSet(ERROR);
+    public static final ImmutableSet<Level> WARN_LEVELS = immutableEnumSet(ERROR, WARN);
+    public static final ImmutableSet<Level> INFO_LEVELS = immutableEnumSet(ERROR, WARN, INFO);
+    public static final ImmutableSet<Level> DEBUG_LEVELS = immutableEnumSet(ERROR, WARN, INFO, DEBUG);
+    public static final ImmutableSet<Level> TRACE_LEVELS = immutableEnumSet(ERROR, WARN, INFO, DEBUG, TRACE);
 
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
     private final List<LoggingEvent> loggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private volatile Set<Level> enabledLevels = defaultLevels();
-
-    private Set<Level> defaultLevels() {
-        Level[] values = Level.values();
-        return makeImmutableSet(values);
-    }
-
-    private Set<Level> makeImmutableSet(Level[] values) {
-        HashSet<Level> levels = newHashSet(values);
-        levels.remove(Level.OFF);
-        return unmodifiableSet(levels);
-    }
+    private volatile ImmutableSet<Level> enabledLevels = enablableValueSet();
 
     TestLogger(String name, TestLoggerFactory testLoggerFactory) {
         this.name = name;
@@ -52,11 +47,11 @@ public class TestLogger implements Logger {
 
     public void clear() {
         loggingEvents.clear();
-        enabledLevels = defaultLevels();
+        enabledLevels = enablableValueSet();
     }
 
-    public List<LoggingEvent> getLoggingEvents() {
-        return Collections.unmodifiableList(new ArrayList<LoggingEvent>(loggingEvents));
+    public ImmutableList<LoggingEvent> getLoggingEvents() {
+        return copyOf(loggingEvents);
     }
 
     public boolean isTraceEnabled() {
@@ -306,12 +301,16 @@ public class TestLogger implements Logger {
         }
     }
 
-    public Set<Level> getEnabledLevels() {
+    public ImmutableSet<Level> getEnabledLevels() {
         return enabledLevels;
     }
 
+    public void setEnabledLevels(ImmutableSet<Level> enabledLevels) {
+        this.enabledLevels = enabledLevels;
+    }
+
     public void setEnabledLevels(Level... enabledLevels) {
-        this.enabledLevels = makeImmutableSet(enabledLevels);
+        setEnabledLevels(immutableEnumSet(asList(enabledLevels)));
     }
 
     @SuppressWarnings("unchecked")

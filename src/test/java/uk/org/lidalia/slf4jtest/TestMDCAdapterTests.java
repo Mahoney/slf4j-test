@@ -1,11 +1,11 @@
 package uk.org.lidalia.slf4jtest;
 
+import org.junit.Test;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
