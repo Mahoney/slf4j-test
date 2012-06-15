@@ -1,6 +1,6 @@
 package uk.org.lidalia.slf4jtest;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,29 +11,39 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.ILoggerFactory;
 
 import static com.google.common.base.Optional.fromNullable;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 
 public class TestLoggerFactory implements ILoggerFactory {
 
-    public static final TestLoggerFactory INSTANCE = new TestLoggerFactory();
+    private static final TestLoggerFactory INSTANCE = new TestLoggerFactory();
+
+    public static TestLoggerFactory getInstance() {
+        return INSTANCE;
+    }
 
     public static TestLogger getTestLogger(Class<?> aClass) {
-        return INSTANCE.getLogger(aClass.getName());
+        return getInstance().getLogger(aClass);
     }
 
     public static TestLogger getTestLogger(String name) {
-        return INSTANCE.getLogger(name);
+        return getInstance().getLogger(name);
     }
 
     public static Map<String, TestLogger> getAllTestLoggers() {
-        return INSTANCE.getAllLoggers();
+        return getInstance().getAllLoggers();
     }
 
     public static void clear() {
-        INSTANCE.doClear();
+        getInstance().clearLoggers();
     }
 
-    public static List<LoggingEvent> getAllLoggingEvents() {
-        return INSTANCE.getEveryLoggingEvent();
+    static void reset() {
+        getInstance().doReset();
+    }
+
+    public static List<LoggingEvent> getLoggingEvents() {
+        return getInstance().getLoggingEventsFromLoggers();
     }
 
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
@@ -43,7 +53,11 @@ public class TestLoggerFactory implements ILoggerFactory {
     }
 
     public Map<String, TestLogger> getAllLoggers() {
-        return Collections.unmodifiableMap(new HashMap<String, TestLogger>(loggerMap));
+        return unmodifiableMap(new HashMap<String, TestLogger>(loggerMap));
+    }
+
+    public TestLogger getLogger(Class<?> aClass) {
+        return getLogger(aClass.getName());
     }
 
     public TestLogger getLogger(String name) {
@@ -51,15 +65,20 @@ public class TestLoggerFactory implements ILoggerFactory {
         return fromNullable(loggerMap.putIfAbsent(name, newLogger)).or(newLogger);
     }
 
-    public void doClear() {
+    public void clearLoggers() {
         for (TestLogger testLogger: loggerMap.values()) {
             testLogger.clear();
         }
         loggingEvents.clear();
     }
 
-    public List<LoggingEvent> getEveryLoggingEvent() {
-        return loggingEvents;
+    void doReset() {
+        loggerMap.clear();
+        loggingEvents.clear();
+    }
+
+    public List<LoggingEvent> getLoggingEventsFromLoggers() {
+        return unmodifiableList(new ArrayList<LoggingEvent>(loggingEvents));
     }
 
     void addLoggingEvent(LoggingEvent event) {

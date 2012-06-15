@@ -11,7 +11,7 @@ public class StaticLoggerBinderTests {
 
     @Test
     public void getLoggerFactory() throws Exception {
-        assertSame(TestLoggerFactory.INSTANCE, StaticLoggerBinder.getSingleton().getLoggerFactory());
+        assertSame(TestLoggerFactory.getInstance(), StaticLoggerBinder.getSingleton().getLoggerFactory());
     }
 
     @Test

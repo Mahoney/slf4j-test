@@ -19,7 +19,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     private StaticLoggerBinder() {}
 
     public ILoggerFactory getLoggerFactory() {
-        return TestLoggerFactory.INSTANCE;
+        return TestLoggerFactory.getInstance();
     }
 
     public String getLoggerFactoryClassStr() {
