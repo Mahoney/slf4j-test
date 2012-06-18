@@ -54,15 +54,7 @@ public class TestLoggerFactory implements ILoggerFactory {
 
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private ThreadLocal<List<LoggingEvent>> loggingEvents = emptyLoggingEvents();
-    private ThreadLocal<List<LoggingEvent>> emptyLoggingEvents() {
-        return new ThreadLocal<List<LoggingEvent>>() {
-            @Override
-            protected List<LoggingEvent> initialValue() {
-                return new CopyOnWriteArrayList<LoggingEvent>();
-            }
-        };
-    }
+    private ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>();
 
     private TestLoggerFactory() {
     }
@@ -84,25 +76,25 @@ public class TestLoggerFactory implements ILoggerFactory {
         for (TestLogger testLogger: loggerMap.values()) {
             testLogger.clear();
         }
-        loggingEvents = emptyLoggingEvents();
+        getOrInitialiseLoggingEvents().clear();
     }
 
     public void clearAllLoggers() {
         for (TestLogger testLogger: loggerMap.values()) {
             testLogger.clearAll();
         }
-        loggingEvents = emptyLoggingEvents();
+        loggingEvents = new ThreadLocal<List<LoggingEvent>>();
         allLoggingEvents.clear();
     }
 
     void doReset() {
         loggerMap.clear();
-        loggingEvents = emptyLoggingEvents();
+        loggingEvents = new ThreadLocal<List<LoggingEvent>>();
         allLoggingEvents.clear();
     }
 
     public ImmutableList<LoggingEvent> getLoggingEventsFromLoggers() {
-        return ImmutableList.copyOf(loggingEvents.get());
+        return ImmutableList.copyOf(getOrInitialiseLoggingEvents());
     }
 
     public List<LoggingEvent> getAllLoggingEventsFromLoggers() {
@@ -110,7 +102,13 @@ public class TestLoggerFactory implements ILoggerFactory {
     }
 
     void addLoggingEvent(LoggingEvent event) {
-        loggingEvents.get().add(event);
+        getOrInitialiseLoggingEvents().add(event);
         allLoggingEvents.add(event);
+    }
+
+    private List<LoggingEvent> getOrInitialiseLoggingEvents() {
+        List<LoggingEvent> events = fromNullable(loggingEvents.get()).or(new CopyOnWriteArrayList<LoggingEvent>());
+        loggingEvents.set(events);
+        return events;
     }
 }

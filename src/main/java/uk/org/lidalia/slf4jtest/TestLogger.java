@@ -27,16 +27,7 @@ public class TestLogger implements Logger {
 
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-    private ThreadLocal<List<LoggingEvent>> loggingEvents = emptyLoggingEvents();
-
-    private ThreadLocal<List<LoggingEvent>> emptyLoggingEvents() {
-        return new ThreadLocal<List<LoggingEvent>>() {
-            @Override
-            protected List<LoggingEvent> initialValue() {
-                return new CopyOnWriteArrayList<LoggingEvent>();
-            }
-        };
-    }
+    private ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>();
 
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private volatile ImmutableSet<Level> enabledLevels = enablableValueSet();
@@ -51,18 +42,17 @@ public class TestLogger implements Logger {
     }
 
     public void clear() {
-        loggingEvents.get().clear();
+        getOrInitialiseLoggingEvents().clear();
         enabledLevels = enablableValueSet();
     }
 
-
     public void clearAll() {
         allLoggingEvents.clear();
-        loggingEvents = emptyLoggingEvents();
+        loggingEvents = new ThreadLocal<List<LoggingEvent>>();
     }
 
     public ImmutableList<LoggingEvent> getLoggingEvents() {
-        return copyOf(loggingEvents.get());
+        return copyOf(getOrInitialiseLoggingEvents());
     }
 
     public ImmutableList<LoggingEvent> getAllLoggingEvents() {
@@ -312,7 +302,7 @@ public class TestLogger implements Logger {
     private void addLoggingEvent(LoggingEvent event) {
         if (enabledLevels.contains(event.getLevel())) {
             allLoggingEvents.add(event);
-            loggingEvents.get().add(event);
+            getOrInitialiseLoggingEvents().add(event);
             testLoggerFactory.addLoggingEvent(event);
         }
     }
@@ -332,5 +322,11 @@ public class TestLogger implements Logger {
     @SuppressWarnings("unchecked")
     private Map<String, String> mdc() {
         return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());
+    }
+
+    private List<LoggingEvent> getOrInitialiseLoggingEvents() {
+        List<LoggingEvent> events = fromNullable(loggingEvents.get()).or(new CopyOnWriteArrayList<LoggingEvent>());
+        loggingEvents.set(events);
+        return events;
     }
 }

@@ -219,7 +219,7 @@ public class TestLoggerFactoryTests {
         });
         t.start();
         t.join();
-        logger.clear();
+        TestLoggerFactory.clear();
         assertEquals(asList(info("hello")), TestLoggerFactory.getAllLoggingEvents());
     }
 
