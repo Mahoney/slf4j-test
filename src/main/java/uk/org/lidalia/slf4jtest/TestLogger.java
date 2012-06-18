@@ -51,7 +51,7 @@ public class TestLogger implements Logger {
     }
 
     public void clear() {
-        getOrInitialiseLoggingEvents().clear();
+        loggingEvents.get().clear();
         enabledLevels = enablableValueSet();
     }
 
@@ -61,7 +61,7 @@ public class TestLogger implements Logger {
     }
 
     public ImmutableList<LoggingEvent> getLoggingEvents() {
-        return copyOf(getOrInitialiseLoggingEvents());
+        return copyOf(loggingEvents.get());
     }
 
     public ImmutableList<LoggingEvent> getAllLoggingEvents() {
@@ -311,7 +311,7 @@ public class TestLogger implements Logger {
     private void addLoggingEvent(LoggingEvent event) {
         if (enabledLevels.contains(event.getLevel())) {
             allLoggingEvents.add(event);
-            getOrInitialiseLoggingEvents().add(event);
+            loggingEvents.get().add(event);
             testLoggerFactory.addLoggingEvent(event);
         }
     }
@@ -331,11 +331,5 @@ public class TestLogger implements Logger {
     @SuppressWarnings("unchecked")
     private Map<String, String> mdc() {
         return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());
-    }
-
-    private List<LoggingEvent> getOrInitialiseLoggingEvents() {
-        List<LoggingEvent> events = loggingEvents.get();
-        loggingEvents.set(events);
-        return events;
     }
 }
