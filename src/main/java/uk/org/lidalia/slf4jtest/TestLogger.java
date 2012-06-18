@@ -1,12 +1,16 @@
 package uk.org.lidalia.slf4jtest;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
+
+import uk.org.lidalia.lang.SafeThreadLocal;
 import uk.org.lidalia.slf4jutils.Level;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +31,12 @@ public class TestLogger implements Logger {
 
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-    private ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>();
+    private final SafeThreadLocal<List<LoggingEvent>> loggingEvents = new SafeThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+        @Override
+        public List<LoggingEvent> get() {
+            return new ArrayList<LoggingEvent>();
+        }
+    });
 
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private volatile ImmutableSet<Level> enabledLevels = enablableValueSet();
@@ -48,7 +57,7 @@ public class TestLogger implements Logger {
 
     public void clearAll() {
         allLoggingEvents.clear();
-        loggingEvents = new ThreadLocal<List<LoggingEvent>>();
+        loggingEvents.reset();
     }
 
     public ImmutableList<LoggingEvent> getLoggingEvents() {
@@ -325,7 +334,7 @@ public class TestLogger implements Logger {
     }
 
     private List<LoggingEvent> getOrInitialiseLoggingEvents() {
-        List<LoggingEvent> events = fromNullable(loggingEvents.get()).or(new CopyOnWriteArrayList<LoggingEvent>());
+        List<LoggingEvent> events = loggingEvents.get();
         loggingEvents.set(events);
         return events;
     }

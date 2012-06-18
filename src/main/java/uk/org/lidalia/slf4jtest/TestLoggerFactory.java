@@ -1,14 +1,18 @@
 package uk.org.lidalia.slf4jtest;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.ILoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import uk.org.lidalia.lang.SafeThreadLocal;
 
 import static com.google.common.base.Optional.fromNullable;
 
@@ -54,7 +58,12 @@ public class TestLoggerFactory implements ILoggerFactory {
 
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>();
+    private final SafeThreadLocal<List<LoggingEvent>> loggingEvents = new SafeThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+        @Override
+        public List<LoggingEvent> get() {
+            return new ArrayList<LoggingEvent>();
+        }
+    });
 
     private TestLoggerFactory() {
     }
@@ -76,25 +85,24 @@ public class TestLoggerFactory implements ILoggerFactory {
         for (TestLogger testLogger: loggerMap.values()) {
             testLogger.clear();
         }
-        getOrInitialiseLoggingEvents().clear();
+        loggingEvents.get().clear();
     }
 
     public void clearAllLoggers() {
         for (TestLogger testLogger: loggerMap.values()) {
             testLogger.clearAll();
         }
-        loggingEvents = new ThreadLocal<List<LoggingEvent>>();
+        loggingEvents.reset();
         allLoggingEvents.clear();
     }
 
     void doReset() {
+        clearAllLoggers();
         loggerMap.clear();
-        loggingEvents = new ThreadLocal<List<LoggingEvent>>();
-        allLoggingEvents.clear();
     }
 
     public ImmutableList<LoggingEvent> getLoggingEventsFromLoggers() {
-        return ImmutableList.copyOf(getOrInitialiseLoggingEvents());
+        return ImmutableList.copyOf(loggingEvents.get());
     }
 
     public List<LoggingEvent> getAllLoggingEventsFromLoggers() {
@@ -102,13 +110,8 @@ public class TestLoggerFactory implements ILoggerFactory {
     }
 
     void addLoggingEvent(LoggingEvent event) {
-        getOrInitialiseLoggingEvents().add(event);
+        loggingEvents.get().add(event);
         allLoggingEvents.add(event);
     }
 
-    private List<LoggingEvent> getOrInitialiseLoggingEvents() {
-        List<LoggingEvent> events = fromNullable(loggingEvents.get()).or(new CopyOnWriteArrayList<LoggingEvent>());
-        loggingEvents.set(events);
-        return events;
-    }
 }
