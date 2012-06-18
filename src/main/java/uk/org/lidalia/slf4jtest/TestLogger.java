@@ -27,7 +27,18 @@ public class TestLogger implements Logger {
 
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-    private final List<LoggingEvent> loggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
+    private ThreadLocal<List<LoggingEvent>> loggingEvents = emptyLoggingEvents();
+
+    private ThreadLocal<List<LoggingEvent>> emptyLoggingEvents() {
+        return new ThreadLocal<List<LoggingEvent>>() {
+            @Override
+            protected List<LoggingEvent> initialValue() {
+                return new CopyOnWriteArrayList<LoggingEvent>();
+            }
+        };
+    }
+
+    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private volatile ImmutableSet<Level> enabledLevels = enablableValueSet();
 
     TestLogger(String name, TestLoggerFactory testLoggerFactory) {
@@ -40,12 +51,22 @@ public class TestLogger implements Logger {
     }
 
     public void clear() {
-        loggingEvents.clear();
+        loggingEvents.get().clear();
         enabledLevels = enablableValueSet();
     }
 
+
+    public void clearAll() {
+        allLoggingEvents.clear();
+        loggingEvents = emptyLoggingEvents();
+    }
+
     public ImmutableList<LoggingEvent> getLoggingEvents() {
-        return copyOf(loggingEvents);
+        return copyOf(loggingEvents.get());
+    }
+
+    public ImmutableList<LoggingEvent> getAllLoggingEvents() {
+        return copyOf(allLoggingEvents);
     }
 
     public boolean isTraceEnabled() {
@@ -290,7 +311,8 @@ public class TestLogger implements Logger {
 
     private void addLoggingEvent(LoggingEvent event) {
         if (enabledLevels.contains(event.getLevel())) {
-            loggingEvents.add(event);
+            allLoggingEvents.add(event);
+            loggingEvents.get().add(event);
             testLoggerFactory.addLoggingEvent(event);
         }
     }

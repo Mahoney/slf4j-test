@@ -36,6 +36,10 @@ public class TestLoggerFactory implements ILoggerFactory {
         getInstance().clearLoggers();
     }
 
+    public static void clearAll() {
+        getInstance().clearAllLoggers();
+    }
+
     static void reset() {
         getInstance().doReset();
     }
@@ -44,8 +48,21 @@ public class TestLoggerFactory implements ILoggerFactory {
         return getInstance().getLoggingEventsFromLoggers();
     }
 
+    public static List<LoggingEvent> getAllLoggingEvents() {
+        return getInstance().getAllLoggingEventsFromLoggers();
+    }
+
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
-    private final List<LoggingEvent> loggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
+    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
+    private ThreadLocal<List<LoggingEvent>> loggingEvents = emptyLoggingEvents();
+    private ThreadLocal<List<LoggingEvent>> emptyLoggingEvents() {
+        return new ThreadLocal<List<LoggingEvent>>() {
+            @Override
+            protected List<LoggingEvent> initialValue() {
+                return new CopyOnWriteArrayList<LoggingEvent>();
+            }
+        };
+    }
 
     private TestLoggerFactory() {
     }
@@ -67,19 +84,33 @@ public class TestLoggerFactory implements ILoggerFactory {
         for (TestLogger testLogger: loggerMap.values()) {
             testLogger.clear();
         }
-        loggingEvents.clear();
+        loggingEvents = emptyLoggingEvents();
+    }
+
+    public void clearAllLoggers() {
+        for (TestLogger testLogger: loggerMap.values()) {
+            testLogger.clearAll();
+        }
+        loggingEvents = emptyLoggingEvents();
+        allLoggingEvents.clear();
     }
 
     void doReset() {
         loggerMap.clear();
-        loggingEvents.clear();
+        loggingEvents = emptyLoggingEvents();
+        allLoggingEvents.clear();
     }
 
     public ImmutableList<LoggingEvent> getLoggingEventsFromLoggers() {
-        return ImmutableList.copyOf(loggingEvents);
+        return ImmutableList.copyOf(loggingEvents.get());
+    }
+
+    public List<LoggingEvent> getAllLoggingEventsFromLoggers() {
+        return allLoggingEvents;
     }
 
     void addLoggingEvent(LoggingEvent event) {
-        loggingEvents.add(event);
+        loggingEvents.get().add(event);
+        allLoggingEvents.add(event);
     }
 }

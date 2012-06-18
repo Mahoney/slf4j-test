@@ -20,9 +20,11 @@ import java.util.Set;
 import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
@@ -527,6 +529,63 @@ public class TestLoggerTests {
     public void getLoggingEventsReturnsUnmodifiableList() {
         List<LoggingEvent> loggingEvents = testLogger.getLoggingEvents();
         loggingEvents.add(debug("hello"));
+    }
+
+    @Test
+    public void getLoggingEventsOnlyReturnsEventsLoggedInThisThread() throws InterruptedException {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.info(message);
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(Collections.emptyList(), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void getAllLoggingEventsReturnsEventsLoggedInAllThreads() throws InterruptedException {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.info(message);
+            }
+        });
+        t.start();
+        t.join();
+        testLogger.info(message);
+        assertEquals(asList(info(mdcValues, message), info(mdcValues, message)), testLogger.getAllLoggingEvents());
+    }
+
+    @Test
+    public void clearOnlyClearsEventsLoggedInThisThread() throws InterruptedException {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.info(message);
+            }
+        });
+        t.start();
+        t.join();
+        testLogger.clear();
+        assertEquals(asList(info(mdcValues, message)), testLogger.getAllLoggingEvents());
+    }
+
+    @Test
+    public void clearAllClearsEventsLoggedInAllThreads() throws InterruptedException {
+        testLogger.info(message);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.info(message);
+                testLogger.clearAll();
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(emptyList(), testLogger.getAllLoggingEvents());
+        assertEquals(emptyList(), testLogger.getLoggingEvents());
     }
 
     private void logsIfEnabled(Level... shouldLog) {

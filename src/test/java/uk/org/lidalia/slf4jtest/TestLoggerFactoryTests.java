@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.TestLoggerFactory.getInstance;
 import static uk.org.lidalia.slf4jutils.Level.WARN;
@@ -178,6 +180,66 @@ public class TestLoggerFactoryTests {
         Map<String, TestLogger> allTestLoggers = TestLoggerFactory.getAllTestLoggers();
         allTestLoggers.put("newlogger", new TestLogger("newlogger", TestLoggerFactory.getInstance()));
     }
+
+    @Test
+    public void getLoggingEventsOnlyReturnsEventsLoggedInThisThread() throws InterruptedException {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TestLoggerFactory.getTestLogger("name1").info("hello");
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(Collections.emptyList(), TestLoggerFactory.getLoggingEvents());
+    }
+
+    @Test
+    public void getAllLoggingEventsReturnsEventsLoggedInAllThreads() throws InterruptedException {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TestLoggerFactory.getTestLogger("name1").info("hello");
+            }
+        });
+        t.start();
+        t.join();
+        TestLoggerFactory.getTestLogger("name1").info("hello");
+        assertEquals(asList(info("hello"), info("hello")), TestLoggerFactory.getAllLoggingEvents());
+    }
+
+    @Test
+    public void clearOnlyClearsEventsLoggedInThisThread() throws InterruptedException {
+        final TestLogger logger = TestLoggerFactory.getTestLogger("name");
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                logger.info("hello");
+            }
+        });
+        t.start();
+        t.join();
+        logger.clear();
+        assertEquals(asList(info("hello")), TestLoggerFactory.getAllLoggingEvents());
+    }
+
+    @Test
+    public void clearAllClearsEventsLoggedInAllThreads() throws InterruptedException {
+        final TestLogger logger = TestLoggerFactory.getTestLogger("name");
+        logger.info("hello");
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                logger.info("hello");
+                TestLoggerFactory.clearAll();
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(emptyList(), TestLoggerFactory.getAllLoggingEvents());
+        assertEquals(emptyList(), TestLoggerFactory.getLoggingEvents());
+    }
+
 
     @Before @After
     public void resetLoggerFactory() {
