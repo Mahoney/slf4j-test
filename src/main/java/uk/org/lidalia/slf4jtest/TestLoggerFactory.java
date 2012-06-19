@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import uk.org.lidalia.lang.SafeThreadLocal;
+import uk.org.lidalia.lang.ThreadLocal;
 
 import static com.google.common.base.Optional.fromNullable;
 
@@ -58,7 +58,7 @@ public class TestLoggerFactory implements ILoggerFactory {
 
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private final SafeThreadLocal<List<LoggingEvent>> loggingEvents = new SafeThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+    private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
         @Override
         public List<LoggingEvent> get() {
             return new ArrayList<LoggingEvent>();

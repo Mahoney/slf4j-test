@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
-import uk.org.lidalia.lang.SafeThreadLocal;
+import uk.org.lidalia.lang.ThreadLocal;
 import uk.org.lidalia.slf4jutils.Level;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class TestLogger implements Logger {
 
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-    private final SafeThreadLocal<List<LoggingEvent>> loggingEvents = new SafeThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+    private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
         @Override
         public List<LoggingEvent> get() {
             return new ArrayList<LoggingEvent>();
