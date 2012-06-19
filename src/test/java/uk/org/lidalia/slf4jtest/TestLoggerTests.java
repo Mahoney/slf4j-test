@@ -1,6 +1,7 @@
 package uk.org.lidalia.slf4jtest;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newHashSet;
@@ -586,6 +588,66 @@ public class TestLoggerTests {
         t.join();
         assertEquals(emptyList(), testLogger.getAllLoggingEvents());
         assertEquals(emptyList(), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void setEnabledLevelOnlyChangesLevelForCurrentThread() throws Exception {
+        final AtomicReference<ImmutableSet<Level>> inThreadEnabledLevels = new AtomicReference<ImmutableSet<Level>>();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.setEnabledLevels(Level.WARN, Level.ERROR);
+                inThreadEnabledLevels.set(testLogger.getEnabledLevels());
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(ImmutableSet.of(Level.WARN, Level.ERROR), inThreadEnabledLevels.get());
+        assertEquals(Level.enablableValueSet(), testLogger.getEnabledLevels());
+    }
+
+    @Test
+    public void clearOnlyChangesLevelForCurrentThread() throws Exception {
+        testLogger.setEnabledLevels(Level.WARN, Level.ERROR);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.clear();
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(ImmutableSet.of(Level.WARN, Level.ERROR), testLogger.getEnabledLevels());
+    }
+
+    @Test
+    public void setEnabledLevelsForAllThreads() throws Exception {
+        final AtomicReference<ImmutableSet<Level>> inThreadEnabledLevels = new AtomicReference<ImmutableSet<Level>>();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.setEnabledLevelsForAllThreads(Level.WARN, Level.ERROR);
+                inThreadEnabledLevels.set(testLogger.getEnabledLevels());
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(ImmutableSet.of(Level.WARN, Level.ERROR), inThreadEnabledLevels.get());
+        assertEquals(ImmutableSet.of(Level.WARN, Level.ERROR), testLogger.getEnabledLevels());
+    }
+
+    @Test
+    public void clearAllChangesAllLevels() throws Exception {
+        testLogger.setEnabledLevels(Level.WARN, Level.ERROR);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                testLogger.clearAll();
+            }
+        });
+        t.start();
+        t.join();
+        assertEquals(Level.enablableValueSet(), testLogger.getEnabledLevels());
     }
 
     private void logsIfEnabled(Level... shouldLog) {

@@ -20,6 +20,25 @@ import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
+/**
+ * Representation of a call to a logger for test assertion purposes.
+ *
+ * The contract of {@link #equals(Object)} and {@link #hashCode} is that they compare the results of:
+ * <ul>
+ *     <li>{@link #getLevel()}</li>
+ *     <li>{@link #getMdc()}</li>
+ *     <li>{@link #getMarker()}</li>
+ *     <li>{@link #getThrowable()}</li>
+ *     <li>{@link #getMessage()}</li>
+ *     <li>{@link #getArguments()}</li>
+ * </ul>
+ *
+ * They do NOT compare the results of {@link #getTimestamp()} as this would render it impractical to create
+ * appropriate expected {@link LoggingEvent}s to compare against.
+ *
+ * Constructors and convenient static factory methods exist to create {@link LoggingEvent}s with appropriate
+ * defaults.  These are not documented further as they should be self-evident.
+ */
 public class LoggingEvent extends RichObject {
 
     public static LoggingEvent trace(String message, Object... arguments) {

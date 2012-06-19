@@ -27,8 +27,25 @@ import static uk.org.lidalia.slf4jutils.Level.TRACE;
 import static uk.org.lidalia.slf4jutils.Level.WARN;
 import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
 
+/**
+ * Implementation of {@link Logger} which stores {@link LoggingEvent}s in memory and provides methods
+ * to access and remove them in order to facilitate writing tests that assert particular logging calls were made.
+ *
+ * {@link LoggingEvent}s are stored in both an {@link ThreadLocal} and a normal {@link List}. The {@link #getLoggingEvents()}
+ * and {@link #clear()} methods reference the {@link ThreadLocal} events. The {@link #getAllLoggingEvents()} and
+ * {@link #clearAll()} methods reference all events logged on this Logger.  This is in order to facilitate parallelising
+ * tests - tests that use the thread local methods can be parallelised.
+ *
+ * By default all Levels are enabled.
+ */
 public class TestLogger implements Logger {
 
+    private static final Supplier<ImmutableSet<Level>> ALL_ENABLABLE_LEVELS_SUPPLIER = new Supplier<ImmutableSet<Level>>() {
+        @Override
+        public ImmutableSet<Level> get() {
+            return enablableValueSet();
+        }
+    };
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
     private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
@@ -39,7 +56,7 @@ public class TestLogger implements Logger {
     });
 
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private volatile ImmutableSet<Level> enabledLevels = enablableValueSet();
+    private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels = new ThreadLocal<ImmutableSet<Level>>(ALL_ENABLABLE_LEVELS_SUPPLIER);
 
     TestLogger(String name, TestLoggerFactory testLoggerFactory) {
         this.name = name;
@@ -50,26 +67,45 @@ public class TestLogger implements Logger {
         return name;
     }
 
+    /**
+     * Removed all {@link LoggingEvent}s logged by this thread and resets the enabled levels of the logger
+     * to {@link uk.org.lidalia.slf4jutils.Level#enablableValueSet()} for this thread.
+     */
     public void clear() {
         loggingEvents.get().clear();
-        enabledLevels = enablableValueSet();
+        enabledLevels.remove();
     }
 
+    /**
+     * Removed ALL {@link LoggingEvent}s logged on this logger, regardless of thread,
+     * and resets the enabled levels of the logger to {@link uk.org.lidalia.slf4jutils.Level#enablableValueSet()}
+     * for ALL threads.
+     */
     public void clearAll() {
         allLoggingEvents.clear();
         loggingEvents.reset();
+        enabledLevels = new ThreadLocal<ImmutableSet<Level>>(ALL_ENABLABLE_LEVELS_SUPPLIER);
     }
 
+    /**
+     * @return all {@link LoggingEvent}s logged on this logger by this thread
+     */
     public ImmutableList<LoggingEvent> getLoggingEvents() {
         return copyOf(loggingEvents.get());
     }
 
+    /**
+     * @return all {@link LoggingEvent}s logged on this logger by ANY thread
+     */
     public ImmutableList<LoggingEvent> getAllLoggingEvents() {
         return copyOf(allLoggingEvents);
     }
 
+    /**
+     * @return whether this logger is trace enabled in this thread
+     */
     public boolean isTraceEnabled() {
-        return enabledLevels.contains(TRACE);
+        return enabledLevels.get().contains(TRACE);
     }
 
     public void trace(String message) {
@@ -93,7 +129,7 @@ public class TestLogger implements Logger {
     }
 
     public boolean isTraceEnabled(Marker marker) {
-        return enabledLevels.contains(TRACE);
+        return enabledLevels.get().contains(TRACE);
     }
 
     public void trace(Marker marker, String msg) {
@@ -116,8 +152,11 @@ public class TestLogger implements Logger {
         addLoggingEvent(new LoggingEvent(TRACE, mdc(), marker, throwable, msg));
     }
 
+    /**
+     * @return whether this logger is debug enabled in this thread
+     */
     public boolean isDebugEnabled() {
-        return enabledLevels.contains(DEBUG);
+        return enabledLevels.get().contains(DEBUG);
     }
 
     public void debug(String message) {
@@ -141,7 +180,7 @@ public class TestLogger implements Logger {
     }
 
     public boolean isDebugEnabled(Marker marker) {
-        return enabledLevels.contains(DEBUG);
+        return enabledLevels.get().contains(DEBUG);
     }
 
     public void debug(Marker marker, String msg) {
@@ -164,8 +203,11 @@ public class TestLogger implements Logger {
         addLoggingEvent(new LoggingEvent(DEBUG, mdc(), marker, throwable, msg));
     }
 
+    /**
+     * @return whether this logger is info enabled in this thread
+     */
     public boolean isInfoEnabled() {
-        return enabledLevels.contains(INFO);
+        return enabledLevels.get().contains(INFO);
     }
 
     public void info(String message) {
@@ -189,7 +231,7 @@ public class TestLogger implements Logger {
     }
 
     public boolean isInfoEnabled(Marker marker) {
-        return enabledLevels.contains(INFO);
+        return enabledLevels.get().contains(INFO);
     }
 
     public void info(Marker marker, String msg) {
@@ -212,8 +254,11 @@ public class TestLogger implements Logger {
         addLoggingEvent(new LoggingEvent(INFO, mdc(), marker, throwable, msg));
     }
 
+    /**
+     * @return whether this logger is warn enabled in this thread
+     */
     public boolean isWarnEnabled() {
-        return enabledLevels.contains(WARN);
+        return enabledLevels.get().contains(WARN);
     }
 
     public void warn(String message) {
@@ -237,7 +282,7 @@ public class TestLogger implements Logger {
     }
 
     public boolean isWarnEnabled(Marker marker) {
-        return enabledLevels.contains(WARN);
+        return enabledLevels.get().contains(WARN);
     }
 
     public void warn(Marker marker, String msg) {
@@ -260,8 +305,11 @@ public class TestLogger implements Logger {
         addLoggingEvent(new LoggingEvent(WARN, mdc(), marker, throwable, msg));
     }
 
+    /**
+     * @return whether this logger is error enabled in this thread
+     */
     public boolean isErrorEnabled() {
-        return enabledLevels.contains(ERROR);
+        return enabledLevels.get().contains(ERROR);
     }
 
     public void error(String message) {
@@ -285,7 +333,7 @@ public class TestLogger implements Logger {
     }
 
     public boolean isErrorEnabled(Marker marker) {
-        return enabledLevels.contains(ERROR);
+        return enabledLevels.get().contains(ERROR);
     }
 
     public void error(Marker marker, String msg) {
@@ -309,21 +357,32 @@ public class TestLogger implements Logger {
     }
 
     private void addLoggingEvent(LoggingEvent event) {
-        if (enabledLevels.contains(event.getLevel())) {
+        if (enabledLevels.get().contains(event.getLevel())) {
             allLoggingEvents.add(event);
             loggingEvents.get().add(event);
             testLoggerFactory.addLoggingEvent(event);
         }
     }
 
+    /**
+     * @return the set of levels enabled for this logger on this thread
+     */
     public ImmutableSet<Level> getEnabledLevels() {
-        return enabledLevels;
+        return enabledLevels.get();
     }
 
+    /**
+     * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
+     *                      does not affect enabled levels for this logger in other threads
+     */
     public void setEnabledLevels(ImmutableSet<Level> enabledLevels) {
-        this.enabledLevels = enabledLevels;
+        this.enabledLevels.set(enabledLevels);
     }
 
+    /**
+     * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
+     *                      does not affect enabled levels for this logger in other threads
+     */
     public void setEnabledLevels(Level... enabledLevels) {
         setEnabledLevels(immutableEnumSet(asList(enabledLevels)));
     }
@@ -331,5 +390,24 @@ public class TestLogger implements Logger {
     @SuppressWarnings("unchecked")
     private Map<String, String> mdc() {
         return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());
+    }
+
+    /**
+     * @param enabledLevels levels which will be considered enabled for this logger IN ALL THREADS
+     */
+    public void setEnabledLevelsForAllThreads(final ImmutableSet<Level> enabledLevels) {
+        this.enabledLevels = new ThreadLocal<ImmutableSet<Level>>(new Supplier<ImmutableSet<Level>>() {
+            @Override
+            public ImmutableSet<Level> get() {
+                return enabledLevels;
+            }
+        });
+    }
+
+    /**
+     * @param enabledLevels levels which will be considered enabled for this logger IN ALL THREADS
+     */
+    public void setEnabledLevelsForAllThreads(final Level... enabledLevels) {
+        setEnabledLevelsForAllThreads(ImmutableSet.copyOf(enabledLevels));
     }
 }
