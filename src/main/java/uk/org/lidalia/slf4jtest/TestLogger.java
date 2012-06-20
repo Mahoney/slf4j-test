@@ -36,7 +36,13 @@ import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
  * {@link #clearAll()} methods reference all events logged on this Logger.  This is in order to facilitate parallelising
  * tests - tests that use the thread local methods can be parallelised.
  *
- * By default all Levels are enabled.
+ * By default all Levels are enabled.  It is important to note that the conventional hierarchical notion of Levels, where
+ * info being enabled implies warn and error being enabled, is not a requirement of the SLF4J API, so the
+ * {@link #setEnabledLevels(ImmutableSet)}, {@link #setEnabledLevels(Level...)},
+ * {@link #setEnabledLevelsForAllThreads(ImmutableSet)}, {@link #setEnabledLevelsForAllThreads(Level...)} and the various
+ * isXxxxxEnabled() methods make no assumptions about this hierarchy.  If you wish to use traditional hierarchical setups you may
+ * do so by passing the constants in {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to
+ * {@link #setEnabledLevels(ImmutableSet)} or {@link #setEnabledLevelsForAllThreads(ImmutableSet)}.
  */
 public class TestLogger implements Logger {
 
@@ -372,6 +378,11 @@ public class TestLogger implements Logger {
     }
 
     /**
+     * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
+     * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
+     * use traditional hierarchical setups you may conveniently do so by using the constants in
+     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy}
+     *
      * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
      *                      does not affect enabled levels for this logger in other threads
      */
@@ -380,6 +391,11 @@ public class TestLogger implements Logger {
     }
 
     /**
+     * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
+     * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
+     * use traditional hierarchical setups you may conveniently do so by passing the constants in
+     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to {@link #setEnabledLevels(ImmutableSet)}
+     *
      * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
      *                      does not affect enabled levels for this logger in other threads
      */
@@ -393,6 +409,11 @@ public class TestLogger implements Logger {
     }
 
     /**
+     * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
+     * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
+     * use traditional hierarchical setups you may conveniently do so by using the constants in
+     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy}
+     *
      * @param enabledLevels levels which will be considered enabled for this logger IN ALL THREADS
      */
     public void setEnabledLevelsForAllThreads(final ImmutableSet<Level> enabledLevels) {
@@ -405,6 +426,11 @@ public class TestLogger implements Logger {
     }
 
     /**
+     * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
+     * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
+     * use traditional hierarchical setups you may conveniently do so by passing the constants in
+     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to {@link #setEnabledLevelsForAllThreads(ImmutableSet)}
+     *
      * @param enabledLevels levels which will be considered enabled for this logger IN ALL THREADS
      */
     public void setEnabledLevelsForAllThreads(final Level... enabledLevels) {
