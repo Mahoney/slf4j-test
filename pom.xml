@@ -8,7 +8,7 @@
     <groupId>uk.org.lidalia</groupId>
     <artifactId>jvm-library</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>../jvm-library</relativePath>
+    <relativePath>../lidalia-parent/jvm-library</relativePath>
   </parent>
 
   <groupId>uk.org.lidalia</groupId>
