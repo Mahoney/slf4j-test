@@ -1,5 +1,6 @@
 package uk.org.lidalia.slf4jtest;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Sets.immutableEnumSet;
 import static java.util.Arrays.asList;
@@ -115,23 +117,23 @@ public class TestLogger implements Logger {
     }
 
     public void trace(String message) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), message));
+        log(TRACE, message);
     }
 
     public void trace(String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), format, arg));
+        log(TRACE, format, arg);
     }
 
     public void trace(String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), format, arg1, arg2));
+        log(TRACE, format, arg1, arg2);
     }
 
     public void trace(String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), format, args));
+        log(TRACE, format, args);
     }
 
     public void trace(String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), throwable, msg));
+        log(TRACE, msg, throwable);
     }
 
     public boolean isTraceEnabled(Marker marker) {
@@ -139,23 +141,23 @@ public class TestLogger implements Logger {
     }
 
     public void trace(Marker marker, String msg) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), marker, msg));
+        log(TRACE, marker, msg);
     }
 
     public void trace(Marker marker, String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), marker, format, arg));
+        log(TRACE, marker, format, arg);
     }
 
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), marker, format, arg1, arg2));
+        log(TRACE, marker, format, arg1, arg2);
     }
 
     public void trace(Marker marker, String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), marker, format, args));
+        log(TRACE, marker, format, args);
     }
 
     public void trace(Marker marker, String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(TRACE, mdc(), marker, throwable, msg));
+        log(TRACE, marker, msg, throwable);
     }
 
     /**
@@ -166,23 +168,23 @@ public class TestLogger implements Logger {
     }
 
     public void debug(String message) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), message));
+        log(DEBUG, message);
     }
 
     public void debug(String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), format, arg));
+        log(DEBUG, format, arg);
     }
 
     public void debug(String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), format, arg1, arg2));
+        log(DEBUG, format, arg1, arg2);
     }
 
     public void debug(String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), format, args));
+        log(DEBUG, format, args);
     }
 
     public void debug(String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), throwable, msg));
+        log(DEBUG, msg, throwable);
     }
 
     public boolean isDebugEnabled(Marker marker) {
@@ -190,23 +192,23 @@ public class TestLogger implements Logger {
     }
 
     public void debug(Marker marker, String msg) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), marker, msg));
+        log(DEBUG, marker, msg);
     }
 
     public void debug(Marker marker, String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), marker, format, arg));
+        log(DEBUG, marker, format, arg);
     }
 
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), marker, format, arg1, arg2));
+        log(DEBUG, marker, format, arg1, arg2);
     }
 
     public void debug(Marker marker, String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), marker, format, args));
+        log(DEBUG, marker, format, args);
     }
 
     public void debug(Marker marker, String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(DEBUG, mdc(), marker, throwable, msg));
+        log(DEBUG, marker, msg, throwable);
     }
 
     /**
@@ -217,23 +219,23 @@ public class TestLogger implements Logger {
     }
 
     public void info(String message) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), message));
+        log(INFO, message);
     }
 
     public void info(String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), format, arg));
+        log(INFO, format, arg);
     }
 
     public void info(String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), format, arg1, arg2));
+        log(INFO, format, arg1, arg2);
     }
 
     public void info(String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), format, args));
+        log(INFO, format, args);
     }
 
     public void info(String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), throwable, msg));
+        log(INFO, msg, throwable);
     }
 
     public boolean isInfoEnabled(Marker marker) {
@@ -241,23 +243,23 @@ public class TestLogger implements Logger {
     }
 
     public void info(Marker marker, String msg) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), marker, msg));
+        log(INFO, marker, msg);
     }
 
     public void info(Marker marker, String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), marker, format, arg));
+        log(INFO, marker, format, arg);
     }
 
     public void info(Marker marker, String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), marker, format, arg1, arg2));
+        log(INFO, marker, format, arg1, arg2);
     }
 
     public void info(Marker marker, String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), marker, format, args));
+        log(INFO, marker, format, args);
     }
 
     public void info(Marker marker, String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(INFO, mdc(), marker, throwable, msg));
+        log(INFO, marker, msg, throwable);
     }
 
     /**
@@ -268,23 +270,23 @@ public class TestLogger implements Logger {
     }
 
     public void warn(String message) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), message));
+        log(WARN, message);
     }
 
     public void warn(String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), format, arg));
+        log(WARN, format, arg);
     }
 
     public void warn(String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), format, arg1, arg2));
+        log(WARN, format, arg1, arg2);
     }
 
     public void warn(String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), format, args));
+        log(WARN, format, args);
     }
 
     public void warn(String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), throwable, msg));
+        log(WARN, msg, throwable);
     }
 
     public boolean isWarnEnabled(Marker marker) {
@@ -292,23 +294,23 @@ public class TestLogger implements Logger {
     }
 
     public void warn(Marker marker, String msg) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), marker, msg));
+        log(WARN, marker, msg);
     }
 
     public void warn(Marker marker, String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), marker, format, arg));
+        log(WARN, marker, format, arg);
     }
 
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), marker, format, arg1, arg2));
+        log(WARN, marker, format, arg1, arg2);
     }
 
     public void warn(Marker marker, String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), marker, format, args));
+        log(WARN, marker, format, args);
     }
 
     public void warn(Marker marker, String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(WARN, mdc(), marker, throwable, msg));
+        log(WARN, marker, msg, throwable);
     }
 
     /**
@@ -319,23 +321,23 @@ public class TestLogger implements Logger {
     }
 
     public void error(String message) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), message));
+        log(ERROR, message);
     }
 
     public void error(String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), format, arg));
+        log(ERROR, format, arg);
     }
 
     public void error(String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), format, arg1, arg2));
+        log(ERROR, format, arg1, arg2);
     }
 
     public void error(String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), format, args));
+        log(ERROR, format, args);
     }
 
     public void error(String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), throwable, msg));
+        log(ERROR, msg, throwable);
     }
 
     public boolean isErrorEnabled(Marker marker) {
@@ -343,31 +345,64 @@ public class TestLogger implements Logger {
     }
 
     public void error(Marker marker, String msg) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), marker, msg));
+        log(ERROR, marker, msg);
     }
 
     public void error(Marker marker, String format, Object arg) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), marker, format, arg));
+        log(ERROR, marker, format, arg);
     }
 
     public void error(Marker marker, String format, Object arg1, Object arg2) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), marker, format, arg1, arg2));
+        log(ERROR, marker, format, arg1, arg2);
     }
 
     public void error(Marker marker, String format, Object[] args) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), marker, format, args));
+        log(ERROR, marker, format, args);
     }
 
     public void error(Marker marker, String msg, Throwable throwable) {
-        addLoggingEvent(new LoggingEvent(ERROR, mdc(), marker, throwable, msg));
+        log(ERROR, marker, msg, throwable);
     }
 
-    private void addLoggingEvent(LoggingEvent event) {
-        if (enabledLevels.get().contains(event.getLevel())) {
+    private void log(Level level, String format, Object... args) {
+        addLoggingEvent(level, Optional.<Marker>absent(), Optional.<Throwable>absent(), format, args);
+    }
+
+    private void log(Level level, String msg, Throwable throwable) {
+        addLoggingEvent(level, Optional.<Marker>absent(), of(throwable), msg);
+    }
+
+    private void log(Level level, Marker marker, String format, Object... args) {
+        addLoggingEvent(level, of(marker), Optional.<Throwable>absent(), format, args);
+    }
+
+    private void log(Level level, Marker marker, String msg, Throwable throwable) {
+        addLoggingEvent(level, of(marker), of(throwable), msg);
+    }
+
+    private void addLoggingEvent(Level level, Optional<Marker> marker, Optional<Throwable> throwable, String format, Object... args) {
+        if (enabledLevels.get().contains(level)) {
+            LoggingEvent event = new LoggingEvent(of(this), level, mdc(), marker, throwable, format, args);
             allLoggingEvents.add(event);
             loggingEvents.get().add(event);
             testLoggerFactory.addLoggingEvent(event);
+            optionallyPrint(event);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, String> mdc() {
+        return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());
+    }
+
+    private void optionallyPrint(LoggingEvent event) {
+        if (printEnabled()) {
+            event.print();
+        }
+    }
+
+    private boolean printEnabled() {
+        return true;
     }
 
     /**
@@ -401,11 +436,6 @@ public class TestLogger implements Logger {
      */
     public void setEnabledLevels(Level... enabledLevels) {
         setEnabledLevels(immutableEnumSet(asList(enabledLevels)));
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, String> mdc() {
-        return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());
     }
 
     /**

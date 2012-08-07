@@ -45,7 +45,7 @@ public class TestLoggerTests {
     private static final String LOGGER_NAME = "uk.org";
     private final TestLogger testLogger = new TestLogger(LOGGER_NAME, TestLoggerFactory.getInstance());
     private final Marker marker = mock(Marker.class);
-    private final String message = "message";
+    private final String message = "message{}{}{}";
     private final Object arg1 = "arg1";
     private final Object arg2 = "arg2";
     private final Object[] args = new Object[] { arg1, arg2, "arg3" };

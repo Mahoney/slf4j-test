@@ -6,19 +6,18 @@ import com.google.common.collect.ImmutableMap;
 
 import org.joda.time.DateTime;
 import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
+
 import uk.org.lidalia.lang.Identity;
 import uk.org.lidalia.lang.RichObject;
 import uk.org.lidalia.slf4jutils.Level;
 
-import java.util.ArrayList;
+import java.io.PrintStream;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Arrays.asList;
 
 /**
  * Representation of a call to a logger for test assertion purposes.
@@ -33,7 +32,7 @@ import static java.util.Arrays.asList;
  *     <li>{@link #getArguments()}</li>
  * </ul>
  *
- * They do NOT compare the results of {@link #getTimestamp()} as this would render it impractical to create
+ * They do NOT compare the results of {@link #getTimestamp()} or {@link #getCreatingLogger()} as this would render it impractical to create
  * appropriate expected {@link LoggingEvent}s to compare against.
  *
  * Constructors and convenient static factory methods exist to create {@link LoggingEvent}s with appropriate
@@ -234,6 +233,11 @@ public class LoggingEvent extends RichObject {
     }
 
     private LoggingEvent(Level level, Map<String, String> mdc, Optional<Marker> marker, Optional<Throwable> throwable, String message, Object... arguments) {
+        this(Optional.<TestLogger>absent(), level, mdc, marker, throwable, message, arguments);
+    }
+
+    LoggingEvent(Optional<TestLogger> creatingLogger, Level level, Map<String, String> mdc, Optional<Marker> marker, Optional<Throwable> throwable, String message, Object... arguments) {
+        this.creatingLogger = creatingLogger;
         this.level = checkNotNull(level);
         this.mdc = ImmutableMap.copyOf(mdc);
         this.marker = checkNotNull(marker);
@@ -249,7 +253,9 @@ public class LoggingEvent extends RichObject {
     @Identity private final String message;
     @Identity private final ImmutableList<Object> arguments;
 
+    private final Optional<TestLogger> creatingLogger;
     private final DateTime timestamp = new DateTime();
+    private final String threadName = Thread.currentThread().getName();
 
     public Level getLevel() {
         return level;
@@ -275,7 +281,61 @@ public class LoggingEvent extends RichObject {
         return throwable;
     }
 
+    /**
+     * @return the logger that created this logging event.
+     * @throws IllegalStateException if this logging event was not created by a logger
+     */
+    public TestLogger getCreatingLogger() {
+        return creatingLogger.get();
+    }
+
+    /**
+     * @return the time at which this logging event was created
+     */
     public DateTime getTimestamp() {
         return timestamp;
+    }
+
+    /**
+     * @return the name of the thread that created this logging event
+     */
+    public String getThreadName() {
+        return threadName;
+    }
+
+    public String getFormattedMessage() {
+        return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();
+    }
+
+    @Override
+    public String toString() {
+        return getTimestamp() + " [" + getThreadName() + "] " + getLevel() + safeLoggerName() + " - " + getFormattedMessage();
+    }
+
+    void print() {
+        final PrintStream output = printStreamForLevel();
+        output.println(this);
+        Optional<Throwable> throwable = getThrowable();
+        if (throwable.isPresent()) {
+            throwable.get().printStackTrace(output);
+        }
+    }
+
+    private String safeLoggerName() {
+        if (creatingLogger.isPresent()) {
+            return " " + getCreatingLogger().getName();
+        } else {
+            return "";
+        }
+    }
+
+    private PrintStream printStreamForLevel() {
+        switch (level) {
+            case ERROR:
+            case WARN:
+                return System.err;
+            default:
+                return System.out;
+        }
     }
 }
