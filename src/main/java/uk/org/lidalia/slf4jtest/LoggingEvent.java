@@ -303,19 +303,17 @@ public class LoggingEvent extends RichObject {
         return threadName;
     }
 
-    public String getFormattedMessage() {
+    private String getFormattedMessage() {
         return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();
     }
 
-    @Override
-    public String toString() {
+    private String formatLogStatement() {
         return getTimestamp() + " [" + getThreadName() + "] " + getLevel() + safeLoggerName() + " - " + getFormattedMessage();
     }
 
     void print() {
         final PrintStream output = printStreamForLevel();
-        output.println(this);
-        Optional<Throwable> throwable = getThrowable();
+        output.println(formatLogStatement());
         if (throwable.isPresent()) {
             throwable.get().printStackTrace(output);
         }
