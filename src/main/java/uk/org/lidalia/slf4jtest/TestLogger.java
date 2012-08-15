@@ -8,13 +8,17 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
+import uk.org.lidalia.lang.Exceptions;
 import uk.org.lidalia.lang.ThreadLocal;
 import uk.org.lidalia.slf4jutils.Level;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.google.common.base.Optional.fromNullable;
@@ -402,7 +406,18 @@ public class TestLogger implements Logger {
     }
 
     private boolean printEnabled() {
-        return true;
+        try {
+            Properties classpathProps = new Properties();
+            InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("slf4jtest.properties");
+            if (resourceAsStream != null) {
+                classpathProps.load(resourceAsStream);
+            }
+            String classpathProperty = classpathProps.getProperty("print", "false");
+            String property = System.getProperty("slf4jtest.print", classpathProperty);
+            return Boolean.valueOf(property);
+        } catch (IOException ioe) {
+            return Exceptions.throwUnchecked(ioe, false);
+        }
     }
 
     /**
