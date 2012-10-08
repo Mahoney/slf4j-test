@@ -139,7 +139,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void trace(final String format, final Object[] args) {
+    public void trace(final String format, final Object... args) {
         log(TRACE, format, args);
     }
 
@@ -169,7 +169,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void trace(final Marker marker, final String format, final Object[] args) {
+    public void trace(final Marker marker, final String format, final Object... args) {
         log(TRACE, marker, format, args);
     }
 
@@ -202,7 +202,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void debug(final String format, final Object[] args) {
+    public void debug(final String format, final Object... args) {
         log(DEBUG, format, args);
     }
 
@@ -232,7 +232,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void debug(final Marker marker, final String format, final Object[] args) {
+    public void debug(final Marker marker, final String format, final Object... args) {
         log(DEBUG, marker, format, args);
     }
 
@@ -265,7 +265,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void info(final String format, final Object[] args) {
+    public void info(final String format, final Object... args) {
         log(INFO, format, args);
     }
 
@@ -295,7 +295,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void info(final Marker marker, final String format, final Object[] args) {
+    public void info(final Marker marker, final String format, final Object... args) {
         log(INFO, marker, format, args);
     }
 
@@ -328,7 +328,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void warn(final String format, final Object[] args) {
+    public void warn(final String format, final Object... args) {
         log(WARN, format, args);
     }
 
@@ -358,7 +358,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void warn(final Marker marker, final String format, final Object[] args) {
+    public void warn(final Marker marker, final String format, final Object... args) {
         log(WARN, marker, format, args);
     }
 
@@ -391,7 +391,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void error(final String format, final Object[] args) {
+    public void error(final String format, final Object... args) {
         log(ERROR, format, args);
     }
 
@@ -421,7 +421,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     @Override
-    public void error(final Marker marker, final String format, final Object[] args) {
+    public void error(final Marker marker, final String format, final Object... args) {
         log(ERROR, marker, format, args);
     }
 
