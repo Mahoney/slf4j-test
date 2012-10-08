@@ -4,7 +4,7 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
     private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
 
@@ -13,9 +13,9 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     }
 
     // to avoid constant folding by the compiler, this field must *not* be final
-    public static String REQUESTED_API_VERSION = "1.6";  // !final
+    public static String REQUESTED_API_VERSION = "1.6";  //NOPMD NOCHECKSTYLE
 
-    private StaticLoggerBinder() {}
+    private StaticLoggerBinder() { }
 
     public ILoggerFactory getLoggerFactory() {
         return TestLoggerFactory.getInstance();

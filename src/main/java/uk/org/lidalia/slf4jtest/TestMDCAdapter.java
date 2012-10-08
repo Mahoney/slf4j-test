@@ -3,7 +3,6 @@ package uk.org.lidalia.slf4jtest;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.spi.MDCAdapter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,15 +15,15 @@ public class TestMDCAdapter implements MDCAdapter {
         }
     };
 
-    public void put(String key, String val) {
+    public void put(final String key, final String val) {
         value.get().put(key, val);
     }
 
-    public String get(String key) {
+    public String get(final String key) {
         return value.get().get(key);
     }
 
-    public void remove(String key) {
+    public void remove(final String key) {
         value.get().remove(key);
     }
 
@@ -37,7 +36,7 @@ public class TestMDCAdapter implements MDCAdapter {
     }
 
     @SuppressWarnings("unchecked")
-    public void setContextMap(Map contextMap) {
+    public void setContextMap(final Map contextMap) {
         value.set(new HashMap<String, String>(contextMap));
     }
 }

@@ -16,7 +16,7 @@ import uk.org.lidalia.lang.ThreadLocal;
 
 import static com.google.common.base.Optional.fromNullable;
 
-public class TestLoggerFactory implements ILoggerFactory {
+public final class TestLoggerFactory implements ILoggerFactory {
 
     private static final TestLoggerFactory INSTANCE = new TestLoggerFactory();
 
@@ -24,11 +24,11 @@ public class TestLoggerFactory implements ILoggerFactory {
         return INSTANCE;
     }
 
-    public static TestLogger getTestLogger(Class<?> aClass) {
+    public static TestLogger getTestLogger(final Class<?> aClass) {
         return getInstance().getLogger(aClass);
     }
 
-    public static TestLogger getTestLogger(String name) {
+    public static TestLogger getTestLogger(final String name) {
         return getInstance().getLogger(name);
     }
 
@@ -58,7 +58,8 @@ public class TestLoggerFactory implements ILoggerFactory {
 
     private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+    private final ThreadLocal<List<LoggingEvent>> loggingEvents =
+            new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
         @Override
         public List<LoggingEvent> get() {
             return new ArrayList<LoggingEvent>();
@@ -72,12 +73,12 @@ public class TestLoggerFactory implements ILoggerFactory {
         return ImmutableMap.copyOf(loggerMap);
     }
 
-    public TestLogger getLogger(Class<?> aClass) {
+    public TestLogger getLogger(final Class<?> aClass) {
         return getLogger(aClass.getName());
     }
 
-    public TestLogger getLogger(String name) {
-        TestLogger newLogger = new TestLogger(name, this);
+    public TestLogger getLogger(final String name) {
+        final TestLogger newLogger = new TestLogger(name, this);
         return fromNullable(loggerMap.putIfAbsent(name, newLogger)).or(newLogger);
     }
 
@@ -109,7 +110,7 @@ public class TestLoggerFactory implements ILoggerFactory {
         return allLoggingEvents;
     }
 
-    void addLoggingEvent(LoggingEvent event) {
+    void addLoggingEvent(final LoggingEvent event) {
         loggingEvents.get().add(event);
         allLoggingEvents.add(event);
     }

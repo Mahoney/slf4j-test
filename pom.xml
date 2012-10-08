@@ -14,6 +14,19 @@
   <artifactId>slf4j-test</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
+  <scm>
+    <url>https://github.com/Mahoney/slf4j-test</url>
+    <connection>scm:git:git@github.com:Mahoney/slf4j-test.git</connection>
+    <developerConnection>scm:git:git@github.com:Mahoney/slf4j-test.git</developerConnection>
+  </scm>
+
+  <distributionManagement>
+    <site>
+      <id>gh.pages</id>
+      <url>scm:git:git@github.com:Mahoney/slf4j-test.git</url>
+    </site>
+  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

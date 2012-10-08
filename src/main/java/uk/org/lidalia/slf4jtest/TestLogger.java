@@ -50,7 +50,7 @@ import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
  * do so by passing the constants in {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to
  * {@link #setEnabledLevels(ImmutableSet)} or {@link #setEnabledLevelsForAllThreads(ImmutableSet)}.
  */
-public class TestLogger implements Logger {
+public class TestLogger implements Logger { // NOPMD interface has too many methods, we have to implement
 
     private static final Supplier<ImmutableSet<Level>> ALL_ENABLABLE_LEVELS_SUPPLIER = new Supplier<ImmutableSet<Level>>() {
         @Override
@@ -60,7 +60,8 @@ public class TestLogger implements Logger {
     };
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-    private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+    private final ThreadLocal<List<LoggingEvent>> loggingEvents =
+            new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
         @Override
         public List<LoggingEvent> get() {
             return new ArrayList<LoggingEvent>();
@@ -68,9 +69,10 @@ public class TestLogger implements Logger {
     });
 
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
-    private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels = new ThreadLocal<ImmutableSet<Level>>(ALL_ENABLABLE_LEVELS_SUPPLIER);
+    private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels =
+            new ThreadLocal<ImmutableSet<Level>>(ALL_ENABLABLE_LEVELS_SUPPLIER);
 
-    TestLogger(String name, TestLoggerFactory testLoggerFactory) {
+    TestLogger(final String name, final TestLoggerFactory testLoggerFactory) {
         this.name = name;
         this.testLoggerFactory = testLoggerFactory;
     }
@@ -116,277 +118,342 @@ public class TestLogger implements Logger {
     /**
      * @return whether this logger is trace enabled in this thread
      */
+    @Override
     public boolean isTraceEnabled() {
         return enabledLevels.get().contains(TRACE);
     }
 
-    public void trace(String message) {
+    @Override
+    public void trace(final String message) {
         log(TRACE, message);
     }
 
-    public void trace(String format, Object arg) {
+    @Override
+    public void trace(final String format, final Object arg) {
         log(TRACE, format, arg);
     }
 
-    public void trace(String format, Object arg1, Object arg2) {
+    @Override
+    public void trace(final String format, final Object arg1, final Object arg2) {
         log(TRACE, format, arg1, arg2);
     }
 
-    public void trace(String format, Object[] args) {
+    @Override
+    public void trace(final String format, final Object[] args) {
         log(TRACE, format, args);
     }
 
-    public void trace(String msg, Throwable throwable) {
+    @Override
+    public void trace(final String msg, final Throwable throwable) {
         log(TRACE, msg, throwable);
     }
 
-    public boolean isTraceEnabled(Marker marker) {
+    @Override
+    public boolean isTraceEnabled(final Marker marker) {
         return enabledLevels.get().contains(TRACE);
     }
 
-    public void trace(Marker marker, String msg) {
+    @Override
+    public void trace(final Marker marker, final String msg) {
         log(TRACE, marker, msg);
     }
 
-    public void trace(Marker marker, String format, Object arg) {
+    @Override
+    public void trace(final Marker marker, final String format, final Object arg) {
         log(TRACE, marker, format, arg);
     }
 
-    public void trace(Marker marker, String format, Object arg1, Object arg2) {
+    @Override
+    public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
         log(TRACE, marker, format, arg1, arg2);
     }
 
-    public void trace(Marker marker, String format, Object[] args) {
+    @Override
+    public void trace(final Marker marker, final String format, final Object[] args) {
         log(TRACE, marker, format, args);
     }
 
-    public void trace(Marker marker, String msg, Throwable throwable) {
+    @Override
+    public void trace(final Marker marker, final String msg, final Throwable throwable) {
         log(TRACE, marker, msg, throwable);
     }
 
     /**
      * @return whether this logger is debug enabled in this thread
      */
+    @Override
     public boolean isDebugEnabled() {
         return enabledLevels.get().contains(DEBUG);
     }
 
-    public void debug(String message) {
+    @Override
+    public void debug(final String message) {
         log(DEBUG, message);
     }
 
-    public void debug(String format, Object arg) {
+    @Override
+    public void debug(final String format, final Object arg) {
         log(DEBUG, format, arg);
     }
 
-    public void debug(String format, Object arg1, Object arg2) {
+    @Override
+    public void debug(final String format, final Object arg1, final Object arg2) {
         log(DEBUG, format, arg1, arg2);
     }
 
-    public void debug(String format, Object[] args) {
+    @Override
+    public void debug(final String format, final Object[] args) {
         log(DEBUG, format, args);
     }
 
-    public void debug(String msg, Throwable throwable) {
+    @Override
+    public void debug(final String msg, final Throwable throwable) {
         log(DEBUG, msg, throwable);
     }
 
-    public boolean isDebugEnabled(Marker marker) {
+    @Override
+    public boolean isDebugEnabled(final Marker marker) {
         return enabledLevels.get().contains(DEBUG);
     }
 
-    public void debug(Marker marker, String msg) {
+    @Override
+    public void debug(final Marker marker, final String msg) {
         log(DEBUG, marker, msg);
     }
 
-    public void debug(Marker marker, String format, Object arg) {
+    @Override
+    public void debug(final Marker marker, final String format, final Object arg) {
         log(DEBUG, marker, format, arg);
     }
 
-    public void debug(Marker marker, String format, Object arg1, Object arg2) {
+    @Override
+    public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
         log(DEBUG, marker, format, arg1, arg2);
     }
 
-    public void debug(Marker marker, String format, Object[] args) {
+    @Override
+    public void debug(final Marker marker, final String format, final Object[] args) {
         log(DEBUG, marker, format, args);
     }
 
-    public void debug(Marker marker, String msg, Throwable throwable) {
+    @Override
+    public void debug(final Marker marker, final String msg, final Throwable throwable) {
         log(DEBUG, marker, msg, throwable);
     }
 
     /**
      * @return whether this logger is info enabled in this thread
      */
+    @Override
     public boolean isInfoEnabled() {
         return enabledLevels.get().contains(INFO);
     }
 
-    public void info(String message) {
+    @Override
+    public void info(final String message) {
         log(INFO, message);
     }
 
-    public void info(String format, Object arg) {
+    @Override
+    public void info(final String format, final Object arg) {
         log(INFO, format, arg);
     }
 
-    public void info(String format, Object arg1, Object arg2) {
+    @Override
+    public void info(final String format, final Object arg1, final Object arg2) {
         log(INFO, format, arg1, arg2);
     }
 
-    public void info(String format, Object[] args) {
+    @Override
+    public void info(final String format, final Object[] args) {
         log(INFO, format, args);
     }
 
-    public void info(String msg, Throwable throwable) {
+    @Override
+    public void info(final String msg, final Throwable throwable) {
         log(INFO, msg, throwable);
     }
 
-    public boolean isInfoEnabled(Marker marker) {
+    @Override
+    public boolean isInfoEnabled(final Marker marker) {
         return enabledLevels.get().contains(INFO);
     }
 
-    public void info(Marker marker, String msg) {
+    @Override
+    public void info(final Marker marker, final String msg) {
         log(INFO, marker, msg);
     }
 
-    public void info(Marker marker, String format, Object arg) {
+    @Override
+    public void info(final Marker marker, final String format, final Object arg) {
         log(INFO, marker, format, arg);
     }
 
-    public void info(Marker marker, String format, Object arg1, Object arg2) {
+    @Override
+    public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
         log(INFO, marker, format, arg1, arg2);
     }
 
-    public void info(Marker marker, String format, Object[] args) {
+    @Override
+    public void info(final Marker marker, final String format, final Object[] args) {
         log(INFO, marker, format, args);
     }
 
-    public void info(Marker marker, String msg, Throwable throwable) {
+    @Override
+    public void info(final Marker marker, final String msg, final Throwable throwable) {
         log(INFO, marker, msg, throwable);
     }
 
     /**
      * @return whether this logger is warn enabled in this thread
      */
+    @Override
     public boolean isWarnEnabled() {
         return enabledLevels.get().contains(WARN);
     }
 
-    public void warn(String message) {
+    @Override
+    public void warn(final String message) {
         log(WARN, message);
     }
 
-    public void warn(String format, Object arg) {
+    @Override
+    public void warn(final String format, final Object arg) {
         log(WARN, format, arg);
     }
 
-    public void warn(String format, Object arg1, Object arg2) {
+    @Override
+    public void warn(final String format, final Object arg1, final Object arg2) {
         log(WARN, format, arg1, arg2);
     }
 
-    public void warn(String format, Object[] args) {
+    @Override
+    public void warn(final String format, final Object[] args) {
         log(WARN, format, args);
     }
 
-    public void warn(String msg, Throwable throwable) {
+    @Override
+    public void warn(final String msg, final Throwable throwable) {
         log(WARN, msg, throwable);
     }
 
-    public boolean isWarnEnabled(Marker marker) {
+    @Override
+    public boolean isWarnEnabled(final Marker marker) {
         return enabledLevels.get().contains(WARN);
     }
 
-    public void warn(Marker marker, String msg) {
+    @Override
+    public void warn(final Marker marker, final String msg) {
         log(WARN, marker, msg);
     }
 
-    public void warn(Marker marker, String format, Object arg) {
+    @Override
+    public void warn(final Marker marker, final String format, final Object arg) {
         log(WARN, marker, format, arg);
     }
 
-    public void warn(Marker marker, String format, Object arg1, Object arg2) {
+    @Override
+    public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
         log(WARN, marker, format, arg1, arg2);
     }
 
-    public void warn(Marker marker, String format, Object[] args) {
+    @Override
+    public void warn(final Marker marker, final String format, final Object[] args) {
         log(WARN, marker, format, args);
     }
 
-    public void warn(Marker marker, String msg, Throwable throwable) {
+    @Override
+    public void warn(final Marker marker, final String msg, final Throwable throwable) {
         log(WARN, marker, msg, throwable);
     }
 
     /**
      * @return whether this logger is error enabled in this thread
      */
+    @Override
     public boolean isErrorEnabled() {
         return enabledLevels.get().contains(ERROR);
     }
 
-    public void error(String message) {
+    @Override
+    public void error(final String message) {
         log(ERROR, message);
     }
 
-    public void error(String format, Object arg) {
+    @Override
+    public void error(final String format, final Object arg) {
         log(ERROR, format, arg);
     }
 
-    public void error(String format, Object arg1, Object arg2) {
+    @Override
+    public void error(final String format, final Object arg1, final Object arg2) {
         log(ERROR, format, arg1, arg2);
     }
 
-    public void error(String format, Object[] args) {
+    @Override
+    public void error(final String format, final Object[] args) {
         log(ERROR, format, args);
     }
 
-    public void error(String msg, Throwable throwable) {
+    @Override
+    public void error(final String msg, final Throwable throwable) {
         log(ERROR, msg, throwable);
     }
 
-    public boolean isErrorEnabled(Marker marker) {
+    @Override
+    public boolean isErrorEnabled(final Marker marker) {
         return enabledLevels.get().contains(ERROR);
     }
 
-    public void error(Marker marker, String msg) {
+    @Override
+    public void error(final Marker marker, final String msg) {
         log(ERROR, marker, msg);
     }
 
-    public void error(Marker marker, String format, Object arg) {
+    @Override
+    public void error(final Marker marker, final String format, final Object arg) {
         log(ERROR, marker, format, arg);
     }
 
-    public void error(Marker marker, String format, Object arg1, Object arg2) {
+    @Override
+    public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
         log(ERROR, marker, format, arg1, arg2);
     }
 
-    public void error(Marker marker, String format, Object[] args) {
+    @Override
+    public void error(final Marker marker, final String format, final Object[] args) {
         log(ERROR, marker, format, args);
     }
 
-    public void error(Marker marker, String msg, Throwable throwable) {
+    @Override
+    public void error(final Marker marker, final String msg, final Throwable throwable) {
         log(ERROR, marker, msg, throwable);
     }
 
-    private void log(Level level, String format, Object... args) {
+    private void log(final Level level, final String format, final Object... args) {
         addLoggingEvent(level, Optional.<Marker>absent(), Optional.<Throwable>absent(), format, args);
     }
 
-    private void log(Level level, String msg, Throwable throwable) {
+    private void log(final Level level, final String msg, final Throwable throwable) { //NOPMD PMD wrongly thinks unused...
         addLoggingEvent(level, Optional.<Marker>absent(), of(throwable), msg);
     }
 
-    private void log(Level level, Marker marker, String format, Object... args) {
+    private void log(final Level level, final Marker marker, final String format, final Object... args) {
         addLoggingEvent(level, of(marker), Optional.<Throwable>absent(), format, args);
     }
 
-    private void log(Level level, Marker marker, String msg, Throwable throwable) {
+    private void log(final Level level, final Marker marker, final String msg, final Throwable throwable) {
         addLoggingEvent(level, of(marker), of(throwable), msg);
     }
 
-    private void addLoggingEvent(Level level, Optional<Marker> marker, Optional<Throwable> throwable, String format, Object... args) {
+    private void addLoggingEvent(
+            final Level level,
+            final Optional<Marker> marker,
+            final Optional<Throwable> throwable,
+            final String format,
+            final Object... args) {
         if (enabledLevels.get().contains(level)) {
-            LoggingEvent event = new LoggingEvent(of(this), level, mdc(), marker, throwable, format, args);
+            final LoggingEvent event = new LoggingEvent(of(this), level, mdc(), marker, throwable, format, args);
             allLoggingEvents.add(event);
             loggingEvents.get().add(event);
             testLoggerFactory.addLoggingEvent(event);
@@ -399,7 +466,7 @@ public class TestLogger implements Logger {
         return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());
     }
 
-    private void optionallyPrint(LoggingEvent event) {
+    private void optionallyPrint(final LoggingEvent event) {
         if (printEnabled()) {
             event.print();
         }
@@ -407,13 +474,14 @@ public class TestLogger implements Logger {
 
     private boolean printEnabled() {
         try {
-            Properties classpathProps = new Properties();
-            InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("slf4jtest.properties");
+            final Properties classpathProps = new Properties();
+            final InputStream resourceAsStream =
+                    Thread.currentThread().getContextClassLoader().getResourceAsStream("slf4jtest.properties");
             if (resourceAsStream != null) {
                 classpathProps.load(resourceAsStream);
             }
-            String classpathProperty = classpathProps.getProperty("print", "false");
-            String property = System.getProperty("slf4jtest.print", classpathProperty);
+            final String classpathProperty = classpathProps.getProperty("print", "false");
+            final String property = System.getProperty("slf4jtest.print", classpathProperty);
             return Boolean.valueOf(property);
         } catch (IOException ioe) {
             return Exceptions.throwUnchecked(ioe, false);
@@ -436,7 +504,7 @@ public class TestLogger implements Logger {
      * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
      *                      does not affect enabled levels for this logger in other threads
      */
-    public void setEnabledLevels(ImmutableSet<Level> enabledLevels) {
+    public void setEnabledLevels(final ImmutableSet<Level> enabledLevels) {
         this.enabledLevels.set(enabledLevels);
     }
 
@@ -449,7 +517,7 @@ public class TestLogger implements Logger {
      * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
      *                      does not affect enabled levels for this logger in other threads
      */
-    public void setEnabledLevels(Level... enabledLevels) {
+    public void setEnabledLevels(final Level... enabledLevels) {
         setEnabledLevels(immutableEnumSet(asList(enabledLevels)));
     }
 
@@ -459,13 +527,13 @@ public class TestLogger implements Logger {
      * use traditional hierarchical setups you may conveniently do so by using the constants in
      * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy}
      *
-     * @param enabledLevels levels which will be considered enabled for this logger IN ALL THREADS
+     * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
-    public void setEnabledLevelsForAllThreads(final ImmutableSet<Level> enabledLevels) {
+    public void setEnabledLevelsForAllThreads(final ImmutableSet<Level> enabledLevelsForAllThreads) {
         this.enabledLevels = new ThreadLocal<ImmutableSet<Level>>(new Supplier<ImmutableSet<Level>>() {
             @Override
             public ImmutableSet<Level> get() {
-                return enabledLevels;
+                return enabledLevelsForAllThreads;
             }
         });
     }
@@ -476,9 +544,9 @@ public class TestLogger implements Logger {
      * use traditional hierarchical setups you may conveniently do so by passing the constants in
      * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to {@link #setEnabledLevelsForAllThreads(ImmutableSet)}
      *
-     * @param enabledLevels levels which will be considered enabled for this logger IN ALL THREADS
+     * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
-    public void setEnabledLevelsForAllThreads(final Level... enabledLevels) {
-        setEnabledLevelsForAllThreads(ImmutableSet.copyOf(enabledLevels));
+    public void setEnabledLevelsForAllThreads(final Level... enabledLevelsForAllThreads) {
+        setEnabledLevelsForAllThreads(ImmutableSet.copyOf(enabledLevelsForAllThreads));
     }
 }
