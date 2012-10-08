@@ -19,7 +19,7 @@ import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.TestLoggerFactory.getInstance;
-import static uk.org.lidalia.slf4jutils.Level.WARN;
+import static uk.org.lidalia.slf4jext.Level.WARN;
 
 public class TestLoggerFactoryTests {
 

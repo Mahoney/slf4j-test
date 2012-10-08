@@ -10,7 +10,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 import uk.org.lidalia.lang.Identity;
 import uk.org.lidalia.lang.RichObject;
-import uk.org.lidalia.slf4jutils.Level;
+import uk.org.lidalia.slf4jext.Level;
 
 import java.io.PrintStream;
 import java.util.Collections;

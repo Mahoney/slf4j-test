@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
-import uk.org.lidalia.slf4jutils.Level;
-import uk.org.lidalia.slf4jutils.RichLogger;
+import uk.org.lidalia.slf4jext.Level;
+import uk.org.lidalia.slf4jext.Logger;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,12 +33,12 @@ import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
-import static uk.org.lidalia.slf4jutils.Level.DEBUG;
-import static uk.org.lidalia.slf4jutils.Level.ERROR;
-import static uk.org.lidalia.slf4jutils.Level.INFO;
-import static uk.org.lidalia.slf4jutils.Level.TRACE;
-import static uk.org.lidalia.slf4jutils.Level.WARN;
-import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
+import static uk.org.lidalia.slf4jext.Level.DEBUG;
+import static uk.org.lidalia.slf4jext.Level.ERROR;
+import static uk.org.lidalia.slf4jext.Level.INFO;
+import static uk.org.lidalia.slf4jext.Level.TRACE;
+import static uk.org.lidalia.slf4jext.Level.WARN;
+import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
 
 public class TestLoggerTests {
 
@@ -672,24 +672,24 @@ public class TestLoggerTests {
     private void assertEnabledReturnsCorrectly(Level levelToTest) {
         testLogger.setEnabledLevels(levelToTest);
         assertTrue("Logger level set to " + levelToTest + " means " + levelToTest + " should be enabled",
-                new RichLogger(testLogger).isEnabled(levelToTest));
+                new Logger(testLogger).isEnabled(levelToTest));
 
         Set<Level> disabledLevels = difference(enablableValueSet(), newHashSet(levelToTest));
         for (Level disabledLevel: disabledLevels) {
             assertFalse("Logger level set to " + levelToTest + " means " + levelToTest + " should be disabled",
-                    new RichLogger(testLogger).isEnabled(disabledLevel));
+                    new Logger(testLogger).isEnabled(disabledLevel));
         }
     }
 
     private void assertEnabledReturnsCorrectly(Level levelToTest, Marker marker) {
         testLogger.setEnabledLevels(levelToTest);
         assertTrue("Logger level set to " + levelToTest + " means " + levelToTest + " should be enabled",
-                new RichLogger(testLogger).isEnabled(levelToTest, marker));
+                new Logger(testLogger).isEnabled(levelToTest, marker));
 
         Set<Level> disabledLevels = difference(enablableValueSet(), newHashSet(levelToTest));
         for (Level disabledLevel: disabledLevels) {
             assertFalse("Logger level set to " + levelToTest + " means " + levelToTest + " should be disabled",
-                    new RichLogger(testLogger).isEnabled(disabledLevel, marker));
+                    new Logger(testLogger).isEnabled(disabledLevel, marker));
         }
     }
 }

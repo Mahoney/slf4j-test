@@ -5,7 +5,7 @@ import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Marker;
-import uk.org.lidalia.slf4jutils.Level;
+import uk.org.lidalia.slf4jext.Level;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,11 +23,11 @@ import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
-import static uk.org.lidalia.slf4jutils.Level.DEBUG;
-import static uk.org.lidalia.slf4jutils.Level.ERROR;
-import static uk.org.lidalia.slf4jutils.Level.INFO;
-import static uk.org.lidalia.slf4jutils.Level.TRACE;
-import static uk.org.lidalia.slf4jutils.Level.WARN;
+import static uk.org.lidalia.slf4jext.Level.DEBUG;
+import static uk.org.lidalia.slf4jext.Level.ERROR;
+import static uk.org.lidalia.slf4jext.Level.INFO;
+import static uk.org.lidalia.slf4jext.Level.TRACE;
+import static uk.org.lidalia.slf4jext.Level.WARN;
 
 public class LoggingEventTests {
 

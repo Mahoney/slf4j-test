@@ -10,7 +10,7 @@ import org.slf4j.Marker;
 
 import uk.org.lidalia.lang.Exceptions;
 import uk.org.lidalia.lang.ThreadLocal;
-import uk.org.lidalia.slf4jutils.Level;
+import uk.org.lidalia.slf4jext.Level;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,12 +26,12 @@ import static com.google.common.base.Optional.of;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Sets.immutableEnumSet;
 import static java.util.Arrays.asList;
-import static uk.org.lidalia.slf4jutils.Level.DEBUG;
-import static uk.org.lidalia.slf4jutils.Level.ERROR;
-import static uk.org.lidalia.slf4jutils.Level.INFO;
-import static uk.org.lidalia.slf4jutils.Level.TRACE;
-import static uk.org.lidalia.slf4jutils.Level.WARN;
-import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
+import static uk.org.lidalia.slf4jext.Level.DEBUG;
+import static uk.org.lidalia.slf4jext.Level.ERROR;
+import static uk.org.lidalia.slf4jext.Level.INFO;
+import static uk.org.lidalia.slf4jext.Level.TRACE;
+import static uk.org.lidalia.slf4jext.Level.WARN;
+import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
 
 /**
  * Implementation of {@link Logger} which stores {@link LoggingEvent}s in memory and provides methods
@@ -47,7 +47,7 @@ import static uk.org.lidalia.slf4jutils.Level.enablableValueSet;
  * {@link #setEnabledLevels(ImmutableSet)}, {@link #setEnabledLevels(Level...)},
  * {@link #setEnabledLevelsForAllThreads(ImmutableSet)}, {@link #setEnabledLevelsForAllThreads(Level...)} and the various
  * isXxxxxEnabled() methods make no assumptions about this hierarchy.  If you wish to use traditional hierarchical setups you may
- * do so by passing the constants in {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to
+ * do so by passing the constants in {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy} to
  * {@link #setEnabledLevels(ImmutableSet)} or {@link #setEnabledLevelsForAllThreads(ImmutableSet)}.
  */
 public class TestLogger implements Logger { // NOPMD interface has too many methods, we have to implement
@@ -83,7 +83,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
 
     /**
      * Removed all {@link LoggingEvent}s logged by this thread and resets the enabled levels of the logger
-     * to {@link uk.org.lidalia.slf4jutils.Level#enablableValueSet()} for this thread.
+     * to {@link uk.org.lidalia.slf4jext.Level#enablableValueSet()} for this thread.
      */
     public void clear() {
         loggingEvents.get().clear();
@@ -92,7 +92,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
 
     /**
      * Removed ALL {@link LoggingEvent}s logged on this logger, regardless of thread,
-     * and resets the enabled levels of the logger to {@link uk.org.lidalia.slf4jutils.Level#enablableValueSet()}
+     * and resets the enabled levels of the logger to {@link uk.org.lidalia.slf4jext.Level#enablableValueSet()}
      * for ALL threads.
      */
     public void clearAll() {
@@ -499,7 +499,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
      * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
      * use traditional hierarchical setups you may conveniently do so by using the constants in
-     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy}
+     * {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy}
      *
      * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
      *                      does not affect enabled levels for this logger in other threads
@@ -512,7 +512,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
      * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
      * use traditional hierarchical setups you may conveniently do so by passing the constants in
-     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to {@link #setEnabledLevels(ImmutableSet)}
+     * {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy} to {@link #setEnabledLevels(ImmutableSet)}
      *
      * @param enabledLevels levels which will be considered enabled for this logger IN THIS THREAD;
      *                      does not affect enabled levels for this logger in other threads
@@ -525,7 +525,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
      * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
      * use traditional hierarchical setups you may conveniently do so by using the constants in
-     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy}
+     * {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy}
      *
      * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
@@ -542,7 +542,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
      * requirement of the SLF4J API, so all levels you wish to enable must be passed explicitly to this method.  If you wish to
      * use traditional hierarchical setups you may conveniently do so by passing the constants in
-     * {@link uk.org.lidalia.slf4jutils.ConventionalLevelHierarchy} to {@link #setEnabledLevelsForAllThreads(ImmutableSet)}
+     * {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy} to {@link #setEnabledLevelsForAllThreads(ImmutableSet)}
      *
      * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
