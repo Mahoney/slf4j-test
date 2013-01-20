@@ -56,7 +56,7 @@ public final class TestLoggerFactory implements ILoggerFactory {
         return getInstance().getAllLoggingEventsFromLoggers();
     }
 
-    private final ConcurrentMap<String, TestLogger> loggerMap = new ConcurrentHashMap<String, TestLogger>();
+    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<String, TestLogger>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
             new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
@@ -70,7 +70,7 @@ public final class TestLoggerFactory implements ILoggerFactory {
     }
 
     public ImmutableMap<String, TestLogger> getAllLoggers() {
-        return ImmutableMap.copyOf(loggerMap);
+        return ImmutableMap.copyOf(loggers);
     }
 
     public TestLogger getLogger(final Class<?> aClass) {
@@ -79,18 +79,18 @@ public final class TestLoggerFactory implements ILoggerFactory {
 
     public TestLogger getLogger(final String name) {
         final TestLogger newLogger = new TestLogger(name, this);
-        return fromNullable(loggerMap.putIfAbsent(name, newLogger)).or(newLogger);
+        return fromNullable(loggers.putIfAbsent(name, newLogger)).or(newLogger);
     }
 
     public void clearLoggers() {
-        for (TestLogger testLogger: loggerMap.values()) {
+        for (TestLogger testLogger: loggers.values()) {
             testLogger.clear();
         }
         loggingEvents.get().clear();
     }
 
     public void clearAllLoggers() {
-        for (TestLogger testLogger: loggerMap.values()) {
+        for (TestLogger testLogger: loggers.values()) {
             testLogger.clearAll();
         }
         loggingEvents.reset();
@@ -99,7 +99,7 @@ public final class TestLoggerFactory implements ILoggerFactory {
 
     void doReset() {
         clearAllLoggers();
-        loggerMap.clear();
+        loggers.clear();
     }
 
     public ImmutableList<LoggingEvent> getLoggingEventsFromLoggers() {

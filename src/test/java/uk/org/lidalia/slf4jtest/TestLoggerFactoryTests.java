@@ -12,9 +12,11 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
@@ -225,21 +227,28 @@ public class TestLoggerFactoryTests {
 
     @Test
     public void clearAllClearsEventsLoggedInAllThreads() throws InterruptedException {
-        final TestLogger logger = TestLoggerFactory.getTestLogger("name");
-        logger.info("hello");
+        final TestLogger logger1 = TestLoggerFactory.getTestLogger("name1");
+        final TestLogger logger2 = TestLoggerFactory.getTestLogger("name2");
+        logger1.info("hello11");
+        logger2.info("hello21");
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                logger.info("hello");
+                logger1.info("hello12");
+                logger2.info("hello22");
                 TestLoggerFactory.clearAll();
             }
         });
         t.start();
         t.join();
-        assertEquals(emptyList(), TestLoggerFactory.getAllLoggingEvents());
-        assertEquals(emptyList(), TestLoggerFactory.getLoggingEvents());
+        final List<LoggingEvent> emptyList = Collections.emptyList();
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(emptyList));
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(emptyList));
+        assertThat(logger1.getLoggingEvents(), is(emptyList));
+        assertThat(logger1.getAllLoggingEvents(), is(emptyList));
+        assertThat(logger2.getLoggingEvents(), is(emptyList));
+        assertThat(logger2.getAllLoggingEvents(), is(emptyList));
     }
-
 
     @Before @After
     public void resetLoggerFactory() {
