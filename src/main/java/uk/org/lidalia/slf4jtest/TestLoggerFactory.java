@@ -5,23 +5,47 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.ILoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import uk.org.lidalia.lang.Exceptions;
 import uk.org.lidalia.lang.ThreadLocal;
+import uk.org.lidalia.slf4jext.Level;
 
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class TestLoggerFactory implements ILoggerFactory {
 
-    private static final TestLoggerFactory INSTANCE = new TestLoggerFactory();
+    private static class LazyFieldLoader {
+        static final TestLoggerFactory instance = new TestLoggerFactory(calculatePrintLevel());
+    }
+
+    private static Level calculatePrintLevel() {
+        final Properties classpathProps = new Properties();
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        final InputStream resourceAsStream =
+                contextClassLoader.getResourceAsStream("slf4jtest.properties");
+        if (resourceAsStream != null) {
+            try {
+                classpathProps.load(resourceAsStream);
+            } catch (IOException e) {
+                Exceptions.throwUnchecked(e);
+            }
+        }
+        final String printLevel = classpathProps.getProperty("print.level", "OFF");
+        return Level.valueOf(printLevel);
+    }
 
     public static TestLoggerFactory getInstance() {
-        return INSTANCE;
+        return LazyFieldLoader.instance;
     }
 
     public static TestLogger getTestLogger(final Class<?> aClass) {
@@ -65,8 +89,14 @@ public final class TestLoggerFactory implements ILoggerFactory {
             return new ArrayList<LoggingEvent>();
         }
     });
+    private final Level printLevel;
 
-    private TestLoggerFactory() {
+    private TestLoggerFactory(Level printLevel) {
+        this.printLevel = checkNotNull(printLevel);
+    }
+
+    public Level getPrintLevel() {
+        return printLevel;
     }
 
     public ImmutableMap<String, TestLogger> getAllLoggers() {

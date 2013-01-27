@@ -12,6 +12,9 @@ import org.slf4j.Marker;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +25,20 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
+import static java.util.Collections.EMPTY_LIST;
 import static java.util.Collections.emptyList;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
@@ -518,6 +529,25 @@ public class TestLoggerTests {
         logsIfEnabled(ERROR, WARN, INFO, DEBUG, TRACE);
     }
 
+    private void logsIfEnabled(Level... shouldLog) {
+        testLogger.setEnabledLevels(shouldLog);
+        testLogger.error(message);
+        testLogger.warn(message);
+        testLogger.info(message);
+        testLogger.debug(message);
+        testLogger.trace(message);
+
+        List<LoggingEvent> expectedEvents = Lists.transform(asList(shouldLog), new Function<Level, LoggingEvent>() {
+            @Override
+            public LoggingEvent apply(Level level) {
+                return new LoggingEvent(level, mdcValues, message);
+            }
+        });
+
+        assertEquals(expectedEvents, testLogger.getLoggingEvents());
+        testLogger.clear();
+    }
+
     @Test
     public void getLoggingEventsReturnsCopyNotView() {
         testLogger.debug(message);
@@ -543,7 +573,7 @@ public class TestLoggerTests {
         });
         t.start();
         t.join();
-        assertEquals(Collections.emptyList(), testLogger.getLoggingEvents());
+        assertEquals(EMPTY_LIST, testLogger.getLoggingEvents());
     }
 
     @Test
@@ -586,8 +616,8 @@ public class TestLoggerTests {
         });
         t.start();
         t.join();
-        assertEquals(emptyList(), testLogger.getAllLoggingEvents());
-        assertEquals(emptyList(), testLogger.getLoggingEvents());
+        assertEquals(EMPTY_LIST, testLogger.getAllLoggingEvents());
+        assertEquals(EMPTY_LIST, testLogger.getLoggingEvents());
     }
 
     @Test
@@ -650,23 +680,20 @@ public class TestLoggerTests {
         assertEquals(Level.enablableValueSet(), testLogger.getEnabledLevels());
     }
 
-    private void logsIfEnabled(Level... shouldLog) {
-        testLogger.setEnabledLevels(shouldLog);
-        testLogger.error(message);
-        testLogger.warn(message);
-        testLogger.info(message);
-        testLogger.debug(message);
-        testLogger.trace(message);
+//    @Test
+//    public void printsWhenPrintLevelEqualToEventLevel() {
+//        TestLoggerFactory.getInstance().setPrintLevel(Level.ERROR);
+//        final OutputStream sysout = setUpMockSystemOutput();
+//
+//        testLogger.info(message);
+//
+//        assertThat(sysout.toString().length(), greaterThan(0));
+//    }
 
-        List<LoggingEvent> expectedEvents = Lists.transform(asList(shouldLog), new Function<Level, LoggingEvent>() {
-            @Override
-            public LoggingEvent apply(Level level) {
-                return new LoggingEvent(level, mdcValues, message);
-            }
-        });
-
-        assertEquals(expectedEvents, testLogger.getLoggingEvents());
-        testLogger.clear();
+    private OutputStream setUpMockSystemOutput() {
+        OutputStream sysOutMock = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(sysOutMock));
+        return sysOutMock;
     }
 
     private void assertEnabledReturnsCorrectly(Level levelToTest) {

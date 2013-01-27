@@ -3,26 +3,34 @@ package uk.org.lidalia.slf4jtest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import uk.org.lidalia.slf4jext.Level;
+
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.TestLoggerFactory.getInstance;
 import static uk.org.lidalia.slf4jext.Level.WARN;
 
+@RunWith(PowerMockRunner.class)
 public class TestLoggerFactoryTests {
 
     @Test
@@ -61,16 +69,16 @@ public class TestLoggerFactoryTests {
     public void clear() throws Exception {
         TestLogger logger1 = getInstance().getLogger("name1");
         logger1.trace("hello");
-        assertEquals(1, logger1.getLoggingEvents().size());
+        assertThat(logger1.getLoggingEvents().size(), is(1));
         TestLogger logger2 = getInstance().getLogger("name2");
         logger2.trace("world");
-        assertEquals(1, logger2.getLoggingEvents().size());
+        assertThat(logger2.getLoggingEvents().size(), is(1));
 
         TestLoggerFactory.clear();
 
-        assertEquals(0, logger1.getLoggingEvents().size());
-        assertEquals(0, logger2.getLoggingEvents().size());
-        assertEquals(0, TestLoggerFactory.getLoggingEvents().size());
+        assertThat(logger1.getLoggingEvents(), is(empty()));
+        assertThat(logger2.getLoggingEvents(), is(empty()));
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(empty()));
     }
 
     @Test
@@ -82,12 +90,12 @@ public class TestLoggerFactoryTests {
         logger1.trace("here");
         logger2.trace("I am");
 
-        assertEquals(asList(
-                trace("hello"),
-                trace("world"),
-                trace("here"),
-                trace("I am")),
-                TestLoggerFactory.getLoggingEvents());
+        assertThat(TestLoggerFactory.getLoggingEvents(),
+                is(asList(
+                        trace("hello"),
+                        trace("world"),
+                        trace("here"),
+                        trace("I am"))));
     }
 
     @Test
@@ -97,12 +105,14 @@ public class TestLoggerFactoryTests {
         logger1.trace("hello");
         logger2.trace("world");
 
-        assertEquals(asList(
-                trace("hello")),
-                logger1.getLoggingEvents());
-        assertEquals(asList(
-                trace("world")),
-                logger2.getLoggingEvents());
+        assertThat(logger1.getLoggingEvents(),
+                is(asList(
+                        trace("hello"))
+                ));
+        assertThat(logger2.getLoggingEvents(),
+                is(asList(
+                    trace("world"))
+                ));
     }
 
     @Test
@@ -111,7 +121,7 @@ public class TestLoggerFactoryTests {
         logger.setEnabledLevels(WARN);
         logger.info("hello");
 
-        assertEquals(emptyList(), TestLoggerFactory.getLoggingEvents());
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(empty()));
     }
 
     @Test
@@ -121,7 +131,7 @@ public class TestLoggerFactoryTests {
         Map<String, TestLogger> expected = new HashMap<String, TestLogger>();
         expected.put("name1", logger1);
         expected.put("name2", logger2);
-        assertEquals(expected, TestLoggerFactory.getAllTestLoggers());
+        assertThat(TestLoggerFactory.getAllTestLoggers(), is(expected));
     }
 
     @Test
@@ -131,7 +141,7 @@ public class TestLoggerFactoryTests {
 
         Map<String, TestLogger> expected = new HashMap<String, TestLogger>();
         expected.put("name1", logger1);
-        assertEquals(expected, TestLoggerFactory.getAllTestLoggers());
+        assertThat(TestLoggerFactory.getAllTestLoggers(), is(expected));
     }
 
     @Test
@@ -140,7 +150,8 @@ public class TestLoggerFactoryTests {
 
         TestLoggerFactory.reset();
 
-        assertEquals(emptyMap(), TestLoggerFactory.getAllTestLoggers());
+        final Map<String, TestLogger> emptyMap = Collections.emptyMap();
+        assertThat(TestLoggerFactory.getAllTestLoggers(), is(emptyMap));
     }
 
     @Test
@@ -149,7 +160,7 @@ public class TestLoggerFactoryTests {
 
         TestLoggerFactory.reset();
 
-        assertEquals(emptyList(), TestLoggerFactory.getLoggingEvents());
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(empty()));
     }
 
     @Test
@@ -157,7 +168,7 @@ public class TestLoggerFactoryTests {
         getInstance().getLogger("name1").debug("hello");
         List<LoggingEvent> loggingEvents = TestLoggerFactory.getLoggingEvents();
         getInstance().getLogger("name1").info("world");
-        assertEquals(asList(debug("hello")), loggingEvents);
+        assertThat(loggingEvents, is(asList(debug("hello"))));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -174,7 +185,7 @@ public class TestLoggerFactoryTests {
 
         Map<String, TestLogger> expected = new HashMap<String, TestLogger>();
         expected.put("name1", logger1);
-        assertEquals(expected, allTestLoggers);
+        assertThat(allTestLoggers, is(expected));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -193,7 +204,7 @@ public class TestLoggerFactoryTests {
         });
         t.start();
         t.join();
-        assertEquals(Collections.emptyList(), TestLoggerFactory.getLoggingEvents());
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(empty()));
     }
 
     @Test
@@ -201,13 +212,13 @@ public class TestLoggerFactoryTests {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                TestLoggerFactory.getTestLogger("name1").info("hello");
+                TestLoggerFactory.getTestLogger("name1").info("message1");
             }
         });
         t.start();
         t.join();
-        TestLoggerFactory.getTestLogger("name1").info("hello");
-        assertEquals(asList(info("hello"), info("hello")), TestLoggerFactory.getAllLoggingEvents());
+        TestLoggerFactory.getTestLogger("name1").info("message2");
+        assertThat(TestLoggerFactory.getAllLoggingEvents(), is(asList(info("message1"), info("message2"))));
     }
 
     @Test
@@ -222,7 +233,7 @@ public class TestLoggerFactoryTests {
         t.start();
         t.join();
         TestLoggerFactory.clear();
-        assertEquals(asList(info("hello")), TestLoggerFactory.getAllLoggingEvents());
+        assertThat(TestLoggerFactory.getAllLoggingEvents(), is(asList(info("hello"))));
     }
 
     @Test
@@ -241,16 +252,33 @@ public class TestLoggerFactoryTests {
         });
         t.start();
         t.join();
-        final List<LoggingEvent> emptyList = Collections.emptyList();
-        assertThat(TestLoggerFactory.getLoggingEvents(), is(emptyList));
-        assertThat(TestLoggerFactory.getLoggingEvents(), is(emptyList));
-        assertThat(logger1.getLoggingEvents(), is(emptyList));
-        assertThat(logger1.getAllLoggingEvents(), is(emptyList));
-        assertThat(logger2.getLoggingEvents(), is(emptyList));
-        assertThat(logger2.getAllLoggingEvents(), is(emptyList));
+        assertThat(TestLoggerFactory.getLoggingEvents(), is(empty()));
+        assertThat(TestLoggerFactory.getAllLoggingEvents(), is(empty()));
+        assertThat(logger1.getLoggingEvents(), is(empty()));
+        assertThat(logger1.getAllLoggingEvents(), is(empty()));
+        assertThat(logger2.getLoggingEvents(), is(empty()));
+        assertThat(logger2.getAllLoggingEvents(), is(empty()));
     }
 
-    @Before @After
+    @Test
+    public void defaultPrintLevelIsOff() {
+        assertThat(TestLoggerFactory.getInstance().getPrintLevel(), is(Level.OFF));
+    }
+
+    @Test
+    @PrepareForTest(TestLoggerFactory.class)
+    public void printLevelTakenFromPropertyFile() {
+        mockStatic(Thread.class);
+        Thread threadMock = mock(Thread.class);
+        when(Thread.currentThread()).thenReturn(threadMock);
+        ClassLoader classLoaderMock = mock(ClassLoader.class);
+        when(threadMock.getContextClassLoader()).thenReturn(classLoaderMock);
+        when(classLoaderMock.getResourceAsStream("slf4jtest.properties")).thenReturn(new ByteArrayInputStream("print.level=DEBUG".getBytes()));
+
+        assertThat(TestLoggerFactory.getInstance().getPrintLevel(), is(Level.DEBUG));
+    }
+
+    @After
     public void resetLoggerFactory() {
         TestLoggerFactory.reset();
     }
