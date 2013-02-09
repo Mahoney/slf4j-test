@@ -1,20 +1,21 @@
 package uk.org.lidalia.slf4jtest;
 
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.Map;
+
+import org.joda.time.Instant;
+import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
+
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.joda.time.DateTime;
-import org.slf4j.Marker;
-import org.slf4j.helpers.MessageFormatter;
-
 import uk.org.lidalia.lang.Identity;
 import uk.org.lidalia.lang.RichObject;
 import uk.org.lidalia.slf4jext.Level;
-
-import java.io.PrintStream;
-import java.util.Collections;
-import java.util.Map;
 
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -326,7 +327,7 @@ public class LoggingEvent extends RichObject { //NOPMD lots of methods as conven
     @Identity private final ImmutableList<Object> arguments;
 
     private final Optional<TestLogger> creatingLogger;
-    private final DateTime timestamp = new DateTime();
+    private final Instant timestamp = new Instant();
     private final String threadName = Thread.currentThread().getName();
 
     public Level getLevel() {
@@ -364,7 +365,7 @@ public class LoggingEvent extends RichObject { //NOPMD lots of methods as conven
     /**
      * @return the time at which this logging event was created
      */
-    public DateTime getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
@@ -375,28 +376,33 @@ public class LoggingEvent extends RichObject { //NOPMD lots of methods as conven
         return threadName;
     }
 
-    private String getFormattedMessage() {
-        return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();
+    void print() {
+        final PrintStream output = printStreamForLevel();
+        output.println(formatLogStatement());
+        throwable.transform(new Function<Throwable, String>() {
+            @Override
+            public String apply(final Throwable input) {
+                input.printStackTrace(output);
+                return "";
+            }
+        });
     }
 
     private String formatLogStatement() {
         return getTimestamp() + " [" + getThreadName() + "] " + getLevel() + safeLoggerName() + " - " + getFormattedMessage();
     }
 
-    void print() {
-        final PrintStream output = printStreamForLevel();
-        output.println(formatLogStatement());
-        if (throwable.isPresent()) {
-            throwable.get().printStackTrace(output);
-        }
+    private String safeLoggerName() {
+        return creatingLogger.transform(new Function<TestLogger, String>() {
+            @Override
+            public String apply(final TestLogger input) {
+                return " " + input.getName();
+            }
+        }).or("");
     }
 
-    private String safeLoggerName() {
-        if (creatingLogger.isPresent()) {
-            return " " + getCreatingLogger().getName();
-        } else {
-            return "";
-        }
+    private String getFormattedMessage() {
+        return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();
     }
 
     private PrintStream printStreamForLevel() {

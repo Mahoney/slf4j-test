@@ -1,11 +1,11 @@
 package uk.org.lidalia.slf4jtest;
 
-import org.junit.Test;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -33,11 +33,11 @@ public class TestMDCAdapterTests {
         assertEquals(expected, testMDCAdapter.getCopyOfContextMap());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
+    @SuppressWarnings("raw type")
     public void getCopyOfContextMapIsCopy() {
         testMDCAdapter.put(key, value);
-        Map<String, String> expected = new HashMap<String, String>();
+        Map<String, String> expected = new HashMap<>();
         expected.put(key, value);
         Map actual = testMDCAdapter.getCopyOfContextMap();
         testMDCAdapter.clear();

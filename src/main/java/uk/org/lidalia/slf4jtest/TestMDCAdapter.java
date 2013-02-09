@@ -1,10 +1,11 @@
 package uk.org.lidalia.slf4jtest;
 
-import com.google.common.collect.ImmutableMap;
-import org.slf4j.spi.MDCAdapter;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.spi.MDCAdapter;
+
+import com.google.common.collect.ImmutableMap;
 
 public class TestMDCAdapter implements MDCAdapter {
 

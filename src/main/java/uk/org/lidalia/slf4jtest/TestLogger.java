@@ -1,25 +1,22 @@
 package uk.org.lidalia.slf4jtest;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
-import org.slf4j.Marker;
-
-import uk.org.lidalia.lang.Exceptions;
-import uk.org.lidalia.lang.ThreadLocal;
-import uk.org.lidalia.slf4jext.Level;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+import org.slf4j.Marker;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import uk.org.lidalia.lang.ThreadLocal;
+import uk.org.lidalia.slf4jext.Level;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
@@ -61,16 +58,16 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+            new ThreadLocal<>(new Supplier<List<LoggingEvent>>() {
         @Override
         public List<LoggingEvent> get() {
-            return new ArrayList<LoggingEvent>();
+            return new ArrayList<>();
         }
     });
 
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels =
-            new ThreadLocal<ImmutableSet<Level>>(ALL_ENABLABLE_LEVELS_SUPPLIER);
+            new ThreadLocal<>(ALL_ENABLABLE_LEVELS_SUPPLIER);
 
     TestLogger(final String name, final TestLoggerFactory testLoggerFactory) {
         this.name = name;
@@ -98,7 +95,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     public void clearAll() {
         allLoggingEvents.clear();
         loggingEvents.reset();
-        enabledLevels = new ThreadLocal<ImmutableSet<Level>>(ALL_ENABLABLE_LEVELS_SUPPLIER);
+        enabledLevels = new ThreadLocal<>(ALL_ENABLABLE_LEVELS_SUPPLIER);
     }
 
     /**
@@ -467,24 +464,8 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
     }
 
     private void optionallyPrint(final LoggingEvent event) {
-        if (printEnabled()) {
+        if (testLoggerFactory.getPrintLevel().compareTo(event.getLevel()) <= 0) {
             event.print();
-        }
-    }
-
-    private boolean printEnabled() {
-        try {
-            final Properties classpathProps = new Properties();
-            final InputStream resourceAsStream =
-                    Thread.currentThread().getContextClassLoader().getResourceAsStream("slf4jtest.properties");
-            if (resourceAsStream != null) {
-                classpathProps.load(resourceAsStream);
-            }
-            final String classpathProperty = classpathProps.getProperty("print", "false");
-            final String property = System.getProperty("slf4jtest.print", classpathProperty);
-            return Boolean.valueOf(property);
-        } catch (IOException ioe) {
-            return Exceptions.throwUnchecked(ioe, false);
         }
     }
 

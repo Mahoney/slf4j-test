@@ -1,17 +1,5 @@
 package uk.org.lidalia.slf4jtest;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.MDC;
-import org.slf4j.Marker;
-import uk.org.lidalia.slf4jext.Level;
-import uk.org.lidalia.slf4jext.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -22,34 +10,42 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.MDC;
+import org.slf4j.Marker;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+
+import uk.org.lidalia.slf4jext.Level;
+import uk.org.lidalia.slf4jext.Logger;
+
 import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
-import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
-import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
-import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
-import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
 import static uk.org.lidalia.slf4jext.Level.DEBUG;
 import static uk.org.lidalia.slf4jext.Level.ERROR;
 import static uk.org.lidalia.slf4jext.Level.INFO;
 import static uk.org.lidalia.slf4jext.Level.TRACE;
 import static uk.org.lidalia.slf4jext.Level.WARN;
 import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
+import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
 
 public class TestLoggerTests {
 
@@ -62,18 +58,23 @@ public class TestLoggerTests {
     private final Object[] args = new Object[] { arg1, arg2, "arg3" };
     private final Throwable throwable = new Throwable();
 
-    private final Map<String, String> mdcValues = new HashMap<String, String>();
+    private final Map<String, String> mdcValues = new HashMap<>();
+
+    private volatile PrintStream originalSysOut;
 
     @Before
     public void setUp() {
         mdcValues.put("key1", "value1");
         mdcValues.put("key2", "value2");
         MDC.setContextMap(mdcValues);
+        this.originalSysOut = System.out;
     }
 
     @After
     public void tearDown() {
         MDC.clear();
+        TestLoggerFactory.getInstance().setPrintLevel(Level.OFF);
+        System.setOut(originalSysOut);
     }
 
     @Test
@@ -680,15 +681,35 @@ public class TestLoggerTests {
         assertEquals(Level.enablableValueSet(), testLogger.getEnabledLevels());
     }
 
-//    @Test
-//    public void printsWhenPrintLevelEqualToEventLevel() {
-//        TestLoggerFactory.getInstance().setPrintLevel(Level.ERROR);
-//        final OutputStream sysout = setUpMockSystemOutput();
-//
-//        testLogger.info(message);
-//
-//        assertThat(sysout.toString().length(), greaterThan(0));
-//    }
+    @Test
+    public void printsWhenPrintLevelEqualToEventLevel() {
+        TestLoggerFactory.getInstance().setPrintLevel(Level.INFO);
+        final OutputStream sysout = setUpMockSystemOutput();
+
+        testLogger.info(message);
+
+        assertThat(sysout.toString().length(), greaterThan(0));
+    }
+
+    @Test
+    public void printsWhenPrintLevelLessThanEventLevel() {
+        TestLoggerFactory.getInstance().setPrintLevel(Level.DEBUG);
+        final OutputStream sysout = setUpMockSystemOutput();
+
+        testLogger.info(message);
+
+        assertThat(sysout.toString().length(), greaterThan(0));
+    }
+
+    @Test
+    public void doesNotWhenPrintLevelGreaterThanThanEventLevel() {
+        TestLoggerFactory.getInstance().setPrintLevel(Level.WARN);
+        final OutputStream sysout = setUpMockSystemOutput();
+
+        testLogger.info(message);
+
+        assertThat(sysout.toString().length(), is(0));
+    }
 
     private OutputStream setUpMockSystemOutput() {
         OutputStream sysOutMock = new ByteArrayOutputStream();

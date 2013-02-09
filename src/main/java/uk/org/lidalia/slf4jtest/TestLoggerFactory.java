@@ -1,21 +1,21 @@
 package uk.org.lidalia.slf4jtest;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import org.slf4j.ILoggerFactory;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import uk.org.lidalia.lang.Exceptions;
+import org.slf4j.ILoggerFactory;
+
+import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import uk.org.lidalia.lang.LazyValue;
 import uk.org.lidalia.lang.ThreadLocal;
 import uk.org.lidalia.slf4jext.Level;
 
@@ -24,28 +24,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class TestLoggerFactory implements ILoggerFactory {
 
-    private static class LazyFieldLoader {
-        static final TestLoggerFactory instance = new TestLoggerFactory(calculatePrintLevel());
-    }
-
-    private static Level calculatePrintLevel() {
-        final Properties classpathProps = new Properties();
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        final InputStream resourceAsStream =
-                contextClassLoader.getResourceAsStream("slf4jtest.properties");
-        if (resourceAsStream != null) {
-            try {
-                classpathProps.load(resourceAsStream);
-            } catch (IOException e) {
-                Exceptions.throwUnchecked(e);
-            }
-        }
-        final String printLevel = classpathProps.getProperty("print.level", "OFF");
-        return Level.valueOf(printLevel);
-    }
+    private static final LazyValue<TestLoggerFactory> INSTANCE = new LazyValue<>(new TestLoggerFactoryMaker());
 
     public static TestLoggerFactory getInstance() {
-        return LazyFieldLoader.instance;
+        return INSTANCE.call();
     }
 
     public static TestLogger getTestLogger(final Class<?> aClass) {
@@ -80,18 +62,18 @@ public final class TestLoggerFactory implements ILoggerFactory {
         return getInstance().getAllLoggingEventsFromLoggers();
     }
 
-    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<String, TestLogger>();
-    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
+    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<>();
+    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<List<LoggingEvent>>(new Supplier<List<LoggingEvent>>() {
+            new ThreadLocal<>(new Supplier<List<LoggingEvent>>() {
         @Override
         public List<LoggingEvent> get() {
-            return new ArrayList<LoggingEvent>();
+            return new ArrayList<>();
         }
     });
-    private final Level printLevel;
+    private volatile Level printLevel;
 
-    private TestLoggerFactory(Level printLevel) {
+    private TestLoggerFactory(final Level printLevel) {
         this.printLevel = checkNotNull(printLevel);
     }
 
@@ -145,4 +127,21 @@ public final class TestLoggerFactory implements ILoggerFactory {
         allLoggingEvents.add(event);
     }
 
+    public void setPrintLevel(final Level printLevel) {
+        this.printLevel = checkNotNull(printLevel);
+    }
+
+    private static class TestLoggerFactoryMaker implements Callable<TestLoggerFactory> {
+        @Override
+        public TestLoggerFactory call() throws IOException {
+            try {
+                final String level = new OverridableProperties("slf4jtest").getProperty("print.level", "OFF");
+                final Level printLevel = Level.valueOf(level);
+                return new TestLoggerFactory(printLevel); //NOPMD this is just a closure to instantiate the singleton lazily
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException("Invalid level name in property print.level of file slf4jtest.properties " +
+                        "or System property slf4jtest.print.level", e);
+            }
+        }
+    }
 }

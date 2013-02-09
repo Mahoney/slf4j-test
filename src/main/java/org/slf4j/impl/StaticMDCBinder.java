@@ -1,6 +1,7 @@
 package org.slf4j.impl;
 
 import org.slf4j.spi.MDCAdapter;
+
 import uk.org.lidalia.slf4jtest.TestMDCAdapter;
 
 public final class StaticMDCBinder {

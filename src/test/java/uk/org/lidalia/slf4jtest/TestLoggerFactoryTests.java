@@ -1,34 +1,34 @@
 package uk.org.lidalia.slf4jtest;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
 import uk.org.lidalia.slf4jext.Level;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+import static uk.org.lidalia.slf4jext.Level.WARN;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.debug;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.TestLoggerFactory.getInstance;
-import static uk.org.lidalia.slf4jext.Level.WARN;
+import static uk.org.lidalia.test.ShouldThrow.shouldThrow;
 
 @RunWith(PowerMockRunner.class)
 public class TestLoggerFactoryTests {
@@ -267,19 +267,51 @@ public class TestLoggerFactoryTests {
 
     @Test
     @PrepareForTest(TestLoggerFactory.class)
-    public void printLevelTakenFromPropertyFile() {
-        mockStatic(Thread.class);
-        Thread threadMock = mock(Thread.class);
-        when(Thread.currentThread()).thenReturn(threadMock);
-        ClassLoader classLoaderMock = mock(ClassLoader.class);
-        when(threadMock.getContextClassLoader()).thenReturn(classLoaderMock);
-        when(classLoaderMock.getResourceAsStream("slf4jtest.properties")).thenReturn(new ByteArrayInputStream("print.level=DEBUG".getBytes()));
+    public void printLevelTakenFromOverridableProperties() throws Exception {
+        final OverridableProperties properties = mock(OverridableProperties.class);
+        whenNew(OverridableProperties.class).withArguments("slf4jtest").thenReturn(properties);
+        when(properties.getProperty("print.level", "OFF")).thenReturn("INFO");
 
-        assertThat(TestLoggerFactory.getInstance().getPrintLevel(), is(Level.DEBUG));
+        assertThat(TestLoggerFactory.getInstance().getPrintLevel(), is(Level.INFO));
+    }
+
+    @Test
+    @PrepareForTest(TestLoggerFactory.class)
+    public void printLevelInvalidInOverridableProperties() throws Exception {
+        final OverridableProperties properties = mock(OverridableProperties.class);
+        whenNew(OverridableProperties.class).withArguments("slf4jtest").thenReturn(properties);
+        final String invalidLevelName = "nonsense";
+        when(properties.getProperty("print.level", "OFF")).thenReturn(invalidLevelName);
+
+        final IllegalStateException illegalStateException = shouldThrow(IllegalStateException.class, new Runnable() {
+            @Override
+            public void run() {
+                TestLoggerFactory.getInstance();
+            }
+        });
+        assertThat(illegalStateException.getMessage(),
+                is("Invalid level name in property print.level of file slf4jtest.properties " +
+                        "or System property slf4jtest.print.level"));
+        assertThat(illegalStateException.getCause(), instanceOf(IllegalArgumentException.class));
+        assertThat(illegalStateException.getCause().getMessage(),
+                is("No enum constant "+Level.class.getName()+"."+invalidLevelName));
+
+    }
+
+    @Test
+    public void setLevel() {
+        for (Level printLevel: Level.values()) {
+            TestLoggerFactory.getInstance().setPrintLevel(printLevel);
+            assertThat(TestLoggerFactory.getInstance().getPrintLevel(), is(printLevel));
+        }
     }
 
     @After
     public void resetLoggerFactory() {
-        TestLoggerFactory.reset();
+        try {
+            TestLoggerFactory.reset();
+        } catch (IllegalStateException e) {
+            // ignore
+        }
     }
 }
