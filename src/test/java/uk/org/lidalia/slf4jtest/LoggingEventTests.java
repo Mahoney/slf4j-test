@@ -494,7 +494,7 @@ public class LoggingEventTests {
         event.print();
 
         assertThat(systemOutputRule.getSystemOut(),
-                is("1970-01-01T00:00:00.000Z [main] INFO - message with argument"+lineSeparator()));
+                is("1970-01-01T00:00:00.000Z ["+Thread.currentThread().getName()+"] INFO - message with argument"+lineSeparator()));
     }
 
     @Test
@@ -503,7 +503,7 @@ public class LoggingEventTests {
         event.print();
 
         assertThat(systemOutputRule.getSystemOut(),
-                startsWith("1970-01-01T00:00:00.000Z [main] INFO - message"+lineSeparator()
+                startsWith("1970-01-01T00:00:00.000Z ["+Thread.currentThread().getName()+"] INFO - message"+lineSeparator()
                         + "java.lang.Exception"+lineSeparator()
                         + "\tat"
                 ));

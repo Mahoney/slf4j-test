@@ -12,7 +12,7 @@ public class TestMDCAdapter implements MDCAdapter {
     private final InheritableThreadLocal<Map<String, String>> value = new InheritableThreadLocal<Map<String, String>>() {
         @Override
         protected Map<String, String> initialValue() {
-            return new HashMap<String, String>();
+            return new HashMap<>();
         }
     };
 
