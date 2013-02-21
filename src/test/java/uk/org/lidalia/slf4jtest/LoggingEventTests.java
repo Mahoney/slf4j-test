@@ -45,7 +45,7 @@ import static uk.org.lidalia.test.StaticTimeRule.alwaysStartOfEpoch;
 @RunWith(JUnitParamsRunner.class)
 public class LoggingEventTests {
 
-    private static final ImmutableMap<String,String> emptyMap = ImmutableMap.of();
+    private static final ImmutableMap<String, String> emptyMap = ImmutableMap.of();
 
     @Rule public SystemOutputRule systemOutputRule = new SystemOutputRule();
     @Rule public StaticTimeRule alwaysStartOfEpoch = alwaysStartOfEpoch();
@@ -55,6 +55,7 @@ public class LoggingEventTests {
     {
         mdc.put("key", "value");
     }
+
     Marker marker = mock(Marker.class);
     Throwable throwable = new Throwable();
     String message = "message";
@@ -85,7 +86,7 @@ public class LoggingEventTests {
     }
 
     @Test
-     public void constructorMarkerMessageArgs() {
+    public void constructorMarkerMessageArgs() {
         LoggingEvent event = new LoggingEvent(level, marker, message, arg1, arg2);
         assertThat(event.getLevel(), is(level));
         assertThat(event.getMdc(), is(emptyMap));
@@ -432,9 +433,9 @@ public class LoggingEventTests {
 
     @Test
     public void mdcIsSnapshotInTime() {
-        Map<String, String> mdc = new HashMap<String, String>();
+        Map<String, String> mdc = new HashMap<>();
         mdc.put("key", "value1");
-        Map<String, String> mdcAtStart = new HashMap<String, String>(mdc);
+        Map<String, String> mdcAtStart = new HashMap<>(mdc);
         LoggingEvent event = new LoggingEvent(level, mdc, message);
         mdc.put("key", "value2");
         assertThat(event.getMdc(), is(mdcAtStart));
@@ -442,7 +443,7 @@ public class LoggingEventTests {
 
     @Test(expected = UnsupportedOperationException.class)
     public void mdcNotModifiable() throws Throwable {
-        Map<String, String> mdc = new HashMap<String, String>();
+        Map<String, String> mdc = new HashMap<>();
         mdc.put("key", "value1");
         final LoggingEvent event = new LoggingEvent(level, mdc, message);
         event.getMdc().put("anything", "whatever");
@@ -450,7 +451,7 @@ public class LoggingEventTests {
 
     @Test
     public void argsIsSnapshotInTime() {
-        Object[] args = new Object[] { arg1, arg2 };
+        Object[] args = new Object[]{arg1, arg2};
         Object[] argsAtStart = Arrays.copyOf(args, args.length);
         LoggingEvent event = new LoggingEvent(level, message, args);
         args[0] = "differentArg";
@@ -510,7 +511,7 @@ public class LoggingEventTests {
     }
 
     @Test
-    @Parameters({ "TRACE", "DEBUG", "INFO" })
+    @Parameters({"TRACE", "DEBUG", "INFO"})
     public void printInfoAndBelow(Level level) {
         LoggingEvent event = new LoggingEvent(level, "message with {}", "argument");
         event.print();
@@ -519,7 +520,7 @@ public class LoggingEventTests {
     }
 
     @Test
-    @Parameters({ "WARN", "ERROR" })
+    @Parameters({"WARN", "ERROR"})
     public void printWarnAndAbove(Level level) {
         LoggingEvent event = new LoggingEvent(level, "message with {}", "argument");
         event.print();

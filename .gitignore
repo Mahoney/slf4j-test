@@ -9,3 +9,4 @@ bin
 *.ipr
 *.ids
 .idea
+jacoco.exec

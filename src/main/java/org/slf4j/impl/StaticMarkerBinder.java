@@ -6,18 +6,17 @@ import org.slf4j.spi.MarkerFactoryBinder;
 
 public final class StaticMarkerBinder implements MarkerFactoryBinder {
 
-  public static final org.slf4j.impl.StaticMarkerBinder SINGLETON = new org.slf4j.impl.StaticMarkerBinder();
+    public static final org.slf4j.impl.StaticMarkerBinder SINGLETON = new org.slf4j.impl.StaticMarkerBinder();
 
-  private final IMarkerFactory markerFactory = new BasicMarkerFactory();
+    private final IMarkerFactory markerFactory = new BasicMarkerFactory();
 
-  private StaticMarkerBinder() {
-  }
+    private StaticMarkerBinder() {}
 
-  public IMarkerFactory getMarkerFactory() {
-    return markerFactory;
-  }
+    public IMarkerFactory getMarkerFactory() {
+        return markerFactory;
+    }
 
-  public String getMarkerFactoryClassStr() {
-    return BasicMarkerFactory.class.getName();
-  }
+    public String getMarkerFactoryClassStr() {
+        return BasicMarkerFactory.class.getName();
+    }
 }

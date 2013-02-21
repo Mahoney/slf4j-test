@@ -97,7 +97,7 @@ public class OverridablePropertiesTests {
 
         shouldThrow(ioException, new Callable<Void>() {
             @Override
-            public Void call() throws Exception{
+            public Void call() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
                 return null;
             }
@@ -113,7 +113,7 @@ public class OverridablePropertiesTests {
 
         shouldThrow(ioException, new Callable<Void>() {
             @Override
-            public Void call() throws Exception{
+            public Void call() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
                 return null;
             }
@@ -131,7 +131,7 @@ public class OverridablePropertiesTests {
 
         final IOException finalException = shouldThrow(IOException.class, new Callable<Void>() {
             @Override
-            public Void call() throws Exception{
+            public Void call() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
                 return null;
             }

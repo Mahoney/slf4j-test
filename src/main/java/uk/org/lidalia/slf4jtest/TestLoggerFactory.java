@@ -66,11 +66,11 @@ public final class TestLoggerFactory implements ILoggerFactory {
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
             new ThreadLocal<>(new Supplier<List<LoggingEvent>>() {
-        @Override
-        public List<LoggingEvent> get() {
-            return new ArrayList<>();
-        }
-    });
+                @Override
+                public List<LoggingEvent> get() {
+                    return new ArrayList<>();
+                }
+            });
     private volatile Level printLevel;
 
     private TestLoggerFactory(final Level printLevel) {

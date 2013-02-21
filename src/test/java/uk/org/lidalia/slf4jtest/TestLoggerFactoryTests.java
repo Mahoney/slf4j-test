@@ -111,7 +111,7 @@ public class TestLoggerFactoryTests {
                 ));
         assertThat(logger2.getLoggingEvents(),
                 is(asList(
-                    trace("world"))
+                        trace("world"))
                 ));
     }
 

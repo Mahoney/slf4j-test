@@ -55,7 +55,7 @@ public class TestLoggerTests {
     private final String message = "message{}{}{}";
     private final Object arg1 = "arg1";
     private final Object arg2 = "arg2";
-    private final Object[] args = new Object[] { arg1, arg2, "arg3" };
+    private final Object[] args = new Object[]{arg1, arg2, "arg3"};
     private final Throwable throwable = new Throwable();
 
     private final Map<String, String> mdcValues = new HashMap<>();
