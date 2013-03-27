@@ -3,13 +3,14 @@ package uk.org.lidalia.slf4jtest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Callable;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import uk.org.lidalia.lang.Task;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -19,6 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static uk.org.lidalia.test.Assert.isThrownBy;
 import static uk.org.lidalia.test.ShouldThrow.shouldThrow;
 
 @RunWith(PowerMockRunner.class)
@@ -95,13 +97,12 @@ public class OverridablePropertiesTests {
         mockPropertyFileInputStreamToBe(inputStreamMock);
         when(inputStreamMock.read(any(byte[].class))).thenThrow(ioException);
 
-        shouldThrow(ioException, new Callable<Void>() {
+        assertThat(ioException, isThrownBy(new Task() {
             @Override
-            public Void call() throws Exception {
+            public void perform() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
-                return null;
             }
-        });
+        }));
     }
 
     @Test
@@ -111,13 +112,12 @@ public class OverridablePropertiesTests {
         mockPropertyFileInputStreamToBe(inputStreamMock);
         doThrow(ioException).when(inputStreamMock).close();
 
-        shouldThrow(ioException, new Callable<Void>() {
+        assertThat(ioException, isThrownBy(new Task() {
             @Override
-            public Void call() throws Exception {
+            public void perform() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
-                return null;
             }
-        });
+        }));
     }
 
     @Test
@@ -129,11 +129,10 @@ public class OverridablePropertiesTests {
         when(inputStreamMock.read(any(byte[].class))).thenThrow(loadException);
         doThrow(closeException).when(inputStreamMock).close();
 
-        final IOException finalException = shouldThrow(IOException.class, new Callable<Void>() {
+        final IOException finalException = shouldThrow(IOException.class, new Task() {
             @Override
-            public Void call() throws Exception {
+            public void perform() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
-                return null;
             }
         });
         assertThat(finalException, sameInstance(loadException));
