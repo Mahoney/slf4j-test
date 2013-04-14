@@ -20,7 +20,6 @@ import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import static uk.org.lidalia.test.Assert.isThrownBy;
 import static uk.org.lidalia.test.ShouldThrow.shouldThrow;
 
 @RunWith(PowerMockRunner.class)
@@ -97,12 +96,13 @@ public class OverridablePropertiesTests {
         mockPropertyFileInputStreamToBe(inputStreamMock);
         when(inputStreamMock.read(any(byte[].class))).thenThrow(ioException);
 
-        assertThat(ioException, isThrownBy(new Task() {
+        final IOException actual = shouldThrow(IOException.class, new Task() {
             @Override
             public void perform() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
             }
-        }));
+        });
+        assertThat(actual, is(ioException));
     }
 
     @Test
@@ -112,12 +112,14 @@ public class OverridablePropertiesTests {
         mockPropertyFileInputStreamToBe(inputStreamMock);
         doThrow(ioException).when(inputStreamMock).close();
 
-        assertThat(ioException, isThrownBy(new Task() {
+
+        final IOException actual = shouldThrow(IOException.class, new Task() {
             @Override
             public void perform() throws Exception {
                 new OverridableProperties(PROPERTY_SOURCE_NAME);
             }
-        }));
+        });
+        assertThat(actual, is(ioException));
     }
 
     @Test
