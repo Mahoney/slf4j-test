@@ -15,6 +15,7 @@
 
   <name>SLF4J Test</name>
   <description>An SLF4J implementation focused on aiding unit testing.</description>
+  <url>http://projects.lidalia.org.uk/${project.artifactId}</url>
 
   <scm>
     <url>https://github.com/Mahoney/${project.artifactId}</url>
