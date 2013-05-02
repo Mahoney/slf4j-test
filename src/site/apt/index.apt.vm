@@ -1,0 +1,5 @@
+SLF4J Test
+
+  A test implementation of SLF4J that stores log messages in memory and provides methods for retrieving them.
+
+  See the {{{./apidocs/index.html}JavaDocs}} for documentation and the {{{./xref-test/index.html}Test Source}} for examples of usage.
