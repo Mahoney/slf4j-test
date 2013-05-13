@@ -472,13 +472,12 @@ public class LoggingEventTests {
 
     @Test
     public void creatingLoggerNotPresent() {
-        final IllegalStateException exception = shouldThrow(IllegalStateException.class, new Runnable() {
+        shouldThrow(IllegalStateException.class, new Runnable() {
             @Override
             public void run() {
                 info("message").getCreatingLogger();
             }
         });
-        assertThat(exception.getMessage(), is("value is absent"));
     }
 
     @Test
