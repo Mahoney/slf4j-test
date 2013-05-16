@@ -1,8 +1,5 @@
 package uk.org.lidalia.slf4jtest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
@@ -23,13 +21,14 @@ import com.google.common.collect.Lists;
 
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.slf4jext.Logger;
+import uk.org.lidalia.test.SystemOutputRule;
 
 import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_LIST;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -52,7 +51,7 @@ public class TestLoggerTests {
     private static final String LOGGER_NAME = "uk.org";
     private final TestLogger testLogger = new TestLogger(LOGGER_NAME, TestLoggerFactory.getInstance());
     private final Marker marker = mock(Marker.class);
-    private final String message = "message{}{}{}";
+    private final String message = "message {} {} {}";
     private final Object arg1 = "arg1";
     private final Object arg2 = "arg2";
     private final Object[] args = new Object[]{arg1, arg2, "arg3"};
@@ -60,21 +59,19 @@ public class TestLoggerTests {
 
     private final Map<String, String> mdcValues = new HashMap<>();
 
-    private volatile PrintStream originalSysOut;
+    @Rule public SystemOutputRule systemOutputRule = new SystemOutputRule();
 
     @Before
     public void setUp() {
         mdcValues.put("key1", "value1");
         mdcValues.put("key2", "value2");
         MDC.setContextMap(mdcValues);
-        this.originalSysOut = System.out;
     }
 
     @After
     public void tearDown() {
         MDC.clear();
         TestLoggerFactory.getInstance().setPrintLevel(Level.OFF);
-        System.setOut(originalSysOut);
     }
 
     @Test
@@ -684,37 +681,28 @@ public class TestLoggerTests {
     @Test
     public void printsWhenPrintLevelEqualToEventLevel() {
         TestLoggerFactory.getInstance().setPrintLevel(Level.INFO);
-        final OutputStream sysout = setUpMockSystemOutput();
 
         testLogger.info(message);
 
-        assertThat(sysout.toString().length(), greaterThan(0));
+        assertThat(systemOutputRule.getSystemOut(), containsString(message));
     }
 
     @Test
     public void printsWhenPrintLevelLessThanEventLevel() {
         TestLoggerFactory.getInstance().setPrintLevel(Level.DEBUG);
-        final OutputStream sysout = setUpMockSystemOutput();
 
         testLogger.info(message);
 
-        assertThat(sysout.toString().length(), greaterThan(0));
+        assertThat(systemOutputRule.getSystemOut(), containsString(message));
     }
 
     @Test
     public void doesNotWhenPrintLevelGreaterThanThanEventLevel() {
         TestLoggerFactory.getInstance().setPrintLevel(Level.WARN);
-        final OutputStream sysout = setUpMockSystemOutput();
 
         testLogger.info(message);
 
-        assertThat(sysout.toString().length(), is(0));
-    }
-
-    private OutputStream setUpMockSystemOutput() {
-        OutputStream sysOutMock = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(sysOutMock));
-        return sysOutMock;
+        assertThat(systemOutputRule.getSystemOut(), isEmptyString());
     }
 
     private void assertEnabledReturnsCorrectly(Level levelToTest) {
