@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20130516" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>SLF4J Test - </title>
+    <title>SLF4J Test - Project Mailing Lists</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.0.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -82,10 +82,12 @@
                 <ul class="nav nav-list">
                     <li class="nav-header">Overview</li>
                                 
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>Introduction</a>
-          </li>
+                          <a href="index.html" title="Introduction">
+          <i class="none"></i>
+        Introduction</a>
+            </li>
                               <li class="nav-header">Project Documentation</li>
                                                                                                                                                                                                                                                                                                                                       
       <li>
@@ -95,10 +97,12 @@
         Project Information</a>
                     <ul class="nav nav-list">
                       
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>About</a>
-          </li>
+                          <a href="index.html" title="About">
+          <i class="none"></i>
+        About</a>
+            </li>
                       
       <li>
     
@@ -177,12 +181,10 @@
         Project Summary</a>
             </li>
                       
-      <li>
+      <li class="active">
     
-                          <a href="mail-lists.html" title="Mailing Lists">
-          <i class="none"></i>
-        Mailing Lists</a>
-            </li>
+            <a href="#"><i class="none"></i>Mailing Lists</a>
+          </li>
                       
       <li>
     
@@ -220,63 +222,8 @@
         <div id="bodyColumn"  class="span9" >
                                   
             <div class="section">
-<h2>SLF4J Test<a name="SLF4J_Test"></a></h2>
-<p>A test implementation of <a class="externalLink" href="http://www.slf4j.org/">SLF4J</a> that stores log messages in memory and provides methods for retrieving them.</p>
-<p>See the <a href="./apidocs/index.html">JavaDocs</a> for full documentation and the <a href="./xref-test/index.html">Test Source</a> for complete examples of usage.</p>
-<p>Details on how to depend on this library in your favourite build tool can be found <a href="./dependency-info.html">here</a>.</p>
-<div class="section">
-<h3>Scope<a name="Scope"></a></h3>
-<p>Since there should only ever be <a class="externalLink" href="http://www.slf4j.org/codes.html#multiple_bindings">one SLF4J implementation on your classpath</a> this library only works as a tool for testing other libraries. It should be added to the test classpath of libraries that use the SLF4J API. If you currently produce your entire application as a single module / project, and so depend on an SLF4J implementation like <a class="externalLink" href="http://logback.qos.ch/">Logback</a> in the run or compile time dependencies, you will need to break it up if you wish to use this library reliably.</p></div>
-<div class="section">
-<h3>Purpose<a name="Purpose"></a></h3>
-<p>It is a common pattern to use SLF4J in the following manner:</p>
-
-<div class="source">
-<pre>import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class Slf4jUser {
-
-    private static final Logger logger = LoggerFactory.getLogger(Slf4jUser.class);
-
-    public void aMethodThatLogs() {
-        logger.info(&quot;Hello World!&quot;);
-    }
-}
-</pre></div>
-<p>This is because it is arduous to inject a Logger instance into every class that needs to log. However, this renders it quite difficult to unit test interactions with the logger instance; even if it is not stored statically or made final, it will almost certainly be private, and to make it anything other than private or final is to compromise the design for testability which is obviously undesirable.</p>
-<p>This library gets around this by providing an implementation of SLF4J which stores the logging events in memory in a form that can be interrogated. So long as slf4j-test is present as the sole SLF4J implementation on the classpath, the class above could be tested as so:</p>
-
-<div class="source">
-<pre>import org.junit.After;
-import org.junit.Test;
-
-import uk.org.lidalia.slf4jtest.TestLogger;
-import uk.org.lidalia.slf4jtest.TestLoggerFactory;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
-
-public class Slf4jUserTest {
-
-    Slf4jUser slf4jUser = new Slf4jUser();
-    TestLogger logger = TestLoggerFactory.getTestLogger(Slf4jUser.class);
-
-    @Test
-    public void aMethodThatLogsLogsAsExpected() {
-        slf4jUser.aMethodThatLogs();
-
-        assertThat(logger.getLoggingEvents(), is(asList(info(&quot;Hello World!&quot;))));
-    }
-
-    @After
-    public void clearLoggers() {
-        TestLoggerFactory.clear();
-    }
-}
-</pre></div></div></div>
+<h2>Project Mailing Lists<a name="Project_Mailing_Lists"></a></h2><a name="Project_Mailing_Lists"></a>
+<p>There are no mailing lists currently associated with this project.</p></div>
                   </div>
             </div>
           </div>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OverridableProperties.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SLF4J Test</a> &gt; <a href="index.html" class="el_package">uk.org.lidalia.slf4jtest</a> &gt; <span class="el_source">OverridableProperties.java</span></div><h1>OverridableProperties.java</h1><pre class="source lang-java linenums">package uk.org.lidalia.slf4jtest;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
+import uk.org.lidalia.lang.Exceptions;
+
+import static com.google.common.base.Optional.fromNullable;
+
+class OverridableProperties {
+<span class="fc" id="L15">    private static final Properties EMPTY_PROPERTIES = new Properties();</span>
+    private final String propertySourceName;
+    private final Properties properties;
+
+<span class="fc" id="L19">    OverridableProperties(final String propertySourceName) throws IOException {</span>
+<span class="fc" id="L20">        this.propertySourceName = propertySourceName;</span>
+<span class="fc" id="L21">        this.properties = getProperties();</span>
+<span class="fc" id="L22">    }</span>
+
+    private Properties getProperties() throws IOException {
+<span class="fc" id="L25">        final Optional&lt;InputStream&gt; resourceAsStream = fromNullable(Thread.currentThread().getContextClassLoader()</span>
+                .getResourceAsStream(propertySourceName + &quot;.properties&quot;));
+<span class="fc" id="L27">        return resourceAsStream.transform(new Function&lt;InputStream, Properties&gt;() {</span>
+            @Override
+            public Properties apply(final InputStream propertyResource) {
+<span class="fc" id="L30">                Properties loadedPropertoes = new Properties();</span>
+<span class="fc" id="L31">                try (InputStream closablePropertyResource = propertyResource) {</span>
+<span class="fc" id="L32">                    loadedPropertoes.load(closablePropertyResource);</span>
+<span class="pc bpc" id="L33" title="4 of 8 branches missed.">                } catch (IOException ioe) {</span>
+<span class="nc" id="L34">                    Exceptions.throwUnchecked(ioe);</span>
+<span class="fc" id="L35">                }</span>
+<span class="fc" id="L36">                return loadedPropertoes;</span>
+            }
+        }).or(EMPTY_PROPERTIES);
+    }
+
+    String getProperty(final String propertyKey, final String defaultValue) {
+<span class="fc" id="L42">        final String propertyFileProperty = properties.getProperty(propertyKey, defaultValue);</span>
+<span class="fc" id="L43">        return System.getProperty(propertySourceName + &quot;.&quot; + propertyKey, propertyFileProperty);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.2.201302030002</span></div></body></html>

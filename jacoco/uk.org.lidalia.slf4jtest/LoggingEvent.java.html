@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>LoggingEvent.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SLF4J Test</a> &gt; <a href="index.html" class="el_package">uk.org.lidalia.slf4jtest</a> &gt; <span class="el_source">LoggingEvent.java</span></div><h1>LoggingEvent.java</h1><pre class="source lang-java linenums">package uk.org.lidalia.slf4jtest;
+
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.Map;
+
+import org.joda.time.Instant;
+import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import uk.org.lidalia.lang.Identity;
+import uk.org.lidalia.lang.RichObject;
+import uk.org.lidalia.slf4jext.Level;
+
+import static com.google.common.base.Optional.of;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * Representation of a call to a logger for test assertion purposes.
+ * &lt;p/&gt;
+ * The contract of {@link #equals(Object)} and {@link #hashCode} is that they compare the results of:
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #getLevel()}&lt;/li&gt;
+ * &lt;li&gt;{@link #getMdc()}&lt;/li&gt;
+ * &lt;li&gt;{@link #getMarker()}&lt;/li&gt;
+ * &lt;li&gt;{@link #getThrowable()}&lt;/li&gt;
+ * &lt;li&gt;{@link #getMessage()}&lt;/li&gt;
+ * &lt;li&gt;{@link #getArguments()}&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p/&gt;
+ * They do NOT compare the results of {@link #getTimestamp()} or {@link #getCreatingLogger()} as this would render it impractical
+ * to create appropriate expected {@link LoggingEvent}s to compare against.
+ * &lt;p/&gt;
+ * Constructors and convenient static factory methods exist to create {@link LoggingEvent}s with appropriate
+ * defaults.  These are not documented further as they should be self-evident.
+ */
+public class LoggingEvent extends RichObject { //NOPMD lots of methods as convenience ways of creating this class
+
+    public static LoggingEvent trace(final String message, final Object... arguments) {
+<span class="fc" id="L45">        return new LoggingEvent(Level.TRACE, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L49">        return new LoggingEvent(Level.TRACE, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L53">        return new LoggingEvent(Level.TRACE, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(
+            final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L58">        return new LoggingEvent(Level.TRACE, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(final Map&lt;String, String&gt; mdc, final String message, final Object... arguments) {
+<span class="fc" id="L62">        return new LoggingEvent(Level.TRACE, mdc, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(
+            final Map&lt;String, String&gt; mdc, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L67">        return new LoggingEvent(Level.TRACE, mdc, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(
+            final Map&lt;String, String&gt; mdc, final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L72">        return new LoggingEvent(Level.TRACE, mdc, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent trace(
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L81">        return new LoggingEvent(Level.TRACE, mdc, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(final String message, final Object... arguments) {
+<span class="fc" id="L85">        return new LoggingEvent(Level.DEBUG, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L89">        return new LoggingEvent(Level.DEBUG, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L93">        return new LoggingEvent(Level.DEBUG, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(
+            final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L98">        return new LoggingEvent(Level.DEBUG, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(final Map&lt;String, String&gt; mdc, final String message, final Object... arguments) {
+<span class="fc" id="L102">        return new LoggingEvent(Level.DEBUG, mdc, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(
+            final Map&lt;String, String&gt; mdc, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L107">        return new LoggingEvent(Level.DEBUG, mdc, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(
+            final Map&lt;String, String&gt; mdc, final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L112">        return new LoggingEvent(Level.DEBUG, mdc, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent debug(
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L121">        return new LoggingEvent(Level.DEBUG, mdc, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(final String message, final Object... arguments) {
+<span class="fc" id="L125">        return new LoggingEvent(Level.INFO, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L129">        return new LoggingEvent(Level.INFO, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L133">        return new LoggingEvent(Level.INFO, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(
+            final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L138">        return new LoggingEvent(Level.INFO, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(final Map&lt;String, String&gt; mdc, final String message, final Object... arguments) {
+<span class="fc" id="L142">        return new LoggingEvent(Level.INFO, mdc, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(
+            final Map&lt;String, String&gt; mdc, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L147">        return new LoggingEvent(Level.INFO, mdc, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(
+            final Map&lt;String, String&gt; mdc, final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L152">        return new LoggingEvent(Level.INFO, mdc, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent info(
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L161">        return new LoggingEvent(Level.INFO, mdc, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(final String message, final Object... arguments) {
+<span class="fc" id="L165">        return new LoggingEvent(Level.WARN, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L169">        return new LoggingEvent(Level.WARN, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L173">        return new LoggingEvent(Level.WARN, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(
+            final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L178">        return new LoggingEvent(Level.WARN, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(final Map&lt;String, String&gt; mdc, final String message, final Object... arguments) {
+<span class="fc" id="L182">        return new LoggingEvent(Level.WARN, mdc, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(
+            final Map&lt;String, String&gt; mdc, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L187">        return new LoggingEvent(Level.WARN, mdc, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(
+            final Map&lt;String, String&gt; mdc, final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L192">        return new LoggingEvent(Level.WARN, mdc, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent warn(
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L201">        return new LoggingEvent(Level.WARN, mdc, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(final String message, final Object... arguments) {
+<span class="fc" id="L205">        return new LoggingEvent(Level.ERROR, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L209">        return new LoggingEvent(Level.ERROR, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L213">        return new LoggingEvent(Level.ERROR, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(
+            final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L218">        return new LoggingEvent(Level.ERROR, marker, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(final Map&lt;String, String&gt; mdc, final String message, final Object... arguments) {
+<span class="fc" id="L222">        return new LoggingEvent(Level.ERROR, mdc, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(
+            final Map&lt;String, String&gt; mdc, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L227">        return new LoggingEvent(Level.ERROR, mdc, throwable, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(
+            final Map&lt;String, String&gt; mdc, final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L232">        return new LoggingEvent(Level.ERROR, mdc, marker, message, arguments);</span>
+    }
+
+    public static LoggingEvent error(
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L241">        return new LoggingEvent(Level.ERROR, mdc, marker, throwable, message, arguments);</span>
+    }
+
+    public LoggingEvent(final Level level, final String message, final Object... arguments) {
+<span class="fc" id="L245">        this(level, Collections.&lt;String, String&gt;emptyMap(), Optional.&lt;Marker&gt;absent(), Optional.&lt;Throwable&gt;absent(),</span>
+                message, arguments);
+<span class="fc" id="L247">    }</span>
+
+    public LoggingEvent(final Level level, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L250">        this(level, Collections.&lt;String, String&gt;emptyMap(), Optional.&lt;Marker&gt;absent(), of(throwable), message, arguments);</span>
+<span class="fc" id="L251">    }</span>
+
+    public LoggingEvent(final Level level, final Marker marker, final String message, final Object... arguments) {
+<span class="fc" id="L254">        this(level, Collections.&lt;String, String&gt;emptyMap(), of(marker), Optional.&lt;Throwable&gt;absent(), message, arguments);</span>
+<span class="fc" id="L255">    }</span>
+
+    public LoggingEvent(
+            final Level level, final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+<span class="fc" id="L259">        this(level, Collections.&lt;String, String&gt;emptyMap(), of(marker), of(throwable), message, arguments);</span>
+<span class="fc" id="L260">    }</span>
+
+    public LoggingEvent(final Level level, final Map&lt;String, String&gt; mdc, final String message, final Object... arguments) {
+<span class="fc" id="L263">        this(level, mdc, Optional.&lt;Marker&gt;absent(), Optional.&lt;Throwable&gt;absent(), message, arguments);</span>
+<span class="fc" id="L264">    }</span>
+
+    public LoggingEvent(
+            final Level level,
+            final Map&lt;String, String&gt; mdc,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L272">        this(level, mdc, Optional.&lt;Marker&gt;absent(), of(throwable), message, arguments);</span>
+<span class="fc" id="L273">    }</span>
+
+    public LoggingEvent(
+            final Level level,
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L281">        this(level, mdc, of(marker), Optional.&lt;Throwable&gt;absent(), message, arguments);</span>
+<span class="fc" id="L282">    }</span>
+
+    public LoggingEvent(
+            final Level level,
+            final Map&lt;String, String&gt; mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L291">        this(level, mdc, of(marker), of(throwable), message, arguments);</span>
+<span class="fc" id="L292">    }</span>
+
+    private LoggingEvent(
+            final Level level,
+            final Map&lt;String, String&gt; mdc,
+            final Optional&lt;Marker&gt; marker,
+            final Optional&lt;Throwable&gt; throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L301">        this(Optional.&lt;TestLogger&gt;absent(), level, mdc, marker, throwable, message, arguments);</span>
+<span class="fc" id="L302">    }</span>
+
+    LoggingEvent(
+            final Optional&lt;TestLogger&gt; creatingLogger,
+            final Level level,
+            final Map&lt;String, String&gt; mdc,
+            final Optional&lt;Marker&gt; marker,
+            final Optional&lt;Throwable&gt; throwable,
+            final String message,
+            final Object... arguments) {
+<span class="fc" id="L312">        super();</span>
+<span class="fc" id="L313">        this.creatingLogger = creatingLogger;</span>
+<span class="fc" id="L314">        this.level = checkNotNull(level);</span>
+<span class="fc" id="L315">        this.mdc = ImmutableMap.copyOf(mdc);</span>
+<span class="fc" id="L316">        this.marker = checkNotNull(marker);</span>
+<span class="fc" id="L317">        this.throwable = checkNotNull(throwable);</span>
+<span class="fc" id="L318">        this.message = checkNotNull(message);</span>
+<span class="fc" id="L319">        this.arguments = ImmutableList.copyOf(arguments);</span>
+<span class="fc" id="L320">    }</span>
+
+    @Identity private final Level level;
+    @Identity private final ImmutableMap&lt;String, String&gt; mdc;
+    @Identity private final Optional&lt;Marker&gt; marker;
+    @Identity private final Optional&lt;Throwable&gt; throwable;
+    @Identity private final String message;
+    @Identity private final ImmutableList&lt;Object&gt; arguments;
+
+    private final Optional&lt;TestLogger&gt; creatingLogger;
+<span class="fc" id="L330">    private final Instant timestamp = new Instant();</span>
+<span class="fc" id="L331">    private final String threadName = Thread.currentThread().getName();</span>
+
+    public Level getLevel() {
+<span class="fc" id="L334">        return level;</span>
+    }
+
+    public ImmutableMap&lt;String, String&gt; getMdc() {
+<span class="fc" id="L338">        return mdc;</span>
+    }
+
+    public Optional&lt;Marker&gt; getMarker() {
+<span class="fc" id="L342">        return marker;</span>
+    }
+
+    public String getMessage() {
+<span class="fc" id="L346">        return message;</span>
+    }
+
+    public ImmutableList&lt;Object&gt; getArguments() {
+<span class="fc" id="L350">        return arguments;</span>
+    }
+
+    public Optional&lt;Throwable&gt; getThrowable() {
+<span class="fc" id="L354">        return throwable;</span>
+    }
+
+    /**
+     * @return the logger that created this logging event.
+     * @throws IllegalStateException if this logging event was not created by a logger
+     */
+    public TestLogger getCreatingLogger() {
+<span class="fc" id="L362">        return creatingLogger.get();</span>
+    }
+
+    /**
+     * @return the time at which this logging event was created
+     */
+    public Instant getTimestamp() {
+<span class="fc" id="L369">        return timestamp;</span>
+    }
+
+    /**
+     * @return the name of the thread that created this logging event
+     */
+    public String getThreadName() {
+<span class="fc" id="L376">        return threadName;</span>
+    }
+
+    void print() {
+<span class="fc" id="L380">        final PrintStream output = printStreamForLevel();</span>
+<span class="fc" id="L381">        output.println(formatLogStatement());</span>
+<span class="fc" id="L382">        throwable.transform(new Function&lt;Throwable, String&gt;() {</span>
+            @Override
+            public String apply(final Throwable input) {
+<span class="fc" id="L385">                input.printStackTrace(output);</span>
+<span class="fc" id="L386">                return &quot;&quot;;</span>
+            }
+        });
+<span class="fc" id="L389">    }</span>
+
+    private String formatLogStatement() {
+<span class="fc" id="L392">        return getTimestamp() + &quot; [&quot; + getThreadName() + &quot;] &quot; + getLevel() + safeLoggerName() + &quot; - &quot; + getFormattedMessage();</span>
+    }
+
+    private String safeLoggerName() {
+<span class="fc" id="L396">        return creatingLogger.transform(new Function&lt;TestLogger, String&gt;() {</span>
+            @Override
+            public String apply(final TestLogger input) {
+<span class="fc" id="L399">                return &quot; &quot; + input.getName();</span>
+            }
+        }).or(&quot;&quot;);
+    }
+
+    private String getFormattedMessage() {
+<span class="fc" id="L405">        return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();</span>
+    }
+
+    private PrintStream printStreamForLevel() {
+<span class="pc bfc" id="L409" title="All 2 branches covered.">        switch (level) {</span>
+            case ERROR:
+            case WARN:
+<span class="fc" id="L412">                return System.err;</span>
+            default:
+<span class="fc" id="L414">                return System.out;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.2.201302030002</span></div></body></html>
