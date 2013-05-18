@@ -10,7 +10,7 @@ public final class StaticMarkerBinder implements MarkerFactoryBinder {
 
     private final IMarkerFactory markerFactory = new BasicMarkerFactory();
 
-    private StaticMarkerBinder() {}
+    private StaticMarkerBinder() { }
 
     public IMarkerFactory getMarkerFactory() {
         return markerFactory;

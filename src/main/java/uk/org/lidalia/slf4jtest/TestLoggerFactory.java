@@ -95,14 +95,14 @@ public final class TestLoggerFactory implements ILoggerFactory {
     }
 
     public void clearLoggers() {
-        for (TestLogger testLogger: loggers.values()) {
+        for (final TestLogger testLogger: loggers.values()) {
             testLogger.clear();
         }
         loggingEvents.get().clear();
     }
 
     public void clearAllLoggers() {
-        for (TestLogger testLogger: loggers.values()) {
+        for (final TestLogger testLogger: loggers.values()) {
             testLogger.clearAll();
         }
         loggingEvents.reset();
@@ -131,13 +131,14 @@ public final class TestLoggerFactory implements ILoggerFactory {
         this.printLevel = checkNotNull(printLevel);
     }
 
+    @SuppressWarnings("PMD.AccessorClassGeneration")
     private static class TestLoggerFactoryMaker implements Callable<TestLoggerFactory> {
         @Override
         public TestLoggerFactory call() throws IOException {
             try {
                 final String level = new OverridableProperties("slf4jtest").getProperty("print.level", "OFF");
                 final Level printLevel = Level.valueOf(level);
-                return new TestLoggerFactory(printLevel); //NOPMD this is just a closure to instantiate the singleton lazily
+                return new TestLoggerFactory(printLevel);
             } catch (IllegalArgumentException e) {
                 throw new IllegalStateException("Invalid level name in property print.level of file slf4jtest.properties " +
                         "or System property slf4jtest.print.level", e);

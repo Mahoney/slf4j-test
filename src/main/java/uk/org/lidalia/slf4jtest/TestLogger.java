@@ -47,7 +47,8 @@ import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
  * do so by passing the constants in {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy} to
  * {@link #setEnabledLevels(ImmutableSet)} or {@link #setEnabledLevelsForAllThreads(ImmutableSet)}.
  */
-public class TestLogger implements Logger { // NOPMD interface has too many methods, we have to implement
+@SuppressWarnings({ "PMD.ExcessivePublicCount", "PMD.TooManyMethods" })
+public class TestLogger implements Logger {
 
     private static final Supplier<ImmutableSet<Level>> ALL_ENABLABLE_LEVELS_SUPPLIER = new Supplier<ImmutableSet<Level>>() {
         @Override

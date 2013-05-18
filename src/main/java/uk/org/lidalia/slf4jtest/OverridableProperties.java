@@ -27,13 +27,13 @@ class OverridableProperties {
         return resourceAsStream.transform(new Function<InputStream, Properties>() {
             @Override
             public Properties apply(final InputStream propertyResource) {
-                Properties loadedPropertoes = new Properties();
+                final Properties loadedProperties = new Properties();
                 try (InputStream closablePropertyResource = propertyResource) {
-                    loadedPropertoes.load(closablePropertyResource);
+                    loadedProperties.load(closablePropertyResource);
                 } catch (IOException ioe) {
                     Exceptions.throwUnchecked(ioe);
                 }
-                return loadedPropertoes;
+                return loadedProperties;
             }
         }).or(EMPTY_PROPERTIES);
     }

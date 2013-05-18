@@ -39,7 +39,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Constructors and convenient static factory methods exist to create {@link LoggingEvent}s with appropriate
  * defaults.  These are not documented further as they should be self-evident.
  */
-public class LoggingEvent extends RichObject { //NOPMD lots of methods as convenience ways of creating this class
+@SuppressWarnings({ "PMD.ExcessivePublicCount", "PMD.TooManyMethods" })
+public class LoggingEvent extends RichObject {
 
     public static LoggingEvent trace(final String message, final Object... arguments) {
         return new LoggingEvent(Level.TRACE, message, arguments);
