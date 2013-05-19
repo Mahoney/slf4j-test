@@ -72,4 +72,19 @@
       <artifactId>JUnitParams</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links combine.children="append">
+            <link>http://projects.lidalia.org.uk/lidalia-lang/apidocs/</link>
+            <link>http://projects.lidalia.org.uk/lidalia-test/apidocs/</link>
+            <link>http://projects.lidalia.org.uk/slf4j-test/apidocs/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
