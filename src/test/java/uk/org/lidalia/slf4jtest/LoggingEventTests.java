@@ -470,14 +470,9 @@ public class LoggingEventTests {
         assertThat(event.getTimestamp(), is(alwaysStartOfEpoch.getInstant()));
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void creatingLoggerNotPresent() {
-        shouldThrow(IllegalStateException.class, new Runnable() {
-            @Override
-            public void run() {
-                info("message").getCreatingLogger();
-            }
-        });
+        info("message").getCreatingLogger();
     }
 
     @Test
