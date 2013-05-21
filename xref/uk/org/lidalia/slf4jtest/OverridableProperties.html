@@ -37,13 +37,13 @@
 <a class="jxr_linenumber" name="27" href="#27">27</a>          <strong class="jxr_keyword">return</strong> resourceAsStream.transform(<strong class="jxr_keyword">new</strong> Function&lt;InputStream, Properties&gt;() {
 <a class="jxr_linenumber" name="28" href="#28">28</a>              @Override
 <a class="jxr_linenumber" name="29" href="#29">29</a>              <strong class="jxr_keyword">public</strong> Properties apply(<strong class="jxr_keyword">final</strong> InputStream propertyResource) {
-<a class="jxr_linenumber" name="30" href="#30">30</a>                  Properties loadedPropertoes = <strong class="jxr_keyword">new</strong> Properties();
+<a class="jxr_linenumber" name="30" href="#30">30</a>                  <strong class="jxr_keyword">final</strong> Properties loadedProperties = <strong class="jxr_keyword">new</strong> Properties();
 <a class="jxr_linenumber" name="31" href="#31">31</a>                  <strong class="jxr_keyword">try</strong> (InputStream closablePropertyResource = propertyResource) {
-<a class="jxr_linenumber" name="32" href="#32">32</a>                      loadedPropertoes.load(closablePropertyResource);
+<a class="jxr_linenumber" name="32" href="#32">32</a>                      loadedProperties.load(closablePropertyResource);
 <a class="jxr_linenumber" name="33" href="#33">33</a>                  } <strong class="jxr_keyword">catch</strong> (IOException ioe) {
 <a class="jxr_linenumber" name="34" href="#34">34</a>                      Exceptions.throwUnchecked(ioe);
 <a class="jxr_linenumber" name="35" href="#35">35</a>                  }
-<a class="jxr_linenumber" name="36" href="#36">36</a>                  <strong class="jxr_keyword">return</strong> loadedPropertoes;
+<a class="jxr_linenumber" name="36" href="#36">36</a>                  <strong class="jxr_keyword">return</strong> loadedProperties;
 <a class="jxr_linenumber" name="37" href="#37">37</a>              }
 <a class="jxr_linenumber" name="38" href="#38">38</a>          }).or(EMPTY_PROPERTIES);
 <a class="jxr_linenumber" name="39" href="#39">39</a>      }

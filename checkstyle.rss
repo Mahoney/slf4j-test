@@ -10,7 +10,7 @@
     <item>
       <title>File: 8,
              Errors: 0,
-             Warnings: 4,
+             Warnings: 2,
              Infos: 0
       </title>
             <link>http://projects.lidalia.org.uk/slf4j-test/checkstyle.html</link>
@@ -105,7 +105,7 @@
                   0
                 </td>
                 <td>
-                  2
+                  0
                 </td>
                 <td>
                   0

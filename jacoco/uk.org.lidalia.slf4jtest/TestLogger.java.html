@@ -47,35 +47,36 @@ import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
  * do so by passing the constants in {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy} to
  * {@link #setEnabledLevels(ImmutableSet)} or {@link #setEnabledLevelsForAllThreads(ImmutableSet)}.
  */
-public class TestLogger implements Logger { // NOPMD interface has too many methods, we have to implement
+@SuppressWarnings({ &quot;PMD.ExcessivePublicCount&quot;, &quot;PMD.TooManyMethods&quot; })
+public class TestLogger implements Logger {
 
-<span class="fc" id="L52">    private static final Supplier&lt;ImmutableSet&lt;Level&gt;&gt; ALL_ENABLABLE_LEVELS_SUPPLIER = new Supplier&lt;ImmutableSet&lt;Level&gt;&gt;() {</span>
+<span class="fc" id="L53">    private static final Supplier&lt;ImmutableSet&lt;Level&gt;&gt; ALL_ENABLABLE_LEVELS_SUPPLIER = new Supplier&lt;ImmutableSet&lt;Level&gt;&gt;() {</span>
         @Override
         public ImmutableSet&lt;Level&gt; get() {
-<span class="fc" id="L55">            return enablableValueSet();</span>
+<span class="fc" id="L56">            return enablableValueSet();</span>
         }
     };
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-<span class="fc" id="L60">    private final ThreadLocal&lt;List&lt;LoggingEvent&gt;&gt; loggingEvents =</span>
-<span class="fc" id="L61">            new ThreadLocal&lt;&gt;(new Supplier&lt;List&lt;LoggingEvent&gt;&gt;() {</span>
+<span class="fc" id="L61">    private final ThreadLocal&lt;List&lt;LoggingEvent&gt;&gt; loggingEvents =</span>
+<span class="fc" id="L62">            new ThreadLocal&lt;&gt;(new Supplier&lt;List&lt;LoggingEvent&gt;&gt;() {</span>
                 @Override
                 public List&lt;LoggingEvent&gt; get() {
-<span class="fc" id="L64">                    return new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">                    return new ArrayList&lt;&gt;();</span>
                 }
             });
 
-<span class="fc" id="L68">    private final List&lt;LoggingEvent&gt; allLoggingEvents = new CopyOnWriteArrayList&lt;LoggingEvent&gt;();</span>
-<span class="fc" id="L69">    private volatile ThreadLocal&lt;ImmutableSet&lt;Level&gt;&gt; enabledLevels =</span>
+<span class="fc" id="L69">    private final List&lt;LoggingEvent&gt; allLoggingEvents = new CopyOnWriteArrayList&lt;LoggingEvent&gt;();</span>
+<span class="fc" id="L70">    private volatile ThreadLocal&lt;ImmutableSet&lt;Level&gt;&gt; enabledLevels =</span>
             new ThreadLocal&lt;&gt;(ALL_ENABLABLE_LEVELS_SUPPLIER);
 
-<span class="fc" id="L72">    TestLogger(final String name, final TestLoggerFactory testLoggerFactory) {</span>
-<span class="fc" id="L73">        this.name = name;</span>
-<span class="fc" id="L74">        this.testLoggerFactory = testLoggerFactory;</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L73">    TestLogger(final String name, final TestLoggerFactory testLoggerFactory) {</span>
+<span class="fc" id="L74">        this.name = name;</span>
+<span class="fc" id="L75">        this.testLoggerFactory = testLoggerFactory;</span>
+<span class="fc" id="L76">    }</span>
 
     public String getName() {
-<span class="fc" id="L78">        return name;</span>
+<span class="fc" id="L79">        return name;</span>
     }
 
     /**
@@ -83,9 +84,9 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * to {@link uk.org.lidalia.slf4jext.Level#enablableValueSet()} for this thread.
      */
     public void clear() {
-<span class="fc" id="L86">        loggingEvents.get().clear();</span>
-<span class="fc" id="L87">        enabledLevels.remove();</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L87">        loggingEvents.get().clear();</span>
+<span class="fc" id="L88">        enabledLevels.remove();</span>
+<span class="fc" id="L89">    }</span>
 
     /**
      * Removed ALL {@link LoggingEvent}s logged on this logger, regardless of thread,
@@ -93,23 +94,23 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * for ALL threads.
      */
     public void clearAll() {
-<span class="fc" id="L96">        allLoggingEvents.clear();</span>
-<span class="fc" id="L97">        loggingEvents.reset();</span>
-<span class="fc" id="L98">        enabledLevels = new ThreadLocal&lt;&gt;(ALL_ENABLABLE_LEVELS_SUPPLIER);</span>
-<span class="fc" id="L99">    }</span>
+<span class="fc" id="L97">        allLoggingEvents.clear();</span>
+<span class="fc" id="L98">        loggingEvents.reset();</span>
+<span class="fc" id="L99">        enabledLevels = new ThreadLocal&lt;&gt;(ALL_ENABLABLE_LEVELS_SUPPLIER);</span>
+<span class="fc" id="L100">    }</span>
 
     /**
      * @return all {@link LoggingEvent}s logged on this logger by this thread
      */
     public ImmutableList&lt;LoggingEvent&gt; getLoggingEvents() {
-<span class="fc" id="L105">        return copyOf(loggingEvents.get());</span>
+<span class="fc" id="L106">        return copyOf(loggingEvents.get());</span>
     }
 
     /**
      * @return all {@link LoggingEvent}s logged on this logger by ANY thread
      */
     public ImmutableList&lt;LoggingEvent&gt; getAllLoggingEvents() {
-<span class="fc" id="L112">        return copyOf(allLoggingEvents);</span>
+<span class="fc" id="L113">        return copyOf(allLoggingEvents);</span>
     }
 
     /**
@@ -117,331 +118,331 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      */
     @Override
     public boolean isTraceEnabled() {
-<span class="fc" id="L120">        return enabledLevels.get().contains(TRACE);</span>
+<span class="fc" id="L121">        return enabledLevels.get().contains(TRACE);</span>
     }
 
     @Override
     public void trace(final String message) {
-<span class="fc" id="L125">        log(TRACE, message);</span>
-<span class="fc" id="L126">    }</span>
+<span class="fc" id="L126">        log(TRACE, message);</span>
+<span class="fc" id="L127">    }</span>
 
     @Override
     public void trace(final String format, final Object arg) {
-<span class="fc" id="L130">        log(TRACE, format, arg);</span>
-<span class="fc" id="L131">    }</span>
+<span class="fc" id="L131">        log(TRACE, format, arg);</span>
+<span class="fc" id="L132">    }</span>
 
     @Override
     public void trace(final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L135">        log(TRACE, format, arg1, arg2);</span>
-<span class="fc" id="L136">    }</span>
+<span class="fc" id="L136">        log(TRACE, format, arg1, arg2);</span>
+<span class="fc" id="L137">    }</span>
 
     @Override
     public void trace(final String format, final Object... args) {
-<span class="fc" id="L140">        log(TRACE, format, args);</span>
-<span class="fc" id="L141">    }</span>
+<span class="fc" id="L141">        log(TRACE, format, args);</span>
+<span class="fc" id="L142">    }</span>
 
     @Override
     public void trace(final String msg, final Throwable throwable) {
-<span class="fc" id="L145">        log(TRACE, msg, throwable);</span>
-<span class="fc" id="L146">    }</span>
+<span class="fc" id="L146">        log(TRACE, msg, throwable);</span>
+<span class="fc" id="L147">    }</span>
 
     @Override
     public boolean isTraceEnabled(final Marker marker) {
-<span class="fc" id="L150">        return enabledLevels.get().contains(TRACE);</span>
+<span class="fc" id="L151">        return enabledLevels.get().contains(TRACE);</span>
     }
 
     @Override
     public void trace(final Marker marker, final String msg) {
-<span class="fc" id="L155">        log(TRACE, marker, msg);</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L156">        log(TRACE, marker, msg);</span>
+<span class="fc" id="L157">    }</span>
 
     @Override
     public void trace(final Marker marker, final String format, final Object arg) {
-<span class="fc" id="L160">        log(TRACE, marker, format, arg);</span>
-<span class="fc" id="L161">    }</span>
+<span class="fc" id="L161">        log(TRACE, marker, format, arg);</span>
+<span class="fc" id="L162">    }</span>
 
     @Override
     public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L165">        log(TRACE, marker, format, arg1, arg2);</span>
-<span class="fc" id="L166">    }</span>
+<span class="fc" id="L166">        log(TRACE, marker, format, arg1, arg2);</span>
+<span class="fc" id="L167">    }</span>
 
     @Override
     public void trace(final Marker marker, final String format, final Object... args) {
-<span class="fc" id="L170">        log(TRACE, marker, format, args);</span>
-<span class="fc" id="L171">    }</span>
+<span class="fc" id="L171">        log(TRACE, marker, format, args);</span>
+<span class="fc" id="L172">    }</span>
 
     @Override
     public void trace(final Marker marker, final String msg, final Throwable throwable) {
-<span class="fc" id="L175">        log(TRACE, marker, msg, throwable);</span>
-<span class="fc" id="L176">    }</span>
+<span class="fc" id="L176">        log(TRACE, marker, msg, throwable);</span>
+<span class="fc" id="L177">    }</span>
 
     /**
      * @return whether this logger is debug enabled in this thread
      */
     @Override
     public boolean isDebugEnabled() {
-<span class="fc" id="L183">        return enabledLevels.get().contains(DEBUG);</span>
+<span class="fc" id="L184">        return enabledLevels.get().contains(DEBUG);</span>
     }
 
     @Override
     public void debug(final String message) {
-<span class="fc" id="L188">        log(DEBUG, message);</span>
-<span class="fc" id="L189">    }</span>
+<span class="fc" id="L189">        log(DEBUG, message);</span>
+<span class="fc" id="L190">    }</span>
 
     @Override
     public void debug(final String format, final Object arg) {
-<span class="fc" id="L193">        log(DEBUG, format, arg);</span>
-<span class="fc" id="L194">    }</span>
+<span class="fc" id="L194">        log(DEBUG, format, arg);</span>
+<span class="fc" id="L195">    }</span>
 
     @Override
     public void debug(final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L198">        log(DEBUG, format, arg1, arg2);</span>
-<span class="fc" id="L199">    }</span>
+<span class="fc" id="L199">        log(DEBUG, format, arg1, arg2);</span>
+<span class="fc" id="L200">    }</span>
 
     @Override
     public void debug(final String format, final Object... args) {
-<span class="fc" id="L203">        log(DEBUG, format, args);</span>
-<span class="fc" id="L204">    }</span>
+<span class="fc" id="L204">        log(DEBUG, format, args);</span>
+<span class="fc" id="L205">    }</span>
 
     @Override
     public void debug(final String msg, final Throwable throwable) {
-<span class="fc" id="L208">        log(DEBUG, msg, throwable);</span>
-<span class="fc" id="L209">    }</span>
+<span class="fc" id="L209">        log(DEBUG, msg, throwable);</span>
+<span class="fc" id="L210">    }</span>
 
     @Override
     public boolean isDebugEnabled(final Marker marker) {
-<span class="fc" id="L213">        return enabledLevels.get().contains(DEBUG);</span>
+<span class="fc" id="L214">        return enabledLevels.get().contains(DEBUG);</span>
     }
 
     @Override
     public void debug(final Marker marker, final String msg) {
-<span class="fc" id="L218">        log(DEBUG, marker, msg);</span>
-<span class="fc" id="L219">    }</span>
+<span class="fc" id="L219">        log(DEBUG, marker, msg);</span>
+<span class="fc" id="L220">    }</span>
 
     @Override
     public void debug(final Marker marker, final String format, final Object arg) {
-<span class="fc" id="L223">        log(DEBUG, marker, format, arg);</span>
-<span class="fc" id="L224">    }</span>
+<span class="fc" id="L224">        log(DEBUG, marker, format, arg);</span>
+<span class="fc" id="L225">    }</span>
 
     @Override
     public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L228">        log(DEBUG, marker, format, arg1, arg2);</span>
-<span class="fc" id="L229">    }</span>
+<span class="fc" id="L229">        log(DEBUG, marker, format, arg1, arg2);</span>
+<span class="fc" id="L230">    }</span>
 
     @Override
     public void debug(final Marker marker, final String format, final Object... args) {
-<span class="fc" id="L233">        log(DEBUG, marker, format, args);</span>
-<span class="fc" id="L234">    }</span>
+<span class="fc" id="L234">        log(DEBUG, marker, format, args);</span>
+<span class="fc" id="L235">    }</span>
 
     @Override
     public void debug(final Marker marker, final String msg, final Throwable throwable) {
-<span class="fc" id="L238">        log(DEBUG, marker, msg, throwable);</span>
-<span class="fc" id="L239">    }</span>
+<span class="fc" id="L239">        log(DEBUG, marker, msg, throwable);</span>
+<span class="fc" id="L240">    }</span>
 
     /**
      * @return whether this logger is info enabled in this thread
      */
     @Override
     public boolean isInfoEnabled() {
-<span class="fc" id="L246">        return enabledLevels.get().contains(INFO);</span>
+<span class="fc" id="L247">        return enabledLevels.get().contains(INFO);</span>
     }
 
     @Override
     public void info(final String message) {
-<span class="fc" id="L251">        log(INFO, message);</span>
-<span class="fc" id="L252">    }</span>
+<span class="fc" id="L252">        log(INFO, message);</span>
+<span class="fc" id="L253">    }</span>
 
     @Override
     public void info(final String format, final Object arg) {
-<span class="fc" id="L256">        log(INFO, format, arg);</span>
-<span class="fc" id="L257">    }</span>
+<span class="fc" id="L257">        log(INFO, format, arg);</span>
+<span class="fc" id="L258">    }</span>
 
     @Override
     public void info(final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L261">        log(INFO, format, arg1, arg2);</span>
-<span class="fc" id="L262">    }</span>
+<span class="fc" id="L262">        log(INFO, format, arg1, arg2);</span>
+<span class="fc" id="L263">    }</span>
 
     @Override
     public void info(final String format, final Object... args) {
-<span class="fc" id="L266">        log(INFO, format, args);</span>
-<span class="fc" id="L267">    }</span>
+<span class="fc" id="L267">        log(INFO, format, args);</span>
+<span class="fc" id="L268">    }</span>
 
     @Override
     public void info(final String msg, final Throwable throwable) {
-<span class="fc" id="L271">        log(INFO, msg, throwable);</span>
-<span class="fc" id="L272">    }</span>
+<span class="fc" id="L272">        log(INFO, msg, throwable);</span>
+<span class="fc" id="L273">    }</span>
 
     @Override
     public boolean isInfoEnabled(final Marker marker) {
-<span class="fc" id="L276">        return enabledLevels.get().contains(INFO);</span>
+<span class="fc" id="L277">        return enabledLevels.get().contains(INFO);</span>
     }
 
     @Override
     public void info(final Marker marker, final String msg) {
-<span class="fc" id="L281">        log(INFO, marker, msg);</span>
-<span class="fc" id="L282">    }</span>
+<span class="fc" id="L282">        log(INFO, marker, msg);</span>
+<span class="fc" id="L283">    }</span>
 
     @Override
     public void info(final Marker marker, final String format, final Object arg) {
-<span class="fc" id="L286">        log(INFO, marker, format, arg);</span>
-<span class="fc" id="L287">    }</span>
+<span class="fc" id="L287">        log(INFO, marker, format, arg);</span>
+<span class="fc" id="L288">    }</span>
 
     @Override
     public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L291">        log(INFO, marker, format, arg1, arg2);</span>
-<span class="fc" id="L292">    }</span>
+<span class="fc" id="L292">        log(INFO, marker, format, arg1, arg2);</span>
+<span class="fc" id="L293">    }</span>
 
     @Override
     public void info(final Marker marker, final String format, final Object... args) {
-<span class="fc" id="L296">        log(INFO, marker, format, args);</span>
-<span class="fc" id="L297">    }</span>
+<span class="fc" id="L297">        log(INFO, marker, format, args);</span>
+<span class="fc" id="L298">    }</span>
 
     @Override
     public void info(final Marker marker, final String msg, final Throwable throwable) {
-<span class="fc" id="L301">        log(INFO, marker, msg, throwable);</span>
-<span class="fc" id="L302">    }</span>
+<span class="fc" id="L302">        log(INFO, marker, msg, throwable);</span>
+<span class="fc" id="L303">    }</span>
 
     /**
      * @return whether this logger is warn enabled in this thread
      */
     @Override
     public boolean isWarnEnabled() {
-<span class="fc" id="L309">        return enabledLevels.get().contains(WARN);</span>
+<span class="fc" id="L310">        return enabledLevels.get().contains(WARN);</span>
     }
 
     @Override
     public void warn(final String message) {
-<span class="fc" id="L314">        log(WARN, message);</span>
-<span class="fc" id="L315">    }</span>
+<span class="fc" id="L315">        log(WARN, message);</span>
+<span class="fc" id="L316">    }</span>
 
     @Override
     public void warn(final String format, final Object arg) {
-<span class="fc" id="L319">        log(WARN, format, arg);</span>
-<span class="fc" id="L320">    }</span>
+<span class="fc" id="L320">        log(WARN, format, arg);</span>
+<span class="fc" id="L321">    }</span>
 
     @Override
     public void warn(final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L324">        log(WARN, format, arg1, arg2);</span>
-<span class="fc" id="L325">    }</span>
+<span class="fc" id="L325">        log(WARN, format, arg1, arg2);</span>
+<span class="fc" id="L326">    }</span>
 
     @Override
     public void warn(final String format, final Object... args) {
-<span class="fc" id="L329">        log(WARN, format, args);</span>
-<span class="fc" id="L330">    }</span>
+<span class="fc" id="L330">        log(WARN, format, args);</span>
+<span class="fc" id="L331">    }</span>
 
     @Override
     public void warn(final String msg, final Throwable throwable) {
-<span class="fc" id="L334">        log(WARN, msg, throwable);</span>
-<span class="fc" id="L335">    }</span>
+<span class="fc" id="L335">        log(WARN, msg, throwable);</span>
+<span class="fc" id="L336">    }</span>
 
     @Override
     public boolean isWarnEnabled(final Marker marker) {
-<span class="fc" id="L339">        return enabledLevels.get().contains(WARN);</span>
+<span class="fc" id="L340">        return enabledLevels.get().contains(WARN);</span>
     }
 
     @Override
     public void warn(final Marker marker, final String msg) {
-<span class="fc" id="L344">        log(WARN, marker, msg);</span>
-<span class="fc" id="L345">    }</span>
+<span class="fc" id="L345">        log(WARN, marker, msg);</span>
+<span class="fc" id="L346">    }</span>
 
     @Override
     public void warn(final Marker marker, final String format, final Object arg) {
-<span class="fc" id="L349">        log(WARN, marker, format, arg);</span>
-<span class="fc" id="L350">    }</span>
+<span class="fc" id="L350">        log(WARN, marker, format, arg);</span>
+<span class="fc" id="L351">    }</span>
 
     @Override
     public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L354">        log(WARN, marker, format, arg1, arg2);</span>
-<span class="fc" id="L355">    }</span>
+<span class="fc" id="L355">        log(WARN, marker, format, arg1, arg2);</span>
+<span class="fc" id="L356">    }</span>
 
     @Override
     public void warn(final Marker marker, final String format, final Object... args) {
-<span class="fc" id="L359">        log(WARN, marker, format, args);</span>
-<span class="fc" id="L360">    }</span>
+<span class="fc" id="L360">        log(WARN, marker, format, args);</span>
+<span class="fc" id="L361">    }</span>
 
     @Override
     public void warn(final Marker marker, final String msg, final Throwable throwable) {
-<span class="fc" id="L364">        log(WARN, marker, msg, throwable);</span>
-<span class="fc" id="L365">    }</span>
+<span class="fc" id="L365">        log(WARN, marker, msg, throwable);</span>
+<span class="fc" id="L366">    }</span>
 
     /**
      * @return whether this logger is error enabled in this thread
      */
     @Override
     public boolean isErrorEnabled() {
-<span class="fc" id="L372">        return enabledLevels.get().contains(ERROR);</span>
+<span class="fc" id="L373">        return enabledLevels.get().contains(ERROR);</span>
     }
 
     @Override
     public void error(final String message) {
-<span class="fc" id="L377">        log(ERROR, message);</span>
-<span class="fc" id="L378">    }</span>
+<span class="fc" id="L378">        log(ERROR, message);</span>
+<span class="fc" id="L379">    }</span>
 
     @Override
     public void error(final String format, final Object arg) {
-<span class="fc" id="L382">        log(ERROR, format, arg);</span>
-<span class="fc" id="L383">    }</span>
+<span class="fc" id="L383">        log(ERROR, format, arg);</span>
+<span class="fc" id="L384">    }</span>
 
     @Override
     public void error(final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L387">        log(ERROR, format, arg1, arg2);</span>
-<span class="fc" id="L388">    }</span>
+<span class="fc" id="L388">        log(ERROR, format, arg1, arg2);</span>
+<span class="fc" id="L389">    }</span>
 
     @Override
     public void error(final String format, final Object... args) {
-<span class="fc" id="L392">        log(ERROR, format, args);</span>
-<span class="fc" id="L393">    }</span>
+<span class="fc" id="L393">        log(ERROR, format, args);</span>
+<span class="fc" id="L394">    }</span>
 
     @Override
     public void error(final String msg, final Throwable throwable) {
-<span class="fc" id="L397">        log(ERROR, msg, throwable);</span>
-<span class="fc" id="L398">    }</span>
+<span class="fc" id="L398">        log(ERROR, msg, throwable);</span>
+<span class="fc" id="L399">    }</span>
 
     @Override
     public boolean isErrorEnabled(final Marker marker) {
-<span class="fc" id="L402">        return enabledLevels.get().contains(ERROR);</span>
+<span class="fc" id="L403">        return enabledLevels.get().contains(ERROR);</span>
     }
 
     @Override
     public void error(final Marker marker, final String msg) {
-<span class="fc" id="L407">        log(ERROR, marker, msg);</span>
-<span class="fc" id="L408">    }</span>
+<span class="fc" id="L408">        log(ERROR, marker, msg);</span>
+<span class="fc" id="L409">    }</span>
 
     @Override
     public void error(final Marker marker, final String format, final Object arg) {
-<span class="fc" id="L412">        log(ERROR, marker, format, arg);</span>
-<span class="fc" id="L413">    }</span>
+<span class="fc" id="L413">        log(ERROR, marker, format, arg);</span>
+<span class="fc" id="L414">    }</span>
 
     @Override
     public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
-<span class="fc" id="L417">        log(ERROR, marker, format, arg1, arg2);</span>
-<span class="fc" id="L418">    }</span>
+<span class="fc" id="L418">        log(ERROR, marker, format, arg1, arg2);</span>
+<span class="fc" id="L419">    }</span>
 
     @Override
     public void error(final Marker marker, final String format, final Object... args) {
-<span class="fc" id="L422">        log(ERROR, marker, format, args);</span>
-<span class="fc" id="L423">    }</span>
+<span class="fc" id="L423">        log(ERROR, marker, format, args);</span>
+<span class="fc" id="L424">    }</span>
 
     @Override
     public void error(final Marker marker, final String msg, final Throwable throwable) {
-<span class="fc" id="L427">        log(ERROR, marker, msg, throwable);</span>
-<span class="fc" id="L428">    }</span>
+<span class="fc" id="L428">        log(ERROR, marker, msg, throwable);</span>
+<span class="fc" id="L429">    }</span>
 
     private void log(final Level level, final String format, final Object... args) {
-<span class="fc" id="L431">        addLoggingEvent(level, Optional.&lt;Marker&gt;absent(), Optional.&lt;Throwable&gt;absent(), format, args);</span>
-<span class="fc" id="L432">    }</span>
+<span class="fc" id="L432">        addLoggingEvent(level, Optional.&lt;Marker&gt;absent(), Optional.&lt;Throwable&gt;absent(), format, args);</span>
+<span class="fc" id="L433">    }</span>
 
     private void log(final Level level, final String msg, final Throwable throwable) { //NOPMD PMD wrongly thinks unused...
-<span class="fc" id="L435">        addLoggingEvent(level, Optional.&lt;Marker&gt;absent(), of(throwable), msg);</span>
-<span class="fc" id="L436">    }</span>
+<span class="fc" id="L436">        addLoggingEvent(level, Optional.&lt;Marker&gt;absent(), of(throwable), msg);</span>
+<span class="fc" id="L437">    }</span>
 
     private void log(final Level level, final Marker marker, final String format, final Object... args) {
-<span class="fc" id="L439">        addLoggingEvent(level, of(marker), Optional.&lt;Throwable&gt;absent(), format, args);</span>
-<span class="fc" id="L440">    }</span>
+<span class="fc" id="L440">        addLoggingEvent(level, of(marker), Optional.&lt;Throwable&gt;absent(), format, args);</span>
+<span class="fc" id="L441">    }</span>
 
     private void log(final Level level, final Marker marker, final String msg, final Throwable throwable) {
-<span class="fc" id="L443">        addLoggingEvent(level, of(marker), of(throwable), msg);</span>
-<span class="fc" id="L444">    }</span>
+<span class="fc" id="L444">        addLoggingEvent(level, of(marker), of(throwable), msg);</span>
+<span class="fc" id="L445">    }</span>
 
     private void addLoggingEvent(
             final Level level,
@@ -449,31 +450,31 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
             final Optional&lt;Throwable&gt; throwable,
             final String format,
             final Object... args) {
-<span class="fc bfc" id="L452" title="All 2 branches covered.">        if (enabledLevels.get().contains(level)) {</span>
-<span class="fc" id="L453">            final LoggingEvent event = new LoggingEvent(of(this), level, mdc(), marker, throwable, format, args);</span>
-<span class="fc" id="L454">            allLoggingEvents.add(event);</span>
-<span class="fc" id="L455">            loggingEvents.get().add(event);</span>
-<span class="fc" id="L456">            testLoggerFactory.addLoggingEvent(event);</span>
-<span class="fc" id="L457">            optionallyPrint(event);</span>
+<span class="fc bfc" id="L453" title="All 2 branches covered.">        if (enabledLevels.get().contains(level)) {</span>
+<span class="fc" id="L454">            final LoggingEvent event = new LoggingEvent(of(this), level, mdc(), marker, throwable, format, args);</span>
+<span class="fc" id="L455">            allLoggingEvents.add(event);</span>
+<span class="fc" id="L456">            loggingEvents.get().add(event);</span>
+<span class="fc" id="L457">            testLoggerFactory.addLoggingEvent(event);</span>
+<span class="fc" id="L458">            optionallyPrint(event);</span>
         }
-<span class="fc" id="L459">    }</span>
+<span class="fc" id="L460">    }</span>
 
     @SuppressWarnings(&quot;unchecked&quot;)
     private Map&lt;String, String&gt; mdc() {
-<span class="fc" id="L463">        return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());</span>
+<span class="fc" id="L464">        return fromNullable(MDC.getCopyOfContextMap()).or(Collections.emptyMap());</span>
     }
 
     private void optionallyPrint(final LoggingEvent event) {
-<span class="fc bfc" id="L467" title="All 2 branches covered.">        if (testLoggerFactory.getPrintLevel().compareTo(event.getLevel()) &lt;= 0) {</span>
-<span class="fc" id="L468">            event.print();</span>
+<span class="fc bfc" id="L468" title="All 2 branches covered.">        if (testLoggerFactory.getPrintLevel().compareTo(event.getLevel()) &lt;= 0) {</span>
+<span class="fc" id="L469">            event.print();</span>
         }
-<span class="fc" id="L470">    }</span>
+<span class="fc" id="L471">    }</span>
 
     /**
      * @return the set of levels enabled for this logger on this thread
      */
     public ImmutableSet&lt;Level&gt; getEnabledLevels() {
-<span class="fc" id="L476">        return enabledLevels.get();</span>
+<span class="fc" id="L477">        return enabledLevels.get();</span>
     }
 
     /**
@@ -486,8 +487,8 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      *                      does not affect enabled levels for this logger in other threads
      */
     public void setEnabledLevels(final ImmutableSet&lt;Level&gt; enabledLevels) {
-<span class="fc" id="L489">        this.enabledLevels.set(enabledLevels);</span>
-<span class="fc" id="L490">    }</span>
+<span class="fc" id="L490">        this.enabledLevels.set(enabledLevels);</span>
+<span class="fc" id="L491">    }</span>
 
     /**
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
@@ -499,8 +500,8 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      *                      does not affect enabled levels for this logger in other threads
      */
     public void setEnabledLevels(final Level... enabledLevels) {
-<span class="fc" id="L502">        setEnabledLevels(immutableEnumSet(asList(enabledLevels)));</span>
-<span class="fc" id="L503">    }</span>
+<span class="fc" id="L503">        setEnabledLevels(immutableEnumSet(asList(enabledLevels)));</span>
+<span class="fc" id="L504">    }</span>
 
     /**
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
@@ -511,13 +512,13 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
     public void setEnabledLevelsForAllThreads(final ImmutableSet&lt;Level&gt; enabledLevelsForAllThreads) {
-<span class="fc" id="L514">        this.enabledLevels = new ThreadLocal&lt;ImmutableSet&lt;Level&gt;&gt;(new Supplier&lt;ImmutableSet&lt;Level&gt;&gt;() {</span>
+<span class="fc" id="L515">        this.enabledLevels = new ThreadLocal&lt;ImmutableSet&lt;Level&gt;&gt;(new Supplier&lt;ImmutableSet&lt;Level&gt;&gt;() {</span>
             @Override
             public ImmutableSet&lt;Level&gt; get() {
-<span class="fc" id="L517">                return enabledLevelsForAllThreads;</span>
+<span class="fc" id="L518">                return enabledLevelsForAllThreads;</span>
             }
         });
-<span class="fc" id="L520">    }</span>
+<span class="fc" id="L521">    }</span>
 
     /**
      * The conventional hierarchical notion of Levels, where info being enabled implies warn and error being enabled, is not a
@@ -528,7 +529,7 @@ public class TestLogger implements Logger { // NOPMD interface has too many meth
      * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
     public void setEnabledLevelsForAllThreads(final Level... enabledLevelsForAllThreads) {
-<span class="fc" id="L531">        setEnabledLevelsForAllThreads(ImmutableSet.copyOf(enabledLevelsForAllThreads));</span>
-<span class="fc" id="L532">    }</span>
+<span class="fc" id="L532">        setEnabledLevelsForAllThreads(ImmutableSet.copyOf(enabledLevelsForAllThreads));</span>
+<span class="fc" id="L533">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.2.201302030002</span></div></body></html>

@@ -27,13 +27,13 @@ class OverridableProperties {
 <span class="fc" id="L27">        return resourceAsStream.transform(new Function&lt;InputStream, Properties&gt;() {</span>
             @Override
             public Properties apply(final InputStream propertyResource) {
-<span class="fc" id="L30">                Properties loadedPropertoes = new Properties();</span>
+<span class="fc" id="L30">                final Properties loadedProperties = new Properties();</span>
 <span class="fc" id="L31">                try (InputStream closablePropertyResource = propertyResource) {</span>
-<span class="fc" id="L32">                    loadedPropertoes.load(closablePropertyResource);</span>
+<span class="fc" id="L32">                    loadedProperties.load(closablePropertyResource);</span>
 <span class="pc bpc" id="L33" title="4 of 8 branches missed.">                } catch (IOException ioe) {</span>
 <span class="nc" id="L34">                    Exceptions.throwUnchecked(ioe);</span>
 <span class="fc" id="L35">                }</span>
-<span class="fc" id="L36">                return loadedPropertoes;</span>
+<span class="fc" id="L36">                return loadedProperties;</span>
             }
         }).or(EMPTY_PROPERTIES);
     }

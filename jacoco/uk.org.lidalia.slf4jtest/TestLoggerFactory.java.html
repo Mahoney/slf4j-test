@@ -95,14 +95,14 @@ public final class TestLoggerFactory implements ILoggerFactory {
     }
 
     public void clearLoggers() {
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (TestLogger testLogger: loggers.values()) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (final TestLogger testLogger: loggers.values()) {</span>
 <span class="fc" id="L99">            testLogger.clear();</span>
 <span class="fc" id="L100">        }</span>
 <span class="fc" id="L101">        loggingEvents.get().clear();</span>
 <span class="fc" id="L102">    }</span>
 
     public void clearAllLoggers() {
-<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (TestLogger testLogger: loggers.values()) {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (final TestLogger testLogger: loggers.values()) {</span>
 <span class="fc" id="L106">            testLogger.clearAll();</span>
 <span class="fc" id="L107">        }</span>
 <span class="fc" id="L108">        loggingEvents.reset();</span>
@@ -131,15 +131,16 @@ public final class TestLoggerFactory implements ILoggerFactory {
 <span class="fc" id="L131">        this.printLevel = checkNotNull(printLevel);</span>
 <span class="fc" id="L132">    }</span>
 
-<span class="fc" id="L134">    private static class TestLoggerFactoryMaker implements Callable&lt;TestLoggerFactory&gt; {</span>
+    @SuppressWarnings(&quot;PMD.AccessorClassGeneration&quot;)
+<span class="fc" id="L135">    private static class TestLoggerFactoryMaker implements Callable&lt;TestLoggerFactory&gt; {</span>
         @Override
         public TestLoggerFactory call() throws IOException {
             try {
-<span class="fc" id="L138">                final String level = new OverridableProperties(&quot;slf4jtest&quot;).getProperty(&quot;print.level&quot;, &quot;OFF&quot;);</span>
-<span class="fc" id="L139">                final Level printLevel = Level.valueOf(level);</span>
-<span class="fc" id="L140">                return new TestLoggerFactory(printLevel); //NOPMD this is just a closure to instantiate the singleton lazily</span>
-<span class="nc" id="L141">            } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L142">                throw new IllegalStateException(&quot;Invalid level name in property print.level of file slf4jtest.properties &quot; +</span>
+<span class="fc" id="L139">                final String level = new OverridableProperties(&quot;slf4jtest&quot;).getProperty(&quot;print.level&quot;, &quot;OFF&quot;);</span>
+<span class="fc" id="L140">                final Level printLevel = Level.valueOf(level);</span>
+<span class="fc" id="L141">                return new TestLoggerFactory(printLevel);</span>
+<span class="nc" id="L142">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L143">                throw new IllegalStateException(&quot;Invalid level name in property print.level of file slf4jtest.properties &quot; +</span>
                         &quot;or System property slf4jtest.print.level&quot;, e);
             }
         }
