@@ -64,7 +64,7 @@ public final class TestLoggerFactory implements ILoggerFactory {
     private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<>(makeEmptyMutableList);
+            new ThreadLocal<>(Suppliers.<LoggingEvent>makeEmptyMutableList());
     private volatile Level printLevel;
 
     private TestLoggerFactory(final Level printLevel) {

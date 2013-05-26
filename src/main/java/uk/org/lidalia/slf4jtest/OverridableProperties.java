@@ -7,8 +7,6 @@ import java.util.Properties;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
-import uk.org.lidalia.lang.Exceptions;
-
 import static com.google.common.base.Optional.fromNullable;
 import static uk.org.lidalia.lang.Exceptions.throwUnchecked;
 
