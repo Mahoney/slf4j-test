@@ -26,4 +26,8 @@ class Suppliers {
             }
         };
     }
+
+    private Suppliers() {
+        throw new UnsupportedOperationException("Not instantiable");
+    }
 }

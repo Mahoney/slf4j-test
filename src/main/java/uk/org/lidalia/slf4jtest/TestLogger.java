@@ -10,7 +10,6 @@ import org.slf4j.MDC;
 import org.slf4j.Marker;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -28,7 +27,6 @@ import static uk.org.lidalia.slf4jext.Level.INFO;
 import static uk.org.lidalia.slf4jext.Level.TRACE;
 import static uk.org.lidalia.slf4jext.Level.WARN;
 import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
-import static uk.org.lidalia.slf4jtest.Suppliers.makeEmptyMutableList;
 
 /**
  * Implementation of {@link Logger} which stores {@link LoggingEvent}s in memory and provides methods

@@ -19,7 +19,6 @@ import uk.org.lidalia.slf4jext.Level;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static uk.org.lidalia.slf4jtest.Suppliers.makeEmptyMutableList;
 
 public final class TestLoggerFactory implements ILoggerFactory {
 

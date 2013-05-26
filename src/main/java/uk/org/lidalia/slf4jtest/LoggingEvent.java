@@ -386,8 +386,8 @@ public class LoggingEvent extends RichObject {
     private static Function<Throwable, String> printThrowableTo(final PrintStream output) {
         return new Function<Throwable, String>() {
             @Override
-            public String apply(final Throwable throwable) {
-                throwable.printStackTrace(output);
+            public String apply(final Throwable throwableToPrint) {
+                throwableToPrint.printStackTrace(output);
                 return "";
             }
         };
