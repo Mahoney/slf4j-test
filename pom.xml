@@ -14,7 +14,7 @@
   <version>1.0.0-SNAPSHOT</version>
 
   <name>SLF4J Test</name>
-  <description>An SLF4J implementation focused on aiding unit testing.</description>
+  <description>An in-memory SLF4J implementation focused on aiding unit testing.</description>
   <url>http://projects.lidalia.org.uk/${project.artifactId}</url>
 
   <scm>

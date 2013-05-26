@@ -3,15 +3,20 @@ package uk.org.lidalia.slf4jtest;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Supplier;
 import org.slf4j.spi.MDCAdapter;
 
 import com.google.common.collect.ImmutableMap;
 
+import uk.org.lidalia.lang.ThreadLocal;
+
 public class TestMDCAdapter implements MDCAdapter {
 
-    private final InheritableThreadLocal<Map<String, String>> value = new InheritableThreadLocal<Map<String, String>>() {
+    private final ThreadLocal<Map<String, String>> value = new ThreadLocal<>(makeEmptyMutableMap);
+
+    private static Supplier<Map<String, String>> makeEmptyMutableMap = new Supplier<Map<String, String>>() {
         @Override
-        protected Map<String, String> initialValue() {
+        public Map<String, String> get() {
             return new HashMap<>();
         }
     };

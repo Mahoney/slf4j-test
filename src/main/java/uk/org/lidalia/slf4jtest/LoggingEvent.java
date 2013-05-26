@@ -380,13 +380,17 @@ public class LoggingEvent extends RichObject {
     void print() {
         final PrintStream output = printStreamForLevel();
         output.println(formatLogStatement());
-        throwable.transform(new Function<Throwable, String>() {
+        throwable.transform(printThrowableTo(output));
+    }
+
+    private static Function<Throwable, String> printThrowableTo(final PrintStream output) {
+        return new Function<Throwable, String>() {
             @Override
-            public String apply(final Throwable input) {
-                input.printStackTrace(output);
+            public String apply(final Throwable throwable) {
+                throwable.printStackTrace(output);
                 return "";
             }
-        });
+        };
     }
 
     private String formatLogStatement() {
@@ -394,13 +398,15 @@ public class LoggingEvent extends RichObject {
     }
 
     private String safeLoggerName() {
-        return creatingLogger.transform(new Function<TestLogger, String>() {
-            @Override
-            public String apply(final TestLogger input) {
-                return " " + input.getName();
-            }
-        }).or("");
+        return creatingLogger.transform(toLoggerNameString).or("");
     }
+
+    private static final Function<TestLogger, String> toLoggerNameString = new Function<TestLogger, String>() {
+        @Override
+        public String apply(final TestLogger input) {
+            return " " + input.getName();
+        }
+    };
 
     private String getFormattedMessage() {
         return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();

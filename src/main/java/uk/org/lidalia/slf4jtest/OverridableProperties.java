@@ -10,6 +10,7 @@ import com.google.common.base.Optional;
 import uk.org.lidalia.lang.Exceptions;
 
 import static com.google.common.base.Optional.fromNullable;
+import static uk.org.lidalia.lang.Exceptions.throwUnchecked;
 
 class OverridableProperties {
     private static final Properties EMPTY_PROPERTIES = new Properties();
@@ -24,19 +25,21 @@ class OverridableProperties {
     private Properties getProperties() throws IOException {
         final Optional<InputStream> resourceAsStream = fromNullable(Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream(propertySourceName + ".properties"));
-        return resourceAsStream.transform(new Function<InputStream, Properties>() {
-            @Override
-            public Properties apply(final InputStream propertyResource) {
-                final Properties loadedProperties = new Properties();
-                try (InputStream closablePropertyResource = propertyResource) {
-                    loadedProperties.load(closablePropertyResource);
-                } catch (IOException ioe) {
-                    Exceptions.throwUnchecked(ioe);
-                }
-                return loadedProperties;
-            }
-        }).or(EMPTY_PROPERTIES);
+        return resourceAsStream.transform(loadProperties).or(EMPTY_PROPERTIES);
     }
+
+    private static final Function<InputStream, Properties> loadProperties = new Function<InputStream, Properties>() {
+        @Override
+        public Properties apply(final InputStream propertyResource) {
+            try (InputStream closablePropertyResource = propertyResource) {
+                final Properties loadedProperties = new Properties();
+                loadedProperties.load(closablePropertyResource);
+                return loadedProperties;
+            } catch (IOException ioException) {
+                return throwUnchecked(ioException, null);
+            }
+        }
+    };
 
     String getProperty(final String propertyKey, final String defaultValue) {
         final String propertyFileProperty = properties.getProperty(propertyKey, defaultValue);

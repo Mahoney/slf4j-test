@@ -585,7 +585,7 @@ public class TestLoggerTests {
         t.start();
         t.join();
         testLogger.info(message);
-        assertEquals(asList(info(mdcValues, message), info(mdcValues, message)), testLogger.getAllLoggingEvents());
+        assertEquals(asList(info(message), info(mdcValues, message)), testLogger.getAllLoggingEvents());
     }
 
     @Test
@@ -599,7 +599,7 @@ public class TestLoggerTests {
         t.start();
         t.join();
         testLogger.clear();
-        assertEquals(asList(info(mdcValues, message)), testLogger.getAllLoggingEvents());
+        assertEquals(asList(info(message)), testLogger.getAllLoggingEvents());
     }
 
     @Test

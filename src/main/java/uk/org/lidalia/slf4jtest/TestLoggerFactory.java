@@ -1,7 +1,6 @@
 package uk.org.lidalia.slf4jtest;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -11,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.ILoggerFactory;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -21,6 +19,7 @@ import uk.org.lidalia.slf4jext.Level;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static uk.org.lidalia.slf4jtest.Suppliers.makeEmptyMutableList;
 
 public final class TestLoggerFactory implements ILoggerFactory {
 
@@ -65,12 +64,7 @@ public final class TestLoggerFactory implements ILoggerFactory {
     private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<>();
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<>(new Supplier<List<LoggingEvent>>() {
-                @Override
-                public List<LoggingEvent> get() {
-                    return new ArrayList<>();
-                }
-            });
+            new ThreadLocal<>(makeEmptyMutableList);
     private volatile Level printLevel;
 
     private TestLoggerFactory(final Level printLevel) {

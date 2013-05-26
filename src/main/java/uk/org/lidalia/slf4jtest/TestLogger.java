@@ -1,6 +1,5 @@
 package uk.org.lidalia.slf4jtest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import static uk.org.lidalia.slf4jext.Level.INFO;
 import static uk.org.lidalia.slf4jext.Level.TRACE;
 import static uk.org.lidalia.slf4jext.Level.WARN;
 import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
+import static uk.org.lidalia.slf4jtest.Suppliers.makeEmptyMutableList;
 
 /**
  * Implementation of {@link Logger} which stores {@link LoggingEvent}s in memory and provides methods
@@ -59,12 +59,7 @@ public class TestLogger implements Logger {
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<>(new Supplier<List<LoggingEvent>>() {
-                @Override
-                public List<LoggingEvent> get() {
-                    return new ArrayList<>();
-                }
-            });
+            new ThreadLocal<>(makeEmptyMutableList);
 
     private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels =
@@ -512,7 +507,11 @@ public class TestLogger implements Logger {
      * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
     public void setEnabledLevelsForAllThreads(final ImmutableSet<Level> enabledLevelsForAllThreads) {
-        this.enabledLevels = new ThreadLocal<ImmutableSet<Level>>(new Supplier<ImmutableSet<Level>>() {
+        this.enabledLevels = enabledLevels(enabledLevelsForAllThreads);
+    }
+
+    private static ThreadLocal<ImmutableSet<Level>> enabledLevels(final ImmutableSet<Level> enabledLevelsForAllThreads) {
+        return new ThreadLocal<>(new Supplier<ImmutableSet<Level>>() {
             @Override
             public ImmutableSet<Level> get() {
                 return enabledLevelsForAllThreads;
