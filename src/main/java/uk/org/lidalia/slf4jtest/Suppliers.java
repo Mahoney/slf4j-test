@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Suppliers {
+final class Suppliers {
 
     static <T> Supplier<List<T>> makeEmptyMutableList() {
         return new Supplier<List<T>>() {

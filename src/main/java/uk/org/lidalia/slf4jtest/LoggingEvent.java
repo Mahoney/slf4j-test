@@ -403,8 +403,8 @@ public class LoggingEvent extends RichObject {
 
     private static final Function<TestLogger, String> toLoggerNameString = new Function<TestLogger, String>() {
         @Override
-        public String apply(final TestLogger input) {
-            return " " + input.getName();
+        public String apply(final TestLogger logger) {
+            return " " + logger.getName();
         }
     };
 

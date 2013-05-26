@@ -13,8 +13,7 @@ public final class StaticLoggerBinder implements LoggerFactoryBinder {
         return SINGLETON;
     }
 
-    // to avoid constant folding by the compiler, this field must *not* be final
-    public static String REQUESTED_API_VERSION = "1.6";  //NOPMD NOCHECKSTYLE
+    public static final String REQUESTED_API_VERSION = "1.6";
 
     private StaticLoggerBinder() { }
 
