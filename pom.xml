@@ -55,6 +55,12 @@
       <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>${project.parent.groupId}</groupId>
       <artifactId>standard-test-dependencies</artifactId>
       <version>${project.parent.version}</version>
