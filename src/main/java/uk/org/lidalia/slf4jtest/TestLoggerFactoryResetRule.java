@@ -18,7 +18,8 @@ public class TestLoggerFactoryResetRule implements TestRule {
     private static class TestLoggerFactoryResettingStatement extends Statement {
         private final Statement base;
 
-        public TestLoggerFactoryResettingStatement(Statement base) {
+        public TestLoggerFactoryResettingStatement(final Statement base) {
+            super();
             this.base = base;
         }
 
