@@ -5,9 +5,14 @@ import java.util.Map;
 
 import org.slf4j.spi.MDCAdapter;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import uk.org.lidalia.lang.ThreadLocal;
+
+import static com.google.common.base.Optional.fromNullable;
 
 public class TestMDCAdapter implements MDCAdapter {
 
@@ -15,7 +20,7 @@ public class TestMDCAdapter implements MDCAdapter {
             Suppliers.<String, String>makeEmptyMutableMap());
 
     public void put(final String key, final String val) {
-        value.get().put(key, val);
+        value.get().put(key, fromNullable(val).or("null"));
     }
 
     public String get(final String key) {

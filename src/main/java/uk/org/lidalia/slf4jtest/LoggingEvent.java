@@ -10,6 +10,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -17,8 +18,11 @@ import uk.org.lidalia.lang.Identity;
 import uk.org.lidalia.lang.RichObject;
 import uk.org.lidalia.slf4jext.Level;
 
-import static com.google.common.base.Optional.of;
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.FluentIterable.from;
+import static java.util.Arrays.asList;
 
 /**
  * Representation of a call to a logger for test assertion purposes.
@@ -248,16 +252,16 @@ public class LoggingEvent extends RichObject {
     }
 
     public LoggingEvent(final Level level, final Throwable throwable, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), of(throwable), message, arguments);
+        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), fromNullable(throwable), message, arguments);
     }
 
     public LoggingEvent(final Level level, final Marker marker, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), of(marker), Optional.<Throwable>absent(), message, arguments);
+        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), Optional.<Throwable>absent(), message, arguments);
     }
 
     public LoggingEvent(
             final Level level, final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), of(marker), of(throwable), message, arguments);
+        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), fromNullable(throwable), message, arguments);
     }
 
     public LoggingEvent(final Level level, final Map<String, String> mdc, final String message, final Object... arguments) {
@@ -270,7 +274,7 @@ public class LoggingEvent extends RichObject {
             final Throwable throwable,
             final String message,
             final Object... arguments) {
-        this(level, mdc, Optional.<Marker>absent(), of(throwable), message, arguments);
+        this(level, mdc, Optional.<Marker>absent(), fromNullable(throwable), message, arguments);
     }
 
     public LoggingEvent(
@@ -279,7 +283,7 @@ public class LoggingEvent extends RichObject {
             final Marker marker,
             final String message,
             final Object... arguments) {
-        this(level, mdc, of(marker), Optional.<Throwable>absent(), message, arguments);
+        this(level, mdc, fromNullable(marker), Optional.<Throwable>absent(), message, arguments);
     }
 
     public LoggingEvent(
@@ -289,7 +293,7 @@ public class LoggingEvent extends RichObject {
             final Throwable throwable,
             final String message,
             final Object... arguments) {
-        this(level, mdc, of(marker), of(throwable), message, arguments);
+        this(level, mdc, fromNullable(marker), fromNullable(throwable), message, arguments);
     }
 
     private LoggingEvent(
@@ -317,7 +321,12 @@ public class LoggingEvent extends RichObject {
         this.marker = checkNotNull(marker);
         this.throwable = checkNotNull(throwable);
         this.message = checkNotNull(message);
-        this.arguments = ImmutableList.copyOf(arguments);
+        this.arguments = from(asList(arguments)).transform(new Function<Object, Object>() {
+            @Override
+            public Object apply(Object input) {
+                return fromNullable(input).or((Object)absent());
+            }
+        }).toList();
     }
 
     @Identity private final Level level;
