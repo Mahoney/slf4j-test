@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TestLoggerFactory.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SLF4J Test</a> &gt; <a href="index.html" class="el_package">uk.org.lidalia.slf4jtest</a> &gt; <span class="el_source">TestLoggerFactory.java</span></div><h1>TestLoggerFactory.java</h1><pre class="source lang-java linenums">package uk.org.lidalia.slf4jtest;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.slf4j.ILoggerFactory;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import uk.org.lidalia.lang.LazyValue;
+import uk.org.lidalia.lang.ThreadLocal;
+import uk.org.lidalia.slf4jext.Level;
+
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+public final class TestLoggerFactory implements ILoggerFactory {
+
+<span class="fc" id="L25">    private static final LazyValue&lt;TestLoggerFactory&gt; INSTANCE = new LazyValue&lt;&gt;(new TestLoggerFactoryMaker());</span>
+
+    public static TestLoggerFactory getInstance() {
+<span class="fc" id="L28">        return INSTANCE.call();</span>
+    }
+
+    public static TestLogger getTestLogger(final Class&lt;?&gt; aClass) {
+<span class="fc" id="L32">        return getInstance().getLogger(aClass);</span>
+    }
+
+    public static TestLogger getTestLogger(final String name) {
+<span class="fc" id="L36">        return getInstance().getLogger(name);</span>
+    }
+
+    public static Map&lt;String, TestLogger&gt; getAllTestLoggers() {
+<span class="fc" id="L40">        return getInstance().getAllLoggers();</span>
+    }
+
+    public static void clear() {
+<span class="fc" id="L44">        getInstance().clearLoggers();</span>
+<span class="fc" id="L45">    }</span>
+
+    public static void clearAll() {
+<span class="fc" id="L48">        getInstance().clearAllLoggers();</span>
+<span class="fc" id="L49">    }</span>
+
+    static void reset() {
+<span class="fc" id="L52">        getInstance().doReset();</span>
+<span class="fc" id="L53">    }</span>
+
+    public static List&lt;LoggingEvent&gt; getLoggingEvents() {
+<span class="fc" id="L56">        return getInstance().getLoggingEventsFromLoggers();</span>
+    }
+
+    public static List&lt;LoggingEvent&gt; getAllLoggingEvents() {
+<span class="fc" id="L60">        return getInstance().getAllLoggingEventsFromLoggers();</span>
+    }
+
+<span class="fc" id="L63">    private final ConcurrentMap&lt;String, TestLogger&gt; loggers = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L64">    private final List&lt;LoggingEvent&gt; allLoggingEvents = new CopyOnWriteArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">    private final ThreadLocal&lt;List&lt;LoggingEvent&gt;&gt; loggingEvents =</span>
+            new ThreadLocal&lt;&gt;(Suppliers.&lt;LoggingEvent&gt;makeEmptyMutableList());
+    private volatile Level printLevel;
+
+<span class="fc" id="L69">    private TestLoggerFactory(final Level printLevel) {</span>
+<span class="fc" id="L70">        this.printLevel = checkNotNull(printLevel);</span>
+<span class="fc" id="L71">    }</span>
+
+    public Level getPrintLevel() {
+<span class="fc" id="L74">        return printLevel;</span>
+    }
+
+    public ImmutableMap&lt;String, TestLogger&gt; getAllLoggers() {
+<span class="fc" id="L78">        return ImmutableMap.copyOf(loggers);</span>
+    }
+
+    public TestLogger getLogger(final Class&lt;?&gt; aClass) {
+<span class="fc" id="L82">        return getLogger(aClass.getName());</span>
+    }
+
+    public TestLogger getLogger(final String name) {
+<span class="fc" id="L86">        final TestLogger newLogger = new TestLogger(name, this);</span>
+<span class="fc" id="L87">        return fromNullable(loggers.putIfAbsent(name, newLogger)).or(newLogger);</span>
+    }
+
+    public void clearLoggers() {
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (final TestLogger testLogger: loggers.values()) {</span>
+<span class="fc" id="L92">            testLogger.clear();</span>
+<span class="fc" id="L93">        }</span>
+<span class="fc" id="L94">        loggingEvents.get().clear();</span>
+<span class="fc" id="L95">    }</span>
+
+    public void clearAllLoggers() {
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (final TestLogger testLogger: loggers.values()) {</span>
+<span class="fc" id="L99">            testLogger.clearAll();</span>
+<span class="fc" id="L100">        }</span>
+<span class="fc" id="L101">        loggingEvents.reset();</span>
+<span class="fc" id="L102">        allLoggingEvents.clear();</span>
+<span class="fc" id="L103">    }</span>
+
+    void doReset() {
+<span class="fc" id="L106">        clearAllLoggers();</span>
+<span class="fc" id="L107">        loggers.clear();</span>
+<span class="fc" id="L108">    }</span>
+
+    public ImmutableList&lt;LoggingEvent&gt; getLoggingEventsFromLoggers() {
+<span class="fc" id="L111">        return ImmutableList.copyOf(loggingEvents.get());</span>
+    }
+
+    public List&lt;LoggingEvent&gt; getAllLoggingEventsFromLoggers() {
+<span class="fc" id="L115">        return allLoggingEvents;</span>
+    }
+
+    void addLoggingEvent(final LoggingEvent event) {
+<span class="fc" id="L119">        loggingEvents.get().add(event);</span>
+<span class="fc" id="L120">        allLoggingEvents.add(event);</span>
+<span class="fc" id="L121">    }</span>
+
+    public void setPrintLevel(final Level printLevel) {
+<span class="fc" id="L124">        this.printLevel = checkNotNull(printLevel);</span>
+<span class="fc" id="L125">    }</span>
+
+    @SuppressWarnings(&quot;PMD.AccessorClassGeneration&quot;)
+<span class="fc" id="L128">    private static class TestLoggerFactoryMaker implements Callable&lt;TestLoggerFactory&gt; {</span>
+        @Override
+        public TestLoggerFactory call() throws IOException {
+            try {
+<span class="fc" id="L132">                final String level = new OverridableProperties(&quot;slf4jtest&quot;).getProperty(&quot;print.level&quot;, &quot;OFF&quot;);</span>
+<span class="fc" id="L133">                final Level printLevel = Level.valueOf(level);</span>
+<span class="fc" id="L134">                return new TestLoggerFactory(printLevel);</span>
+<span class="nc" id="L135">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L136">                throw new IllegalStateException(&quot;Invalid level name in property print.level of file slf4jtest.properties &quot; +</span>
+                        &quot;or System property slf4jtest.print.level&quot;, e);
+            }
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.2.201302030002</span></div></body></html>
