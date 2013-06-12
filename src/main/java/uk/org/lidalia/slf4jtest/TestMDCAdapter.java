@@ -5,10 +5,7 @@ import java.util.Map;
 
 import org.slf4j.spi.MDCAdapter;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import uk.org.lidalia.lang.ThreadLocal;
 

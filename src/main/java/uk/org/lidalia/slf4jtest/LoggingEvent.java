@@ -10,7 +10,6 @@ import org.slf4j.helpers.MessageFormatter;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -252,11 +251,13 @@ public class LoggingEvent extends RichObject {
     }
 
     public LoggingEvent(final Level level, final Throwable throwable, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), fromNullable(throwable), message, arguments);
+        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), fromNullable(throwable),
+                message, arguments);
     }
 
     public LoggingEvent(final Level level, final Marker marker, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), Optional.<Throwable>absent(), message, arguments);
+        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), Optional.<Throwable>absent(),
+                message, arguments);
     }
 
     public LoggingEvent(
@@ -321,13 +322,15 @@ public class LoggingEvent extends RichObject {
         this.marker = checkNotNull(marker);
         this.throwable = checkNotNull(throwable);
         this.message = checkNotNull(message);
-        this.arguments = from(asList(arguments)).transform(new Function<Object, Object>() {
-            @Override
-            public Object apply(Object input) {
-                return fromNullable(input).or((Object)absent());
-            }
-        }).toList();
+        this.arguments = from(asList(arguments)).transform(TO_NON_NULL_VALUE).toList();
     }
+
+    private static final Function<Object,Object> TO_NON_NULL_VALUE = new Function<Object, Object>() {
+        @Override
+        public Object apply(final Object input) {
+            return fromNullable(input).or((Object) absent());
+        }
+    };
 
     @Identity private final Level level;
     @Identity private final ImmutableMap<String, String> mdc;
