@@ -21,6 +21,7 @@ import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.test.StaticTimeRule;
 import uk.org.lidalia.test.SystemOutputRule;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
@@ -39,7 +40,6 @@ import static uk.org.lidalia.slf4jtest.LoggingEvent.error;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.info;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.trace;
 import static uk.org.lidalia.slf4jtest.LoggingEvent.warn;
-import static uk.org.lidalia.test.ShouldThrow.shouldThrow;
 import static uk.org.lidalia.test.StaticTimeRule.alwaysStartOfEpoch;
 
 @RunWith(JUnitParamsRunner.class)
@@ -520,6 +520,12 @@ public class LoggingEventTests {
         event.print();
         assertThat(systemOutputRule.getSystemErr(), is(not("")));
         assertThat(systemOutputRule.getSystemOut(), is(""));
+    }
+
+    @Test
+    public void nullArgument() {
+        LoggingEvent event = new LoggingEvent(level, "message with null arg", null, null);
+        assertThat(event, is(new LoggingEvent(level, "message with null arg", absent(), absent())));
     }
 
     @After
