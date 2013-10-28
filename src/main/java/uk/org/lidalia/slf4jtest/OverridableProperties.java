@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import uk.org.lidalia.lang.Exceptions;
 
 import static com.google.common.base.Optional.fromNullable;
 import static uk.org.lidalia.lang.Exceptions.throwUnchecked;
@@ -29,12 +30,22 @@ class OverridableProperties {
     private static final Function<InputStream, Properties> loadProperties = new Function<InputStream, Properties>() {
         @Override
         public Properties apply(final InputStream propertyResource) {
-            try (InputStream closablePropertyResource = propertyResource) {
+            boolean throwing = false;
+            try {
                 final Properties loadedProperties = new Properties();
-                loadedProperties.load(closablePropertyResource);
+                loadedProperties.load(propertyResource);
                 return loadedProperties;
             } catch (IOException ioException) {
+                throwing = true;
                 return throwUnchecked(ioException, null);
+            } finally {
+                try {
+                    propertyResource.close();
+                } catch (IOException e) {
+                    if (!throwing) {
+                        Exceptions.throwUnchecked(e);
+                    }
+                }
             }
         }
     };

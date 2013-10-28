@@ -37,7 +37,7 @@ public class TestMDCAdapterTests {
     @SuppressWarnings("raw type")
     public void getCopyOfContextMapIsCopy() {
         testMDCAdapter.put(key, value);
-        Map<String, String> expected = new HashMap<>();
+        Map<String, String> expected = new HashMap<String, String>();
         expected.put(key, value);
         Map actual = testMDCAdapter.getCopyOfContextMap();
         testMDCAdapter.clear();

@@ -50,11 +50,11 @@ public class TestLogger implements Logger {
 
     private final String name;
     private final TestLoggerFactory testLoggerFactory;
-    private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<>(
+    private final ThreadLocal<List<LoggingEvent>> loggingEvents = new ThreadLocal<List<LoggingEvent>>(
             Suppliers.<LoggingEvent>makeEmptyMutableList());
 
-    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
-    private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels = new ThreadLocal<>(enablableValueSet());
+    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
+    private volatile ThreadLocal<ImmutableSet<Level>> enabledLevels = new ThreadLocal<ImmutableSet<Level>>(enablableValueSet());
 
     TestLogger(final String name, final TestLoggerFactory testLoggerFactory) {
         this.name = name;
@@ -498,7 +498,7 @@ public class TestLogger implements Logger {
      * @param enabledLevelsForAllThreads levels which will be considered enabled for this logger IN ALL THREADS
      */
     public void setEnabledLevelsForAllThreads(final ImmutableSet<Level> enabledLevelsForAllThreads) {
-        this.enabledLevels = new ThreadLocal<>(enabledLevelsForAllThreads);
+        this.enabledLevels = new ThreadLocal<ImmutableSet<Level>>(enabledLevelsForAllThreads);
     }
 
     /**

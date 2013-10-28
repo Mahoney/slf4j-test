@@ -11,7 +11,7 @@ import uk.org.lidalia.lang.ThreadLocal;
 
 public class TestMDCAdapter implements MDCAdapter {
 
-    private final ThreadLocal<Map<String, String>> value = new ThreadLocal<>(
+    private final ThreadLocal<Map<String, String>> value = new ThreadLocal<Map<String, String>>(
             Suppliers.<String, String>makeEmptyMutableMap());
 
     public void put(final String key, final String val) {

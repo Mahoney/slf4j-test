@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class TestLoggerFactory implements ILoggerFactory {
 
-    private static final LazyValue<TestLoggerFactory> INSTANCE = new LazyValue<>(new TestLoggerFactoryMaker());
+    private static final LazyValue<TestLoggerFactory> INSTANCE = new LazyValue<TestLoggerFactory>(new TestLoggerFactoryMaker());
 
     public static TestLoggerFactory getInstance() {
         return INSTANCE.call();
@@ -60,10 +60,10 @@ public final class TestLoggerFactory implements ILoggerFactory {
         return getInstance().getAllLoggingEventsFromLoggers();
     }
 
-    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<>();
-    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
+    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<String, TestLogger>();
+    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<LoggingEvent>();
     private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<>(Suppliers.<LoggingEvent>makeEmptyMutableList());
+            new ThreadLocal<List<LoggingEvent>>(Suppliers.<LoggingEvent>makeEmptyMutableList());
     private volatile Level printLevel;
 
     private TestLoggerFactory(final Level printLevel) {

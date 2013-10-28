@@ -13,7 +13,7 @@ final class Suppliers {
         return new Supplier<List<T>>() {
             @Override
             public List<T> get() {
-                return new ArrayList<>();
+                return new ArrayList<T>();
             }
         };
     }
@@ -22,7 +22,7 @@ final class Suppliers {
         return new Supplier<Map<K, V>>() {
             @Override
             public Map<K, V> get() {
-                return new HashMap<>();
+                return new HashMap<K, V>();
             }
         };
     }

@@ -51,7 +51,7 @@ public class LoggingEventTests {
     @Rule public StaticTimeRule alwaysStartOfEpoch = alwaysStartOfEpoch();
 
     Level level = Level.TRACE;
-    Map<String, String> mdc = new HashMap<>();
+    Map<String, String> mdc = new HashMap<String, String>();
     {
         mdc.put("key", "value");
     }
@@ -433,9 +433,9 @@ public class LoggingEventTests {
 
     @Test
     public void mdcIsSnapshotInTime() {
-        Map<String, String> mdc = new HashMap<>();
+        Map<String, String> mdc = new HashMap<String, String>();
         mdc.put("key", "value1");
-        Map<String, String> mdcAtStart = new HashMap<>(mdc);
+        Map<String, String> mdcAtStart = new HashMap<String, String>(mdc);
         LoggingEvent event = new LoggingEvent(level, mdc, message);
         mdc.put("key", "value2");
         assertThat(event.getMdc(), is(mdcAtStart));
@@ -443,7 +443,7 @@ public class LoggingEventTests {
 
     @Test(expected = UnsupportedOperationException.class)
     public void mdcNotModifiable() throws Throwable {
-        Map<String, String> mdc = new HashMap<>();
+        Map<String, String> mdc = new HashMap<String, String>();
         mdc.put("key", "value1");
         final LoggingEvent event = new LoggingEvent(level, mdc, message);
         event.getMdc().put("anything", "whatever");

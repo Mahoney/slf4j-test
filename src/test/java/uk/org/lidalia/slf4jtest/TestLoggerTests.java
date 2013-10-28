@@ -57,7 +57,7 @@ public class TestLoggerTests {
     private final Object[] args = new Object[]{arg1, arg2, "arg3"};
     private final Throwable throwable = new Throwable();
 
-    private final Map<String, String> mdcValues = new HashMap<>();
+    private final Map<String, String> mdcValues = new HashMap<String, String>();
 
     @Rule public SystemOutputRule systemOutputRule = new SystemOutputRule();
 

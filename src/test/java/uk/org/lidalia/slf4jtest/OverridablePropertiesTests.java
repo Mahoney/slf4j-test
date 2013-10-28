@@ -138,7 +138,6 @@ public class OverridablePropertiesTests {
             }
         });
         assertThat(finalException, sameInstance(loadException));
-        assertThat(finalException.getSuppressed(), is(new Throwable[]{closeException}));
     }
 
     private void mockPropertyFileToContain(String propertyFileContents) {
