@@ -419,15 +419,15 @@ public class TestLogger implements Logger {
     }
 
     private void log(final Level level, final String msg, final Throwable throwable) { //NOPMD PMD wrongly thinks unused...
-        addLoggingEvent(level, Optional.<Marker>absent(), of(throwable), msg);
+        addLoggingEvent(level, Optional.<Marker>absent(), fromNullable(throwable), msg);
     }
 
     private void log(final Level level, final Marker marker, final String format, final Object... args) {
-        addLoggingEvent(level, of(marker), Optional.<Throwable>absent(), format, args);
+        addLoggingEvent(level, fromNullable(marker), Optional.<Throwable>absent(), format, args);
     }
 
     private void log(final Level level, final Marker marker, final String msg, final Throwable throwable) {
-        addLoggingEvent(level, of(marker), of(throwable), msg);
+        addLoggingEvent(level, fromNullable(marker), fromNullable(throwable), msg);
     }
 
     private void addLoggingEvent(

@@ -16,6 +16,7 @@ import org.slf4j.MDC;
 import org.slf4j.Marker;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
@@ -28,6 +29,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_LIST;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -703,6 +705,16 @@ public class TestLoggerTests {
         testLogger.info(message);
 
         assertThat(systemOutputRule.getSystemOut(), isEmptyString());
+    }
+
+    @Test
+    public void nullMdcValue() {
+        MDC.clear();
+        MDC.put("key", null);
+
+        testLogger.info(message);
+
+        assertThat(testLogger.getLoggingEvents(), is(asList(info(ImmutableMap.of("key", "null"), message))));
     }
 
     private void assertEnabledReturnsCorrectly(Level levelToTest) {
