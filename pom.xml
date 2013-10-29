@@ -19,15 +19,8 @@
     <url>https://github.com/Mahoney/${project.artifactId}</url>
     <connection>scm:git:git@github.com:Mahoney/${project.artifactId}.git</connection>
     <developerConnection>scm:git:git@github.com:Mahoney/${project.artifactId}.git</developerConnection>
-    <tag>slf4j-test-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
-
-  <distributionManagement>
-    <site>
-      <id>gh.pages</id>
-      <url>scm:git:git@github.com:Mahoney/${project.artifactId}.git</url>
-    </site>
-  </distributionManagement>
 
   <dependencies>
     <dependency>
