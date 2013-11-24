@@ -294,7 +294,7 @@ public class TestLoggerFactoryTests {
                         "or System property slf4jtest.print.level"));
         assertThat(illegalStateException.getCause(), instanceOf(IllegalArgumentException.class));
         assertThat(illegalStateException.getCause().getMessage(),
-                is("No enum constant "+Level.class.getName()+"."+invalidLevelName));
+                is("No enum const class "+Level.class.getName()+"."+invalidLevelName));
 
     }
 
