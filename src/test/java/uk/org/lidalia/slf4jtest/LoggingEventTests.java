@@ -23,7 +23,6 @@ import uk.org.lidalia.test.SystemOutputRule;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
-import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
@@ -537,5 +536,9 @@ public class LoggingEventTests {
     private Matcher<Optional<?>> isAbsent() {
         final Matcher optionalMatcher = is(Optional.absent());
         return (Matcher<Optional<?>>) optionalMatcher;
+    }
+
+    private static String lineSeparator() {
+        return System.getProperty("line.separator");
     }
 }
