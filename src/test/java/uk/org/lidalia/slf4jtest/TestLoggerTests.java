@@ -58,6 +58,7 @@ public class TestLoggerTests {
     private final Object arg2 = "arg2";
     private final Object[] args = new Object[]{arg1, arg2, "arg3"};
     private final Throwable throwable = new Throwable();
+    private final Object[] argsWithThrowable = new Object[]{arg1, arg2, "arg3", throwable};
 
     private final Map<String, String> mdcValues = new HashMap<>();
 
@@ -133,6 +134,13 @@ public class TestLoggerTests {
     }
 
     @Test
+    public void traceMessageManyArgsWithThrowable() {
+        testLogger.trace(message, argsWithThrowable);
+
+        assertEquals(asList(trace(mdcValues, throwable, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
     public void traceMessageThrowable() {
         testLogger.trace(message, throwable);
 
@@ -170,6 +178,13 @@ public class TestLoggerTests {
         testLogger.trace(marker, message, args);
 
         assertEquals(asList(trace(mdcValues, marker, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void traceMarkerMessageManyArgsWithThrowable() {
+        testLogger.trace(marker, message, argsWithThrowable);
+
+        assertEquals(asList(trace(mdcValues, marker, throwable, message, args)), testLogger.getLoggingEvents());
     }
 
     @Test
@@ -213,6 +228,13 @@ public class TestLoggerTests {
     }
 
     @Test
+    public void debugMessageManyArgsWithThrowable() {
+        testLogger.debug(message, argsWithThrowable);
+
+        assertEquals(asList(debug(mdcValues, throwable, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
     public void debugMessageThrowable() {
         testLogger.debug(message, throwable);
 
@@ -250,6 +272,13 @@ public class TestLoggerTests {
         testLogger.debug(marker, message, args);
 
         assertEquals(asList(debug(mdcValues, marker, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void debugMarkerMessageManyArgsWithThrowable() {
+        testLogger.debug(marker, message, argsWithThrowable);
+
+        assertEquals(asList(debug(mdcValues, marker, throwable, message, args)), testLogger.getLoggingEvents());
     }
 
     @Test
@@ -293,6 +322,13 @@ public class TestLoggerTests {
     }
 
     @Test
+    public void infoMessageManyArgsWithThrowable() {
+        testLogger.info(message, argsWithThrowable);
+
+        assertEquals(asList(info(mdcValues, throwable, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
     public void infoMessageThrowable() {
         testLogger.info(message, throwable);
 
@@ -330,6 +366,13 @@ public class TestLoggerTests {
         testLogger.info(marker, message, args);
 
         assertEquals(asList(info(mdcValues, marker, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void infoMarkerMessageManyArgsWithThrowable() {
+        testLogger.info(marker, message, argsWithThrowable);
+
+        assertEquals(asList(info(mdcValues, marker, throwable, message, args)), testLogger.getLoggingEvents());
     }
 
     @Test
@@ -373,6 +416,13 @@ public class TestLoggerTests {
     }
 
     @Test
+    public void warnMessageManyArgsWithThrowable() {
+        testLogger.warn(message, argsWithThrowable);
+
+        assertEquals(asList(warn(mdcValues, throwable, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
     public void warnMessageThrowable() {
         testLogger.warn(message, throwable);
 
@@ -410,6 +460,13 @@ public class TestLoggerTests {
         testLogger.warn(marker, message, args);
 
         assertEquals(asList(warn(mdcValues, marker, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void warnMarkerMessageManyArgsWithThrowable() {
+        testLogger.warn(marker, message, argsWithThrowable);
+
+        assertEquals(asList(warn(mdcValues, marker, throwable, message, args)), testLogger.getLoggingEvents());
     }
 
     @Test
@@ -453,6 +510,13 @@ public class TestLoggerTests {
     }
 
     @Test
+    public void errorMessageManyArgsWithThrowable() {
+        testLogger.error(message, argsWithThrowable);
+
+        assertEquals(asList(error(mdcValues, throwable, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
     public void errorMessageThrowable() {
         testLogger.error(message, throwable);
 
@@ -490,6 +554,13 @@ public class TestLoggerTests {
         testLogger.error(marker, message, args);
 
         assertEquals(asList(error(mdcValues, marker, message, args)), testLogger.getLoggingEvents());
+    }
+
+    @Test
+    public void errorMarkerMessageManyArgsWithThrowable() {
+        testLogger.error(marker, message, argsWithThrowable);
+
+        assertEquals(asList(error(mdcValues, marker, throwable, message, args)), testLogger.getLoggingEvents());
     }
 
     @Test
