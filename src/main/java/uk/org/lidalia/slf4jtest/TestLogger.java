@@ -8,6 +8,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
+import org.slf4j.helpers.FormattingTuple;
+import org.slf4j.helpers.MessageFormatter;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -15,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 
 import uk.org.lidalia.lang.ThreadLocal;
 import uk.org.lidalia.slf4jext.Level;
-
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -415,7 +416,8 @@ public class TestLogger implements Logger {
     }
 
     private void log(final Level level, final String format, final Object... args) {
-        addLoggingEvent(level, Optional.<Marker>absent(), Optional.<Throwable>absent(), format, args);
+        final FormattingTuple ft = MessageFormatter.arrayFormat(format, args);
+        addLoggingEvent(level, Optional.<Marker>absent(), fromNullable(ft.getThrowable()), format, ft.getArgArray());
     }
 
     private void log(final Level level, final String msg, final Throwable throwable) { //NOPMD PMD wrongly thinks unused...
@@ -423,7 +425,8 @@ public class TestLogger implements Logger {
     }
 
     private void log(final Level level, final Marker marker, final String format, final Object... args) {
-        addLoggingEvent(level, fromNullable(marker), Optional.<Throwable>absent(), format, args);
+        final FormattingTuple ft = MessageFormatter.arrayFormat(format, args);
+        addLoggingEvent(level, fromNullable(marker), fromNullable(ft.getThrowable()), format, ft.getArgArray());
     }
 
     private void log(final Level level, final Marker marker, final String msg, final Throwable throwable) {
