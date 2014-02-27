@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>slf4j-test</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1-SNAPSHOT</version>
 
   <name>SLF4J Test</name>
   <description>An in-memory SLF4J implementation focused on aiding unit testing.</description>
@@ -19,7 +19,7 @@
     <url>https://github.com/Mahoney/${project.artifactId}</url>
     <connection>scm:git:git@github.com:Mahoney/${project.artifactId}.git</connection>
     <developerConnection>scm:git:git@github.com:Mahoney/${project.artifactId}.git</developerConnection>
-    <tag>slf4j-test-1.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
