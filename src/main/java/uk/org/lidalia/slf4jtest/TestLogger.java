@@ -416,8 +416,7 @@ public class TestLogger implements Logger {
     }
 
     private void log(final Level level, final String format, final Object... args) {
-        final FormattingTuple ft = MessageFormatter.arrayFormat(format, args);
-        addLoggingEvent(level, Optional.<Marker>absent(), fromNullable(ft.getThrowable()), format, ft.getArgArray());
+        log(level, format, Optional.<Marker>absent(), args);
     }
 
     private void log(final Level level, final String msg, final Throwable throwable) { //NOPMD PMD wrongly thinks unused...
@@ -425,12 +424,16 @@ public class TestLogger implements Logger {
     }
 
     private void log(final Level level, final Marker marker, final String format, final Object... args) {
-        final FormattingTuple ft = MessageFormatter.arrayFormat(format, args);
-        addLoggingEvent(level, fromNullable(marker), fromNullable(ft.getThrowable()), format, ft.getArgArray());
+        log(level, format, fromNullable(marker), args);
     }
 
     private void log(final Level level, final Marker marker, final String msg, final Throwable throwable) {
         addLoggingEvent(level, fromNullable(marker), fromNullable(throwable), msg);
+    }
+
+    private void log(final Level level, final String format, final Optional<Marker> marker, final Object[] args) {
+        final FormattingTuple formattedArgs = MessageFormatter.arrayFormat(format, args);
+        addLoggingEvent(level, marker, fromNullable(formattedArgs.getThrowable()), format, formattedArgs.getArgArray());
     }
 
     private void addLoggingEvent(

@@ -1,5 +1,10 @@
 ## Changelog
 
+### Version 1.1.0
+
+Fixes https://github.com/Mahoney/slf4j-test/issues/4 - Detect throwable as last varargs element if the format string has n-1 parameters.
+With thanks to https://github.com/philipa
+
 ### Version 1.0.1
 
 Fixed an issue where null arguments to a logging event and null values in the MDC caused a NullPointerException due to Guava's

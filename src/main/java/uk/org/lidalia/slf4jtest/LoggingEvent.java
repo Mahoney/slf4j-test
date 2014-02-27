@@ -325,7 +325,7 @@ public class LoggingEvent extends RichObject {
         this.arguments = from(asList(arguments)).transform(TO_NON_NULL_VALUE).toList();
     }
 
-    private static final Function<Object,Object> TO_NON_NULL_VALUE = new Function<Object, Object>() {
+    private static final Function<Object, Object> TO_NON_NULL_VALUE = new Function<Object, Object>() {
         @Override
         public Object apply(final Object input) {
             return fromNullable(input).or((Object) absent());
