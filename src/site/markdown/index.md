@@ -1,21 +1,42 @@
 ## SLF4J Test
 
-A test implementation of [SLF4J](http://www.slf4j.org/) that stores log messages in memory and provides methods for retrieving them.
+A test implementation of [SLF4J](http://www.slf4j.org/) that stores log messages
+in memory and provides methods for retrieving them.
 
-See the [JavaDocs](./apidocs/index.html) for full documentation and the [Test Source](./xref-test/index.html) for complete
-examples of usage.
+Below is a quick start; more detailed usage information is available [here.
+](./usage.html) See the [JavaDocs](./apidocs/index.html) for full documentation
+and the [Test Source](./xref-test/index.html) for complete examples of usage.
 
-Details on how to depend on this library in your favourite build tool can be found [here](./dependency-info.html).
+Details on how to depend on this library in your favourite build tool can be
+found [here](./dependency-info.html).
 
-### Scope
+### Getting Started
 
-Since there should only ever be [one SLF4J implementation on your classpath](http://www.slf4j.org/codes.html#multiple_bindings)
-this library only works as a tool for testing other libraries. It should be added to the test classpath of libraries that use
-the SLF4J API. If you currently produce your entire application as a single module / project, and so depend on an SLF4J
-implementation like [Logback](http://logback.qos.ch/) in the run or compile time dependencies, you will need to break it up if you
-wish to use this library reliably.
+#### Setting up
 
-### Purpose
+SLF4J Test should be [the only SLF4J implementation on your test classpath
+](http://www.slf4j.org/codes.html#multiple_bindings), and SLF4J will warn you if
+there is more than one. If the module is a library this should not be an issue
+as you should not be including a logging implementation as a compile or runtime
+dependency anyway. If the module is an application (whether standalone or
+something like a WAR that is deployed in a container) then you have two options:
+separate out the logic into a library, or exclude the real implementation from
+the test classpath. In Maven this can be done as so:
+
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <classpathDependencyExcludes>
+              <classpathDependencyExcludes>ch.qos.logback:logback-classic</classpathDependencyExcludes>
+            </classpathDependencyExcludes>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+
+#### Basic example
 
 It is a common pattern to use SLF4J in the following manner:
 
@@ -31,14 +52,17 @@ It is a common pattern to use SLF4J in the following manner:
         }
     }
 
-This is because it is arduous to inject a Logger instance into every class that needs to log. However, this renders it quite
-difficult to unit test interactions with the logger instance; even if it is not stored statically or made final, it will almost
-certainly be private, and to make it anything other than private or final is to compromise the design for testability which is
-obviously undesirable.
+This is because it is arduous to inject a Logger instance into every class that
+needs to log. However, this renders it quite difficult to unit test interactions
+with the logger instance; even if it is not stored statically or made final, it
+will almost certainly be private, and to make it anything other than private or
+final is to compromise the design for testability which is obviously
+undesirable.
 
-This library gets around this by providing an implementation of SLF4J which stores the logging events in memory in a form that can
-be interrogated. So long as slf4j-test is present as the sole SLF4J implementation on the classpath, the class above could be
-tested as so:
+This library gets around this by providing an implementation of SLF4J which
+stores the logging events in memory in a form that can be interrogated. So long
+as slf4j-test is present as the sole SLF4J implementation on the classpath, the
+class above could be tested as so:
 
     import org.junit.After;
     import org.junit.Test;
