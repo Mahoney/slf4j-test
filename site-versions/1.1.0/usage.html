@@ -171,8 +171,27 @@ Logger.setEnabledLevelsForAllThreads(Level... levels)
 <p>It&#x2019;s important to note that SLF4J does <i>not</i> imply any relationship between the levels - it is perfectly possible for a logger to be enabled for INFO but disabled for ERROR as far as SLF4J is concerned, and hence as far as SLF4J Test is concerned, notwithstanding the fact that implementations such as Logback and Log4J do not permit this. If you wish to test using these common configurations, you should use the constants defined in uk.org.lidalia.slf4jext.ConventionalLevelHierarchy.</p></div>
 <div class="section">
 <h3>Resetting Stored State<a name="Resetting_Stored_State"></a></h3>
-<p>In order to have robust tests the in memory state of SLF4J Test must be in a known state for each test run, which in turn implies that a test should clean up after itself. The simplest way to do so is via a call to  TestLoggerFactory.clear() in a tear down method of some kind. If you are using JUnit then SLF4J Test provides a Rule that will do this for you if you provide the following line in your test class:  @Rule public TestLoggerFactoryResetRule testLoggerFactoryResetRule = new TestLoggerFactoryResetRule();</p>
-<p>More nuanced state resetting can be done on a per logger basis:  TestLogger.clear() or more aggressive clears will reset state across all threads:  TestLoggerFactory.clearAll()  TestLogger.clearAll()</p></div>
+<p>In order to have robust tests the in memory state of SLF4J Test must be in a known state for each test run, which in turn implies that a test should clean up after itself. The simplest way to do so is via a call to</p>
+
+<div class="source">
+<pre>TestLoggerFactory.clear()
+</pre></div>
+<p>in a tear down method of some kind. If you are using JUnit then SLF4J Test provides a Rule that will do this for you if you provide the following line in your test class:</p>
+
+<div class="source">
+<pre>@Rule public TestLoggerFactoryResetRule testLoggerFactoryResetRule = new TestLoggerFactoryResetRule();
+</pre></div>
+<p>More nuanced state resetting can be done on a per logger basis:</p>
+
+<div class="source">
+<pre>TestLogger.clear()
+</pre></div>
+<p>or more aggressive clears will reset state across all threads:</p>
+
+<div class="source">
+<pre>TestLoggerFactory.clearAll()
+TestLogger.clearAll()
+</pre></div></div>
 <div class="section">
 <h3>Parallel Testing<a name="Parallel_Testing"></a></h3>
 <p>SLF4J Test is designed to facilitate tests run in parallel. Because SLF4J Loggers are commonly shared across threads, the SLF4J Test implementation maintains its state in ThreadLocals. The following functions:</p>
