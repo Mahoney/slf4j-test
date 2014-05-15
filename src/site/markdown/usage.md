@@ -38,15 +38,21 @@ uk.org.lidalia.slf4jext.ConventionalLevelHierarchy.
 In order to have robust tests the in memory state of SLF4J Test must be in a
 known state for each test run, which in turn implies that a test should clean up
 after itself. The simplest way to do so is via a call to
+
     TestLoggerFactory.clear()
+
 in a tear down method of some kind. If you are using JUnit then SLF4J Test
 provides a Rule that will do this for you if you provide the following line in
 your test class:
+
     @Rule public TestLoggerFactoryResetRule testLoggerFactoryResetRule = new TestLoggerFactoryResetRule();
 
 More nuanced state resetting can be done on a per logger basis:
+
     TestLogger.clear()
+
 or more aggressive clears will reset state across all threads:
+
     TestLoggerFactory.clearAll()
     TestLogger.clearAll()
 
