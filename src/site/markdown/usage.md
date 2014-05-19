@@ -45,7 +45,7 @@ in a tear down method of some kind. If you are using JUnit then SLF4J Test
 provides a Rule that will do this for you if you provide the following line in
 your test class:
 
-    @Rule public TestLoggerFactoryResetRule testLoggerFactoryResetRule = new TestLoggerFactoryResetRule();
+    @Rule public TestRule resetLoggingEvents = new TestLoggerFactoryResetRule();
 
 More nuanced state resetting can be done on a per logger basis:
 

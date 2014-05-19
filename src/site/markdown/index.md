@@ -77,18 +77,16 @@ class above could be tested as so:
 
     public class Slf4jUserTest {
 
+        @Rule public TestRule resetLoggingEvents = new TestLoggerFactoryResetRule();
+
         Slf4jUser slf4jUser = new Slf4jUser();
         TestLogger logger = TestLoggerFactory.getTestLogger(Slf4jUser.class);
 
         @Test
         public void aMethodThatLogsLogsAsExpected() {
+
             slf4jUser.aMethodThatLogs();
 
             assertThat(logger.getLoggingEvents(), is(asList(info("Hello World!"))));
-        }
-
-        @After
-        public void clearLoggers() {
-            TestLoggerFactory.clear();
         }
     }
