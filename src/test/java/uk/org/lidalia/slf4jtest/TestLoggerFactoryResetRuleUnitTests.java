@@ -25,7 +25,24 @@ public class TestLoggerFactoryResetRuleUnitTests {
     TestLoggerFactoryResetRule resetRule = new TestLoggerFactoryResetRule();
 
     @Test
-    public void resetsThreadLocalData() throws Throwable {
+    public void resetsThreadLocalDataBeforeTest() throws Throwable {
+
+        final TestLogger logger = TestLoggerFactory.getTestLogger("logger_name");
+        logger.setEnabledLevels(INFO, DEBUG);
+        logger.info("a message");
+
+        resetRule.apply(new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+            	assertThat(TestLoggerFactory.getLoggingEvents(), is(Collections.<LoggingEvent>emptyList()));
+            	assertThat(logger.getLoggingEvents(), is(Collections.<LoggingEvent>emptyList()));
+            	assertThat(logger.getEnabledLevels(), is(Level.enablableValueSet()));
+            }
+        }, Description.EMPTY).evaluate();
+    }
+    
+    @Test
+    public void resetsThreadLocalDataAfterTest() throws Throwable {
 
         final TestLogger logger = TestLoggerFactory.getTestLogger("logger_name");
         logger.setEnabledLevels(INFO, DEBUG);

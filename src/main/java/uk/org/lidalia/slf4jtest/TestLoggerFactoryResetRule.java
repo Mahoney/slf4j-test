@@ -25,6 +25,7 @@ public class TestLoggerFactoryResetRule implements TestRule {
 
         @Override
         public void evaluate() throws Throwable {
+            TestLoggerFactory.clear();
             try {
                 base.evaluate();
             } finally {
