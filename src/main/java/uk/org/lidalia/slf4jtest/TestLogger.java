@@ -30,14 +30,17 @@ import static uk.org.lidalia.slf4jext.Level.WARN;
 import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
 
 /**
+ * <p>
  * Implementation of {@link Logger} which stores {@link LoggingEvent}s in memory and provides methods
  * to access and remove them in order to facilitate writing tests that assert particular logging calls were made.
- * <p/>
+ * </p>
+ * <p>
  * {@link LoggingEvent}s are stored in both an {@link ThreadLocal} and a normal {@link List}. The {@link #getLoggingEvents()}
  * and {@link #clear()} methods reference the {@link ThreadLocal} events. The {@link #getAllLoggingEvents()} and
  * {@link #clearAll()} methods reference all events logged on this Logger.  This is in order to facilitate parallelising
  * tests - tests that use the thread local methods can be parallelised.
- * <p/>
+ * </p>
+ * <p>
  * By default all Levels are enabled.  It is important to note that the conventional hierarchical notion of Levels, where
  * info being enabled implies warn and error being enabled, is not a requirement of the SLF4J API, so the
  * {@link #setEnabledLevels(ImmutableSet)}, {@link #setEnabledLevels(Level...)},
@@ -45,6 +48,7 @@ import static uk.org.lidalia.slf4jext.Level.enablableValueSet;
  * isXxxxxEnabled() methods make no assumptions about this hierarchy.  If you wish to use traditional hierarchical setups you may
  * do so by passing the constants in {@link uk.org.lidalia.slf4jext.ConventionalLevelHierarchy} to
  * {@link #setEnabledLevels(ImmutableSet)} or {@link #setEnabledLevelsForAllThreads(ImmutableSet)}.
+ * </p>
  */
 @SuppressWarnings({ "PMD.ExcessivePublicCount", "PMD.TooManyMethods" })
 public class TestLogger implements Logger {
