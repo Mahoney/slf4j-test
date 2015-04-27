@@ -73,7 +73,7 @@ public class TestLoggerTests {
     @After
     public void tearDown() {
         MDC.clear();
-        TestLoggerFactory.getInstance().setPrintLevel(Level.OFF);
+        TestLoggerFactory.reset();
     }
 
     @Test
