@@ -3,6 +3,7 @@ package uk.org.lidalia.slf4jtest;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -91,7 +92,7 @@ public class TestLoggerFactoryResetRuleUnitTests {
         assertThat(logger.getAllLoggingEvents(), is(loggedEvents));
     }
 
-    @Before
+    @Before @After
     public void resetTestLoggerFactory() {
         TestLoggerFactory.reset();
     }
