@@ -66,7 +66,7 @@ public final class TestLoggerFactory implements ILoggerFactory {
             new ThreadLocal<>(Suppliers.<LoggingEvent>makeEmptyMutableList());
     private volatile Level printLevel;
 
-    private TestLoggerFactory(final Level printLevel) {
+    public TestLoggerFactory(final Level printLevel) {
         this.printLevel = checkNotNull(printLevel);
     }
 
