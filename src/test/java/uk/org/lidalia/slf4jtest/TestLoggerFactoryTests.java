@@ -310,6 +310,7 @@ public class TestLoggerFactoryTests {
     public void resetLoggerFactory() {
         try {
             TestLoggerFactory.reset();
+            TestLoggerFactory.getInstance().setPrintLevel(Level.OFF);
         } catch (IllegalStateException e) {
             // ignore
         }

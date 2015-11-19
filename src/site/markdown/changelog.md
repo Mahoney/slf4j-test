@@ -1,5 +1,10 @@
 ## Changelog
 
+### Version 1.2.0
+
+Allows construction of standalone instances to facilitate logging in different
+contexts.
+
 ### Version 1.1.0
 
 Fixes https://github.com/Mahoney/slf4j-test/issues/4 - Detect throwable as last
