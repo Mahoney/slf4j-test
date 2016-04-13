@@ -324,7 +324,7 @@ public class LoggingEvent extends RichObject {
         this.mdc = ImmutableMap.copyOf(mdc);
         this.marker = checkNotNull(marker);
         this.throwable = checkNotNull(throwable);
-        this.message = checkNotNull(message);
+        this.message = message;
         this.arguments = from(asList(arguments)).transform(TO_NON_NULL_VALUE).toList();
     }
 
@@ -339,7 +339,7 @@ public class LoggingEvent extends RichObject {
     @Identity private final ImmutableMap<String, String> mdc;
     @Identity private final Optional<Marker> marker;
     @Identity private final Optional<Throwable> throwable;
-    @Identity private final String message;
+    @Identity /* @Nullable */ private final String message;
     @Identity private final ImmutableList<Object> arguments;
 
     private final Optional<TestLogger> creatingLogger;
