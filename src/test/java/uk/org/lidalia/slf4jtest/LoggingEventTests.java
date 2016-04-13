@@ -27,6 +27,7 @@ import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -526,6 +527,12 @@ public class LoggingEventTests {
     public void nullArgument() {
         LoggingEvent event = new LoggingEvent(level, "message with null arg", null, null);
         assertThat(event, is(new LoggingEvent(level, "message with null arg", absent(), absent())));
+    }
+
+    @Test
+    public void nullMessage() {
+        LoggingEvent event = new LoggingEvent(level, null);
+        assertThat(event.getMessage(), nullValue());
     }
 
     @After
