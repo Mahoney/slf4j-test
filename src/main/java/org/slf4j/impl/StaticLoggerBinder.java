@@ -7,15 +7,15 @@ import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
+    public static final String REQUESTED_API_VERSION = "1.6";
+
     private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+
+    private StaticLoggerBinder() { }
 
     public static StaticLoggerBinder getSingleton() {
         return SINGLETON;
     }
-
-    public static final String REQUESTED_API_VERSION = "1.6";
-
-    private StaticLoggerBinder() { }
 
     public ILoggerFactory getLoggerFactory() {
         return TestLoggerFactory.getInstance();

@@ -21,8 +21,21 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class TestLoggerFactory implements ILoggerFactory {
-
     private static final LazyValue<TestLoggerFactory> INSTANCE = new LazyValue<>(new TestLoggerFactoryMaker());
+
+    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<>();
+    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
+    private final ThreadLocal<List<LoggingEvent>> loggingEvents =
+            new ThreadLocal<>(Suppliers.<LoggingEvent>makeEmptyMutableList());
+    private volatile Level printLevel;
+
+    public TestLoggerFactory() {
+        this(Level.OFF);
+    }
+
+    public TestLoggerFactory(final Level printLevel) {
+        this.printLevel = checkNotNull(printLevel);
+    }
 
     public static TestLoggerFactory getInstance() {
         return INSTANCE.call();
@@ -58,20 +71,6 @@ public final class TestLoggerFactory implements ILoggerFactory {
 
     public static List<LoggingEvent> getAllLoggingEvents() {
         return getInstance().getAllLoggingEventsFromLoggers();
-    }
-
-    private final ConcurrentMap<String, TestLogger> loggers = new ConcurrentHashMap<>();
-    private final List<LoggingEvent> allLoggingEvents = new CopyOnWriteArrayList<>();
-    private final ThreadLocal<List<LoggingEvent>> loggingEvents =
-            new ThreadLocal<>(Suppliers.<LoggingEvent>makeEmptyMutableList());
-    private volatile Level printLevel;
-
-    public TestLoggerFactory() {
-        this(Level.OFF);
-    }
-
-    public TestLoggerFactory(final Level printLevel) {
-        this.printLevel = checkNotNull(printLevel);
     }
 
     public Level getPrintLevel() {
