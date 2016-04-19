@@ -48,6 +48,111 @@ import static java.util.Arrays.asList;
 @SuppressWarnings({ "PMD.ExcessivePublicCount", "PMD.TooManyMethods" })
 public class LoggingEvent extends RichObject {
 
+    private static final Function<Object, Object> TO_NON_NULL_VALUE = new Function<Object, Object>() {
+        @Override
+        public Object apply(final Object input) {
+            return fromNullable(input).or((Object) absent());
+        }
+    };
+
+    @Identity private final Level level;
+    @Identity private final ImmutableMap<String, String> mdc;
+    @Identity private final Optional<Marker> marker;
+    @Identity private final Optional<Throwable> throwable;
+    @Identity private final String message;
+    @Identity private final ImmutableList<Object> arguments;
+
+    private final Optional<TestLogger> creatingLogger;
+    private final Instant timestamp = new Instant();
+    private final String threadName = Thread.currentThread().getName();
+
+    private static final Function<TestLogger, String> toLoggerNameString = new Function<TestLogger, String>() {
+        @Override
+        public String apply(final TestLogger logger) {
+            return " " + logger.getName();
+        }
+    };
+
+    public LoggingEvent(final Level level, final String message, final Object... arguments) {
+        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), Optional.<Throwable>absent(),
+                message, arguments);
+    }
+
+    public LoggingEvent(final Level level, final Throwable throwable, final String message, final Object... arguments) {
+        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), fromNullable(throwable),
+                message, arguments);
+    }
+
+    public LoggingEvent(final Level level, final Marker marker, final String message, final Object... arguments) {
+        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), Optional.<Throwable>absent(),
+                message, arguments);
+    }
+
+    public LoggingEvent(
+            final Level level, final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
+        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), fromNullable(throwable), message, arguments);
+    }
+
+    public LoggingEvent(final Level level, final Map<String, String> mdc, final String message, final Object... arguments) {
+        this(level, mdc, Optional.<Marker>absent(), Optional.<Throwable>absent(), message, arguments);
+    }
+
+    public LoggingEvent(
+            final Level level,
+            final Map<String, String> mdc,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+        this(level, mdc, Optional.<Marker>absent(), fromNullable(throwable), message, arguments);
+    }
+
+    public LoggingEvent(
+            final Level level,
+            final Map<String, String> mdc,
+            final Marker marker,
+            final String message,
+            final Object... arguments) {
+        this(level, mdc, fromNullable(marker), Optional.<Throwable>absent(), message, arguments);
+    }
+
+    public LoggingEvent(
+            final Level level,
+            final Map<String, String> mdc,
+            final Marker marker,
+            final Throwable throwable,
+            final String message,
+            final Object... arguments) {
+        this(level, mdc, fromNullable(marker), fromNullable(throwable), message, arguments);
+    }
+
+    private LoggingEvent(
+            final Level level,
+            final Map<String, String> mdc,
+            final Optional<Marker> marker,
+            final Optional<Throwable> throwable,
+            final String message,
+            final Object... arguments) {
+        this(Optional.<TestLogger>absent(), level, mdc, marker, throwable, message, arguments);
+    }
+
+    LoggingEvent(
+            final Optional<TestLogger> creatingLogger,
+            final Level level,
+            final Map<String, String> mdc,
+            final Optional<Marker> marker,
+            final Optional<Throwable> throwable,
+            final String message,
+            final Object... arguments) {
+        super();
+        this.creatingLogger = creatingLogger;
+        this.level = checkNotNull(level);
+        this.mdc = ImmutableMap.copyOf(mdc);
+        this.marker = checkNotNull(marker);
+        this.throwable = checkNotNull(throwable);
+        this.message = checkNotNull(message);
+        this.arguments = from(asList(arguments)).transform(TO_NON_NULL_VALUE).toList();
+    }
+
     public static LoggingEvent trace(final String message, final Object... arguments) {
         return new LoggingEvent(Level.TRACE, message, arguments);
     }
@@ -248,104 +353,6 @@ public class LoggingEvent extends RichObject {
         return new LoggingEvent(Level.ERROR, mdc, marker, throwable, message, arguments);
     }
 
-    public LoggingEvent(final Level level, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), Optional.<Throwable>absent(),
-                message, arguments);
-    }
-
-    public LoggingEvent(final Level level, final Throwable throwable, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), Optional.<Marker>absent(), fromNullable(throwable),
-                message, arguments);
-    }
-
-    public LoggingEvent(final Level level, final Marker marker, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), Optional.<Throwable>absent(),
-                message, arguments);
-    }
-
-    public LoggingEvent(
-            final Level level, final Marker marker, final Throwable throwable, final String message, final Object... arguments) {
-        this(level, Collections.<String, String>emptyMap(), fromNullable(marker), fromNullable(throwable), message, arguments);
-    }
-
-    public LoggingEvent(final Level level, final Map<String, String> mdc, final String message, final Object... arguments) {
-        this(level, mdc, Optional.<Marker>absent(), Optional.<Throwable>absent(), message, arguments);
-    }
-
-    public LoggingEvent(
-            final Level level,
-            final Map<String, String> mdc,
-            final Throwable throwable,
-            final String message,
-            final Object... arguments) {
-        this(level, mdc, Optional.<Marker>absent(), fromNullable(throwable), message, arguments);
-    }
-
-    public LoggingEvent(
-            final Level level,
-            final Map<String, String> mdc,
-            final Marker marker,
-            final String message,
-            final Object... arguments) {
-        this(level, mdc, fromNullable(marker), Optional.<Throwable>absent(), message, arguments);
-    }
-
-    public LoggingEvent(
-            final Level level,
-            final Map<String, String> mdc,
-            final Marker marker,
-            final Throwable throwable,
-            final String message,
-            final Object... arguments) {
-        this(level, mdc, fromNullable(marker), fromNullable(throwable), message, arguments);
-    }
-
-    private LoggingEvent(
-            final Level level,
-            final Map<String, String> mdc,
-            final Optional<Marker> marker,
-            final Optional<Throwable> throwable,
-            final String message,
-            final Object... arguments) {
-        this(Optional.<TestLogger>absent(), level, mdc, marker, throwable, message, arguments);
-    }
-
-    LoggingEvent(
-            final Optional<TestLogger> creatingLogger,
-            final Level level,
-            final Map<String, String> mdc,
-            final Optional<Marker> marker,
-            final Optional<Throwable> throwable,
-            final String message,
-            final Object... arguments) {
-        super();
-        this.creatingLogger = creatingLogger;
-        this.level = checkNotNull(level);
-        this.mdc = ImmutableMap.copyOf(mdc);
-        this.marker = checkNotNull(marker);
-        this.throwable = checkNotNull(throwable);
-        this.message = checkNotNull(message);
-        this.arguments = from(asList(arguments)).transform(TO_NON_NULL_VALUE).toList();
-    }
-
-    private static final Function<Object, Object> TO_NON_NULL_VALUE = new Function<Object, Object>() {
-        @Override
-        public Object apply(final Object input) {
-            return fromNullable(input).or((Object) absent());
-        }
-    };
-
-    @Identity private final Level level;
-    @Identity private final ImmutableMap<String, String> mdc;
-    @Identity private final Optional<Marker> marker;
-    @Identity private final Optional<Throwable> throwable;
-    @Identity private final String message;
-    @Identity private final ImmutableList<Object> arguments;
-
-    private final Optional<TestLogger> creatingLogger;
-    private final Instant timestamp = new Instant();
-    private final String threadName = Thread.currentThread().getName();
-
     public Level getLevel() {
         return level;
     }
@@ -415,13 +422,6 @@ public class LoggingEvent extends RichObject {
     private String safeLoggerName() {
         return creatingLogger.transform(toLoggerNameString).or("");
     }
-
-    private static final Function<TestLogger, String> toLoggerNameString = new Function<TestLogger, String>() {
-        @Override
-        public String apply(final TestLogger logger) {
-            return " " + logger.getName();
-        }
-    };
 
     private String getFormattedMessage() {
         return MessageFormatter.arrayFormat(getMessage(), getArguments().toArray()).getMessage();

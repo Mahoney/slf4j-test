@@ -9,6 +9,10 @@ import java.util.Map;
 
 final class Suppliers {
 
+    private Suppliers() {
+        throw new UnsupportedOperationException("Not instantiable");
+    }
+
     static <T> Supplier<List<T>> makeEmptyMutableList() {
         return new Supplier<List<T>>() {
             @Override
@@ -27,7 +31,4 @@ final class Suppliers {
         };
     }
 
-    private Suppliers() {
-        throw new UnsupportedOperationException("Not instantiable");
-    }
 }
