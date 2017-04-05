@@ -40,18 +40,21 @@ the test classpath.
 
 ##### Gradle setup
 
+    def slf4jSimple_version = '1.7.12'
+    
     dependencies {
         ...
         compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.24'
-        if (gradle.startParameter.taskNames.size() > 0 && !gradle.startParameter.taskNames.get(0).contains("test"))
-        {
-            runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12'
-        }
+        runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4jSimple_version
         ...
         
         ...
         testCompile group: 'uk.org.lidalia', name: 'slf4j-test', version: '1.2.0'
         ...
+    }
+    
+    test {
+        classpath = classpath.filter { it.name != "slf4j-simple-${slf4jSimple_version}.jar" }
     }
 
 
