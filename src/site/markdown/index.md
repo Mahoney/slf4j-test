@@ -21,7 +21,9 @@ as you should not be including a logging implementation as a compile or runtime
 dependency anyway. If the module is an application (whether standalone or
 something like a WAR that is deployed in a container) then you have two options:
 separate out the logic into a library, or exclude the real implementation from
-the test classpath. In Maven this can be done as so:
+the test classpath. 
+
+##### Maven setup
 
     <build>
       <plugins>
@@ -35,6 +37,26 @@ the test classpath. In Maven this can be done as so:
         </plugin>
       </plugins>
     </build>
+
+##### Gradle setup
+
+    def slf4jSimple_version = '1.7.12'
+    
+    dependencies {
+        ...
+        compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.24'
+        runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4jSimple_version
+        ...
+        
+        ...
+        testCompile group: 'uk.org.lidalia', name: 'slf4j-test', version: '1.2.0'
+        ...
+    }
+    
+    test {
+        classpath = classpath.filter { it.name != "slf4j-simple-${slf4jSimple_version}.jar" }
+    }
+
 
 #### Basic example
 
