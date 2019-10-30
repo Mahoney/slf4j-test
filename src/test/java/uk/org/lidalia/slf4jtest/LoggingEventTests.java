@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.slf4j.MarkerFactory;
 import uk.org.lidalia.slf4jext.Level;
 import uk.org.lidalia.test.StaticTimeRule;
 import uk.org.lidalia.test.SystemOutputRule;
@@ -56,7 +57,7 @@ public class LoggingEventTests {
         mdc.put("key", "value");
     }
 
-    Marker marker = mock(Marker.class);
+    Marker marker = MarkerFactory.getMarker("marker1");
     Throwable throwable = new Throwable();
     String message = "message";
     Object arg1 = "arg1";
@@ -520,6 +521,17 @@ public class LoggingEventTests {
         event.print();
         assertThat(systemOutputRule.getSystemErr(), is(not("")));
         assertThat(systemOutputRule.getSystemOut(), is(""));
+    }
+
+    @Test
+    @Parameters({"INFO"})
+    public void printInfoWithMDCAndMarkers(Level level) {
+        LoggingEvent event = new LoggingEvent(level, mdc, marker, "message");
+        event.print();
+        assertThat(systemOutputRule.getSystemOut(),
+            is("1970-01-01T00:00:00.000Z ["+Thread.currentThread().getName()+"] INFO key=value marker1 - message" + lineSeparator())
+        );
+
     }
 
     @Test

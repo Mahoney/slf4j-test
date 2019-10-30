@@ -409,7 +409,25 @@ public class LoggingEvent extends RichObject {
     }
 
     private String formatLogStatement() {
-        return getTimestamp() + " [" + getThreadName() + "] " + getLevel() + safeLoggerName() + " - " + getFormattedMessage();
+        return getTimestamp() + " [" + getThreadName() + "] " + getLevel() + safeLoggerName() + getFormattedMdc() + getFormattedMarkers() + " - " + getFormattedMessage();
+    }
+
+    private String getFormattedMdc() {
+        StringBuilder sb = new StringBuilder();
+        if (getMdc() != null) {
+            for (Map.Entry entry : getMdc().entrySet()) {
+                sb.append(" " + entry.getKey() + "=" + entry.getValue());
+            }
+        }
+        return sb.toString();
+    }
+
+    private String getFormattedMarkers() {
+        if (getMarker().isPresent()) {
+            return " " + marker.get().toString();
+        } else {
+            return "";
+        }
     }
 
     private String safeLoggerName() {
